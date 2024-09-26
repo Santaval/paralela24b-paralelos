@@ -4,7 +4,7 @@
 #ifndef HTTPCONNECTIONHANDLER_H
 #define HTTPCONNECTIONHANDLER_H
 
-class HttpConnectionHandler : public Consumer<Socket*> {
+class HttpConnectionHandler : public Consumer<Socket> {
 
     DISABLE_COPY(HttpConnectionHandler);
 
@@ -13,7 +13,7 @@ class HttpConnectionHandler : public Consumer<Socket*> {
       explicit HttpConnectionHandler();
       int run() override;
       /// Override this method to process any data extracted from the queue
-      void consume(Socket* data) override;
+      void consume(Socket data) override;
 
     // TODO(you): Make this method concurrent. Store client connections (sockets)
     // // into a collection (e.g thread-safe queue) and stop in web server

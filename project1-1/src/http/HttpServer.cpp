@@ -42,7 +42,7 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
       // Start socket queue
-      this->socketsQueue = new Queue<Socket*>();
+      this->socketsQueue = new Queue<Socket>();
       // TODO destroy queue
 
       // Create connection handlers
@@ -133,7 +133,7 @@ void HttpServer::createConnectionHandlers() {
 }
 
 void HttpServer::handleClientConnection(Socket& client) {
-  this->socketsQueue->enqueue(&client);
+  this->socketsQueue->enqueue(client);
 }
 
 // TODO(you): Move the following methods to your HttpConnectionHandler
