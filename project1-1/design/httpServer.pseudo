@@ -1,0 +1,49 @@
+class HttpServer do 
+    
+    private shared socketsQueue
+    private shared connectionHandlers
+    private shared connectionHandlerCount
+
+
+    // métodos
+
+    private run() do
+        declare stopApps := false
+        try do
+            if (this.readArguments()) do 
+                startLogs()
+
+                this.socketsQueue := new Queue()
+                this.connectionHandler := this.createConnectionHandler()
+
+                this.startApps()
+                stopApps := true
+                logMainThreadId()
+                this.listenConnections()
+    
+                this.acceptConnections()
+            end
+        end catch(err) do
+            print(err)
+        end
+
+        if (stopApps) do
+            this.stopApps()
+        end
+         
+
+    end 
+
+    private createConnectionHandler() do
+        for i := 1 to this.connectionHandlerCount do
+            this.connectionHandlers[i] := new ConnectionHandler()
+        end
+    end
+
+
+
+    private handleClientConnection(Socket) do
+        this.socketsQueue.enqueue(Socket)
+    end 
+
+end class
