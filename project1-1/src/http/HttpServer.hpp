@@ -75,7 +75,7 @@ class HttpServer : public TcpServer {
   // Sockets queue
   // It is a pointer to a vector of sockets
   // Queue is bounded
-  Queue<Socket>* socketsQueue;
+  Queue<Socket*>* socketsQueue;
 
   // Connection handler threads
   // It is a vector of threads
