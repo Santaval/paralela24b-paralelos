@@ -43,6 +43,12 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start socket queue
       this->socketsQueue = new Queue<Socket>();
       // TODO destroy queue
+
+      // Create connection handlers
+      this->createConnectionHandlers();
+
+      // TODO start connection handlers
+
       // Start all web applications
       this->startApps();
       stopApps = true;
@@ -115,6 +121,13 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
   }
 
   return true;
+}
+
+void HttpServer::createConnectionHandlers() {
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    HttpConnectionHandler* handler = new HttpConnectionHandler();
+    this->connectionHandlers.push_back(handler);
+  }
 }
 
 void HttpServer::handleClientConnection(Socket& client) {

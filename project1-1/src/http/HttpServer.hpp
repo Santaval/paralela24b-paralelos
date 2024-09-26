@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "TcpServer.hpp"
+#include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
@@ -76,6 +77,11 @@ class HttpServer : public TcpServer {
   // Queue is bounded
   Queue<Socket>* socketsQueue;
 
+  // Connection handler threads
+  // It is a vector of threads
+  // Each thread will be a connection handler
+  std::vector<HttpConnectionHandler*> connectionHandlers;
+
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
@@ -108,6 +114,9 @@ class HttpServer : public TcpServer {
   /// Stop all running applications, given them a chance to clean their data
   /// structures
   void stopApps();
+  /// Create the connection handler threads
+  void createConnectionHandlers();
+
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
   /// Called each time an HTTP request is received. Web server should analyze
