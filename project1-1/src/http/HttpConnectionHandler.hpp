@@ -5,10 +5,17 @@ class HttpConnectionHandler : public Consumer<Socket*> {
 
     DISABLE_COPY(HttpConnectionHandler);
 
-    // TODO(you): Make this method concurrent. Store client connections (sockets)
-  // // into a collection (e.g thread-safe queue) and stop in web server
+    public:
+      /// Constructor
+      explicit HttpConnectionHandler();
+      int run() override;
+      /// Override this method to process any data extracted from the queue
+      void consume(Socket* data) override;
 
-  // // TODO(you): Move following loop to a consumer HttpConnectionHandler class
+    // TODO(you): Make this method concurrent. Store client connections (sockets)
+    // // into a collection (e.g thread-safe queue) and stop in web server
+
+    // // TODO(you): Move following loop to a consumer HttpConnectionHandler class
 
   // // While the same client asks for HTTP requests in the same connection
   // while (true) {
