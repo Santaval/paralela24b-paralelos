@@ -3,12 +3,12 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
+#include <thread>
 #include <vector>
 
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include <thread>
 
 #define DEFAULT_PORT "8080"
 
