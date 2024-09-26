@@ -135,6 +135,9 @@ class HttpServer : public TcpServer {
   /// If you want to override this method, create a web app, e.g NotFoundWebApp
   /// that reacts to all URIs, and chain it as the last web app
   bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  // wait for connection handlers
+  void joinThreads();
 };
 
 #endif  // HTTPSERVER_H

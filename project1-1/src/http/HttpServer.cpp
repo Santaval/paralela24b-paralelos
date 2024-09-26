@@ -78,6 +78,8 @@ int HttpServer::run(int argc, char* argv[]) {
     this->stopApps();
   }
 
+  this->joinThreads();
+
   // Stop the log service
   Log::getInstance().stop();
   return EXIT_SUCCESS;
@@ -131,6 +133,13 @@ void HttpServer::createConnectionHandlers() {
     this->connectionHandlers.push_back(handler);
   }
 }
+
+void HttpServer::joinThreads() {
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->connectionHandlers.at(index)->waitToFinish();
+  }
+}
+
 
 void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
@@ -194,3 +203,4 @@ bool HttpServer::serveNotFound(HttpRequest& httpRequest
   // Send the response to the client (user agent)
   return httpResponse.send();
 }
+
