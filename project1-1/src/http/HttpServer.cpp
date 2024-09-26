@@ -12,7 +12,6 @@
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
 
-// TODO(you): Implement connection handlers argument
 const char* const usage =
   "Usage: webserv [port] [handlers]\n"
   "\n"
@@ -107,6 +106,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 
   if (argc >= 2) {
     this->port = argv[1];
+  }
+
+  if (argc >= 3) {
+    this->connectionHandlersCount = std::stoi(argv[2]);
   }
 
   return true;

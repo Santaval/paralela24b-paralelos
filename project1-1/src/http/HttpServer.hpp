@@ -3,6 +3,7 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
+#include <thread>
 #include <vector>
 
 #include "TcpServer.hpp"
@@ -68,6 +69,10 @@ class HttpServer : public TcpServer {
   /// call the httpResponse.send() and the chain stops. If no web app serves
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
+
+  /// Number of connection handler threads
+  // Initially, the server will use the number of cores in the system
+  int connectionHandlersCount = std::thread::hardware_concurrency();
 
  public:
   /// Constructor
