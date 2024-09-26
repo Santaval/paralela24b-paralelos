@@ -41,7 +41,8 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
       // Start socket queue
-      this->socketsQueue = new Queue<Socket*>();
+      this->socketsQueue = new Queue<Socket>();
+      // TODO destroy queue
       // Start all web applications
       this->startApps();
       stopApps = true;
