@@ -5,6 +5,7 @@
 #include <string>
 
 #include "HttpApp.hpp"
+#include "HttpConnectionHandler.hpp"
 #include "HttpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"

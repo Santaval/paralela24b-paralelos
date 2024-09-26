@@ -1,6 +1,9 @@
 #include "Consumer.hpp"
 #include "Socket.hpp"
 
+#ifndef HTTPCONNECTIONHANDLER_H
+#define HTTPCONNECTIONHANDLER_H
+
 class HttpConnectionHandler : public Consumer<Socket*> {
 
     DISABLE_COPY(HttpConnectionHandler);
@@ -50,3 +53,5 @@ class HttpConnectionHandler : public Consumer<Socket*> {
   // }
 
 };
+
+#endif
