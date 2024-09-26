@@ -8,6 +8,7 @@
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include <thread>
 
 #define DEFAULT_PORT "8080"
 
@@ -68,6 +69,10 @@ class HttpServer : public TcpServer {
   /// call the httpResponse.send() and the chain stops. If no web app serves
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
+
+  /// Number of connection handler threads
+  // Initially, the server will use the number of cores in the system
+  int connectionHandlersCount = std::thread::hardware_concurrency();
 
  public:
   /// Constructor
