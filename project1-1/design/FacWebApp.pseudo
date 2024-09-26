@@ -1,0 +1,24 @@
+class FacWebApp do 
+  private serveFactorization() do 
+    setHeader("Server" con valor "AttoServer v1.0")
+    setHeader("Content-type" typo de valor "text/html; charset=ascii")
+
+    matches
+    inQuery()
+    if(regex_search(getURI())) do
+      assert(matches>=3)
+      number = stoll(matches)
+
+      title = "Prime factorization of " + (number)
+      factorization(number)
+      httpResponse.body()
+
+    else 
+      title = "Invalid request"
+      httpResponse.body()
+    end
+
+    return httpResponse.send();
+  end
+
+end class
