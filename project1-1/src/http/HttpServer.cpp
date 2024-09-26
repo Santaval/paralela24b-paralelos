@@ -40,7 +40,8 @@ int HttpServer::run(int argc, char* argv[]) {
     if (this->analyzeArguments(argc, argv)) {
       // Start the log service
       Log::getInstance().start();
-
+      // Start socket queue
+      this->socketsQueue = new Queue<Socket*>();
       // Start all web applications
       this->startApps();
       stopApps = true;
