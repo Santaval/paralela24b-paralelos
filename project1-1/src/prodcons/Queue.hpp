@@ -11,6 +11,7 @@
 
 #include "common.hpp"
 #include "Semaphore.hpp"
+#include "Log.hpp"
 
 /**
  * @brief A thread-safe generic queue for consumer-producer pattern.
@@ -22,6 +23,7 @@ template <typename DataType>
 class Queue {
   DISABLE_COPY(Queue);
 
+
  protected:
   /// All read or write operations are mutually exclusive
   std::mutex mutex;
@@ -31,6 +33,7 @@ class Queue {
   Semaphore canConsume;
   /// Contains the actual data shared between producer and consumer
   std::queue<DataType> queue;
+  
 
  public:
   /// Constructor
@@ -47,6 +50,7 @@ class Queue {
   /// Produces an element that is pushed in the queue
   /// The semaphore is increased to wait potential consumers
   void enqueue(const DataType& data) {
+     Log::append(Log::INFO, "request", "equeue");
     this->canProduce.wait();
     this->mutex.lock();
     this->queue.push(data);

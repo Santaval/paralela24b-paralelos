@@ -6,10 +6,12 @@ HttpConnectionHandler::HttpConnectionHandler() {
 
 void HttpConnectionHandler::consume(Socket socket) {
     // this->handleClientConnection(socket);
-    std::cout  << "Hola" << "\n";
+    Log::append(Log::INFO, "webserver", "Hola Socket");
+
     return;
 }
 
 int HttpConnectionHandler::run () {
+    this->consumeForever();
     return 0;
 }
