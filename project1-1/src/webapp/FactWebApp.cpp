@@ -91,7 +91,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   std::regex inQuery("^/fact(/|\\?number=)([\\d,]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
-
+    Log::append(Log::INFO, "webserver", "Listening on ")
     const int64_t number = std::stoll(matches[2]);
     std::vector<int64_t> numbers;
     std::stringstream ss(std::to_string(number));
@@ -105,7 +105,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     // Construccion Respuesta
     std::string title = "Prime factorization of " + std::to_string(number);
     body << "<h1>" << title << "</h1>\n";
-    for (int64_t i = 0; i <= numbers.size(); i++) {
+    for (int64_t i = 0; i <= numbers.size()-1; i++) {
       Calculator.Calculator_Factorial(numbers[i]);
       if (Calculator.get_Factorial() == "false") {
         body << "  <h2 class=\"err\">" << numbers[i] << "</h2>\n"
@@ -143,7 +143,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
             }
 
             // Imprimir o procesar la pareja number y potency
-            httpResponse.body() << "<p>" << numero << "<sup>"
+            body << "<p>" << numero << "<sup>"
                 << potency << "</sup></p>";
         }
       }
