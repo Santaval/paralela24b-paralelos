@@ -152,8 +152,8 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
             }
 
             // Imprimir o procesar la pareja number y potency
-            body << "<p>" << numero << "<sup>"
-                << potency << "</sup></p>";
+            body << "<span >" << numero << "<sup>"
+                << potency << "</sup></span>";
         }
       }
     }
@@ -164,7 +164,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "<html lang=\"en\">\n"
       << "  <meta charset=\"ascii\"/>\n"
       << "  <title>Factorization Results</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+      << "  <style>body {font-family: monospace} .err {color: red} span {margin-right: 20px}</style>\n"
       << body.str()
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
@@ -175,7 +175,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "<html lang=\"en\">\n"
       << "  <meta charset=\"ascii\"/>\n"
       << "  <title>" << title << "</title>\n"
-      << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
+      << "  <style>body {font-family: monospace} .err {color: red} </style>\n"
       << "  <h1 class=\"err\">" << title << "</h1>\n"
       << "  <p>Invalid request for factorization</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
