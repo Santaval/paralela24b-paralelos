@@ -1,0 +1,15 @@
+class FactCalc do
+  public factorization(number) do
+    string factores
+    Mientras n > 1 hacer
+        Para i desde 2 hasta n hacer
+            Si n mod i == 0 entonces
+                factores = i
+                n = n / i
+                Romper el ciclo Para
+            Fin Si
+        Fin Para
+    Fin Mientras
+    return factores
+  end
+end
