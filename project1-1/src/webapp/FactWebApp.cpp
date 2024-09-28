@@ -88,7 +88,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   // TODO(you): Modularize this method
   FactCal Calculator;
   std::smatch matches;
-  std::regex inQuery("^/fact(/|\\?number=)([\\d%2C,]+)$");
+  std::regex inQuery("^/fact(/|\\?number=)([\\d%2C,-]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
     std::string number = matches[2];
