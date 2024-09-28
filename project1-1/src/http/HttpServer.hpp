@@ -7,8 +7,10 @@
 #include <vector>
 
 #include "TcpServer.hpp"
+#include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "Queue.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -70,6 +72,16 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
+  // Sockets queue
+  // It is a pointer to a vector of sockets
+  // Queue is bounded
+  Queue<Socket>* socketsQueue;
+
+  // Connection handler threads
+  // It is a vector of threads
+  // Each thread will be a connection handler
+  std::vector<HttpConnectionHandler*> connectionHandlers;
+
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
@@ -102,6 +114,9 @@ class HttpServer : public TcpServer {
   /// Stop all running applications, given them a chance to clean their data
   /// structures
   void stopApps();
+  /// Create the connection handler threads
+  void createConnectionHandlers();
+
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
   /// Called each time an HTTP request is received. Web server should analyze
@@ -120,6 +135,12 @@ class HttpServer : public TcpServer {
   /// If you want to override this method, create a web app, e.g NotFoundWebApp
   /// that reacts to all URIs, and chain it as the last web app
   bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  // Init connection handlers
+  void initConnectionHandler();
+
+  // wait for connection handlers
+  void joinThreads();
 };
 
 #endif  // HTTPSERVER_H

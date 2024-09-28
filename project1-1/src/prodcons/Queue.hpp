@@ -1,13 +1,17 @@
-// Copyright 2020-2024 Jeisson Hidalgo-Cespedes. ECCI-UCR. CC BY 4.0
+/// @copyright 2020 ECCI, Universidad de Costa Rica. All rights reserved
+/// This code is released under the GNU Public License version 3
+/// @author Jeisson Hidalgo-Céspedes <jeisson.hidalgo@ucr.ac.cr>
 
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
+#include <climits>
 #include <mutex>
 #include <queue>
 
 #include "common.hpp"
 #include "Semaphore.hpp"
+#include "Log.hpp"
 
 /**
  * @brief A thread-safe generic queue for consumer-producer pattern.
@@ -19,18 +23,23 @@ template <typename DataType>
 class Queue {
   DISABLE_COPY(Queue);
 
+
  protected:
   /// All read or write operations are mutually exclusive
   std::mutex mutex;
+  /// Indicates if there empty elements in the queue to produce
+  Semaphore canProduce;
   /// Indicates if there are consumable elements in the queue
   Semaphore canConsume;
   /// Contains the actual data shared between producer and consumer
   std::queue<DataType> queue;
+  
 
  public:
   /// Constructor
-  Queue()
-    : canConsume(0) {
+  explicit Queue(const unsigned capacity = SEM_VALUE_MAX)
+    : canProduce(capacity)
+    , canConsume(0) {
   }
 
   /// Destructor
@@ -41,6 +50,8 @@ class Queue {
   /// Produces an element that is pushed in the queue
   /// The semaphore is increased to wait potential consumers
   void enqueue(const DataType& data) {
+     Log::append(Log::INFO, "request", "equeue");
+    this->canProduce.wait();
     this->mutex.lock();
     this->queue.push(data);
     this->mutex.unlock();
@@ -56,6 +67,7 @@ class Queue {
     DataType result = this->queue.front();
     this->queue.pop();
     this->mutex.unlock();
+    this->canProduce.signal();
     return result;
   }
 };
