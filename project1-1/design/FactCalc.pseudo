@@ -1,5 +1,5 @@
 class FactCalc do
-  private factorization(number) do
+  public factorization(number) do
     string factores
     Mientras n > 1 hacer
         Para i desde 2 hasta n hacer
