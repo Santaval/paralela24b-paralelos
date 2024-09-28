@@ -136,6 +136,9 @@ class HttpServer : public TcpServer {
   /// that reacts to all URIs, and chain it as the last web app
   bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
 
+  // Init connection handlers
+  void initConnectionHandler();
+
   // wait for connection handlers
   void joinThreads();
 };

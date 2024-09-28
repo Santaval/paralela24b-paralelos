@@ -50,6 +50,7 @@ int HttpServer::run(int argc, char* argv[]) {
 
       // TODO start connection handlers
 
+
       // Start all web applications
       this->startApps();
       stopApps = true;
@@ -60,6 +61,7 @@ int HttpServer::run(int argc, char* argv[]) {
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
         + " port " + std::to_string(address.getPort()));
+      
 
       // Accept all client connections. The main process will get blocked
       // running this method and will not return. When HttpServer::stop() is
@@ -134,15 +136,25 @@ void HttpServer::createConnectionHandlers() {
   }
 }
 
+void HttpServer::initConnectionHandler() {
+    for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->connectionHandlers.at(index)->startThread();
+    this->connectionHandlers.at(index)->run();
+
+  }
+}
+
 void HttpServer::joinThreads() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->waitToFinish();
+
   }
 }
 
 
 void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
+  
 }
 
 // TODO(you): Move the following methods to your HttpConnectionHandler
@@ -150,6 +162,7 @@ void HttpServer::handleClientConnection(Socket& client) {
 bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // Print IP and port from client
+
   const NetworkAddress& address = httpRequest.getNetworkAddress();
   Log::append(Log::INFO, "connection",
     std::string("connection established with client ") + address.getIP()
