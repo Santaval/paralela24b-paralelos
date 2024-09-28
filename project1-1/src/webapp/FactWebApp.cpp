@@ -91,7 +91,6 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   std::regex inQuery("^/fact(/|\\?number=)([\\d,]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
-    Log::append(Log::INFO, "webserver", "Listening on ")
     const int64_t number = std::stoll(matches[2]);
     std::vector<int64_t> numbers;
     std::stringstream ss(std::to_string(number));
