@@ -2,6 +2,7 @@
 // Serial web server's initial code for parallelization
 
 #ifdef WEBSERVER
+#include <csignal>
 
 #include "HttpServer.hpp"
 #include "FactWebApp.hpp"
@@ -11,6 +12,7 @@
 
 /// Start the web server
 int main(int argc, char* argv[]) {
+  signal(SIGINT, HttpServer::handleSignal);
   // Create the web server
   HttpServer httpServer;
   // Create a factorization web application, and other apps if you want

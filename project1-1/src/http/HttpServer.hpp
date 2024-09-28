@@ -60,6 +60,10 @@ is sent to the client.
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
 
+  private:
+    // Almacena la única instancia de HttpServer
+    static HttpServer* instance;
+
  protected:
   /// Lookup criteria for searching network information about this host
   struct addrinfo hints;
@@ -87,6 +91,8 @@ class HttpServer : public TcpServer {
   int connectionHandlersCount = std::thread::hardware_concurrency();
 
  public:
+  // Método estático para obtener la única instancia del servidor
+  static HttpServer* getInstance();
   /// Constructor
   HttpServer();
   /// Destructor
@@ -99,6 +105,8 @@ class HttpServer : public TcpServer {
   /// for listening further connection requests at once, but pending HTTP
   /// requests that are enqueued will be allowed to finish
   void stop();
+  // handle the signal
+  static void handleSignal(int signal);
   /// Indefinitely listen for client connection requests and accept all of them.
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
