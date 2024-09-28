@@ -60,7 +60,7 @@ is sent to the client.
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
 
-  private:
+ private:
     // Almacena la única instancia de HttpServer
     static HttpServer* instance;
 

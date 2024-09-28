@@ -3,6 +3,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <string>
+#include <csignal>
 
 #include "HttpApp.hpp"
 #include "HttpConnectionHandler.hpp"
@@ -12,7 +13,7 @@
 #include "Log.hpp"
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
-#include <csignal>
+
 
 const char* const usage =
   "Usage: webserv [port] [handlers]\n"
@@ -55,7 +56,7 @@ int HttpServer::run(int argc, char* argv[]) {
       Log::getInstance().start();
       // Start socket queue
       this->socketsQueue = new Queue<Socket>();
-      // TODO destroy queue
+
 
       // Create connection handlers
       this->createConnectionHandlers();
@@ -73,7 +74,7 @@ int HttpServer::run(int argc, char* argv[]) {
       const NetworkAddress& address = this->getNetworkAddress();
       Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
         + " port " + std::to_string(address.getPort()));
-      
+
 
       // Accept all client connections. The main process will get blocked
       // running this method and will not return. When HttpServer::stop() is
@@ -144,7 +145,8 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 
 void HttpServer::createConnectionHandlers() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    HttpConnectionHandler* handler = new HttpConnectionHandler(this->applications);
+    HttpConnectionHandler* handler =
+        new HttpConnectionHandler(this->applications);
     handler->setConsumingQueue(this->socketsQueue);
     this->connectionHandlers.push_back(handler);
   }
@@ -153,21 +155,18 @@ void HttpServer::createConnectionHandlers() {
 void HttpServer::initConnectionHandler() {
     for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->startThread();
-
   }
 }
 
 void HttpServer::joinThreads() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->waitToFinish();
-
   }
 }
 
 
 void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
-  
 }
 
 // TODO(you): Move the following methods to your HttpConnectionHandler
@@ -229,7 +228,8 @@ bool HttpServer::serveNotFound(HttpRequest& httpRequest
 }
 
 void HttpServer::handleSignal(int signal) {
-  Log::append(Log::INFO, "signal", "Signal " + std::to_string(signal) + " received");
+  Log::append(Log::INFO, "signal", "Signal " +
+      std::to_string(signal) + " received");
     HttpServer::getInstance()->stop();
 }
 
