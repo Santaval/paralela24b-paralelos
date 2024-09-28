@@ -130,7 +130,7 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 
 void HttpServer::createConnectionHandlers() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    HttpConnectionHandler* handler = new HttpConnectionHandler();
+    HttpConnectionHandler* handler = new HttpConnectionHandler(this->applications);
     handler->setConsumingQueue(this->socketsQueue);
     this->connectionHandlers.push_back(handler);
   }
@@ -175,21 +175,19 @@ bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
   return this->route(httpRequest, httpResponse);
 }
 
-// TODO(you): Provide HttpConnectionHandler access to the array of web apps
-
 bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   // Traverse the chain of applications
   for (size_t index = 0; index < this->applications.size(); ++index) {
-    // If this application handles the request
-    HttpApp* app = this->applications[index];
-    if (app->handleHttpRequest(httpRequest, httpResponse)) {
+    HttpApp* application = this->applications[index];
+    if (application->handleHttpRequest(httpRequest, httpResponse)) {
       return true;
     }
   }
 
-  // Unrecognized request
+  // If no application handled the request, send a 404 response
   return this->serveNotFound(httpRequest, httpResponse);
 }
+
 
 bool HttpServer::serveNotFound(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
