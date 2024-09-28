@@ -50,7 +50,6 @@ class Queue {
   /// Produces an element that is pushed in the queue
   /// The semaphore is increased to wait potential consumers
   void enqueue(const DataType& data) {
-     Log::append(Log::INFO, "request", "equeue");
     this->canProduce.wait();
     this->mutex.lock();
     this->queue.push(data);

@@ -56,7 +56,6 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start socket queue
       this->socketsQueue = new Queue<Socket>();
       // TODO destroy queue
-
       // Create connection handlers
       this->createConnectionHandlers();
 
@@ -84,9 +83,13 @@ int HttpServer::run(int argc, char* argv[]) {
       this->acceptAllConnections();
     }
   } catch (const std::runtime_error& error) {
-    std::cerr << "error: " << error.what() << std::endl;
+    std::cerr << error.what() << std::endl;
   }
 
+  // Enqueue a stop condition for each connection handler
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->socketsQueue->enqueue(Socket());
+  }
 
   // If applications were started
   if (stopApps) {
@@ -94,6 +97,9 @@ int HttpServer::run(int argc, char* argv[]) {
   }
 
   this->joinThreads();
+
+  // destroy the queue
+  delete this->socketsQueue;
 
   // Stop the log service
   Log::getInstance().stop();
@@ -118,7 +124,7 @@ void HttpServer::stop() {
   // method is called -maybe by a secondary thread-, the web server -running
   // by the main thread- will stop executing the acceptAllConnections() method.
   this->stopListening();
-  throw std::runtime_error("stop");
+  throw std::runtime_error("Stop server in progress...");
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {

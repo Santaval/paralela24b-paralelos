@@ -16,7 +16,7 @@ class HttpConnectionHandler : public Consumer<Socket> {
 
     public:
       /// Constructor
-      explicit HttpConnectionHandler(std::vector<HttpApp*> applications);
+      explicit HttpConnectionHandler(std::vector<HttpApp*> applications, const Socket& stopCondition = Socket());
       int run() override;
       /// Override this method to process any data extracted from the queue
       void consume(Socket data) override;

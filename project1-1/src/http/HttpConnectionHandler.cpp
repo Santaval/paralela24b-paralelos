@@ -3,8 +3,8 @@
 #include "Log.hpp"
 #include "NetworkAddress.hpp" // Include the header for NetworkAddress
 
-HttpConnectionHandler::HttpConnectionHandler(std::vector<HttpApp*> applications) {
-    this->applications = applications;
+HttpConnectionHandler::HttpConnectionHandler(std::vector<HttpApp*> applications, const Socket& stopCondition)
+    : applications(applications) {
 }
 
 void HttpConnectionHandler::consume(Socket socket) {
