@@ -12,6 +12,7 @@
 #include "Log.hpp"
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
+#include <csignal>
 
 const char* const usage =
   "Usage: webserv [port] [handlers]\n"
@@ -19,6 +20,17 @@ const char* const usage =
   "  port        Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
   "  handlers     Number of connection handler theads\n";
+
+// Inicializa el puntero de la instancia como nullptr
+HttpServer* HttpServer::instance = nullptr;
+
+// Método estático para obtener la instancia de Singleton
+HttpServer* HttpServer::getInstance() {
+  if (instance == nullptr) {
+    instance = new HttpServer();
+  }
+  return instance;
+}
 
 HttpServer::HttpServer() {
 }
@@ -75,6 +87,7 @@ int HttpServer::run(int argc, char* argv[]) {
     std::cerr << "error: " << error.what() << std::endl;
   }
 
+
   // If applications were started
   if (stopApps) {
     this->stopApps();
@@ -105,6 +118,7 @@ void HttpServer::stop() {
   // method is called -maybe by a secondary thread-, the web server -running
   // by the main thread- will stop executing the acceptAllConnections() method.
   this->stopListening();
+  throw std::runtime_error("stop");
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {
@@ -212,5 +226,10 @@ bool HttpServer::serveNotFound(HttpRequest& httpRequest
 
   // Send the response to the client (user agent)
   return httpResponse.send();
+}
+
+void HttpServer::handleSignal(int signal) {
+  Log::append(Log::INFO, "signal", "Signal " + std::to_string(signal) + " received");
+    HttpServer::getInstance()->stop();
 }
 
