@@ -64,7 +64,7 @@ bool FactWebApp::serveHomepage(HttpRequest& httpRequest
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/fact\">\n"
     << "    <label for=\"number\">Number</label>\n"
-    << "    <input type=\"number\" name=\"number\" required/>\n"
+    << "    <input type=\"text\" name=\"number\" required/>\n"
     << "    <button type=\"submit\">Factorize</button>\n"
     << "  </form>\n"
     << "</html>\n";
@@ -88,31 +88,41 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   // TODO(you): Modularize this method
   FactCal Calculator;
   std::smatch matches;
-  std::regex inQuery("^/fact(/|\\?number=)([\\d,]+)$");
+  std::regex inQuery("^/fact(/|\\?number=)([\\d%2C]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
-    const int64_t number = std::stoll(matches[2]);
+    std::string number = matches[2];
+
     std::vector<int64_t> numbers;
-    std::stringstream ss(std::to_string(number));
+
     std::string auxiliar = "";
     std::stringstream body;
 
+    std::replace(number.begin(), number.end(), '%', ',');
+
+
+    size_t position = 0;
+    while ((position = number.find("2C", position)) != std::string::npos) {
+    number.replace(position, 2, "");
+    }
+
+    std::stringstream ss(number);
     while (std::getline(ss, auxiliar, ',')) {
         numbers.push_back(std::stoi(auxiliar));
     }
 
     // Construccion Respuesta
-    std::string title = "Prime factorization of " + std::to_string(number);
-    body << "<h1>" << title << "</h1>\n";
-    for (int64_t i = 0; i <= numbers.size()-1; i++) {
+
+    for (ino64_t i = 0; i <= numbers.size()-1; i++) {
       Calculator.Calculator_Factorial(numbers[i]);
       if (Calculator.get_Factorial() == "false") {
         body << "  <h2 class=\"err\">" << numbers[i] << "</h2>\n"
              << "  <p>" << numbers[i] << ": invalid number</p>\n";
       } else {
-
-        int64_t startPos = 0;
-        int64_t spacePos;
+        std::string title = "Prime factorization of " + std::to_string(numbers[i]);
+        body << "<h1>" << title << "</h1>\n";
+        ino64_t startPos = 0;
+        ino64_t spacePos;
         std::string numero, potency;
 
         while ((spacePos = Calculator.get_Factorial().
