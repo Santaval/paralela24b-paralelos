@@ -48,7 +48,7 @@ int HttpServer::run(int argc, char* argv[]) {
       // Create connection handlers
       this->createConnectionHandlers();
 
-      // TODO start connection handlers
+      this->initConnectionHandler();
 
 
       // Start all web applications
@@ -139,7 +139,6 @@ void HttpServer::createConnectionHandlers() {
 void HttpServer::initConnectionHandler() {
     for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->startThread();
-    this->connectionHandlers.at(index)->run();
 
   }
 }
