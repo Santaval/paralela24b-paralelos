@@ -44,3 +44,10 @@ That's all the server does. The connection handlers are the ones that handle the
 We use httpref to test the concurrency of the server and the results are shown below:
 
 <img src="./design/img/tests.png">
+
+
+## Credits
+This project was developed by:
+- Isaías Alfaro Ugalde
+- Aaron Santana Valdelomar
+- Caleb Ruiz
