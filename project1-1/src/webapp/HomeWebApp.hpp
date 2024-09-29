@@ -1,22 +1,22 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
-#ifndef FACTWEBAPP_HPP
-#define FACTWEBAPP_HPP
+#ifndef HOMEWEBAPP_HPP
+#define HOMEWEBAPP_HPP
 
 #include "HttpApp.hpp"
 
 /**
 @brief A web application that calculates prime factors
 */
-class FactWebApp : public HttpApp {
+class HomeWebApp : public HttpApp {
   /// Objects of this class cannot be copied
-  DISABLE_COPY(FactWebApp);
+  DISABLE_COPY(HomeWebApp);
 
  public:
   /// Constructor
-  FactWebApp();
+  HomeWebApp();
   /// Destructor
-  ~FactWebApp();
+  ~HomeWebApp();
   /// Called by the web server when the web server is started
   void start() override;
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
@@ -29,10 +29,7 @@ class FactWebApp : public HttpApp {
   void stop() override;
 
  protected:
-  /// Handle a HTTP request that starts with "/fact"
-  /// @return true if the factorization was handled, false if it must be
-  /// handled by another application
-  bool serveFactorization(HttpRequest& httpRequest, HttpResponse& httpResponse);
+  bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
 #endif  // FACTWEBAPP_HPP

@@ -30,11 +30,6 @@ void FactWebApp::stop() {
 
 bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
-  // If the home page was asked
-  if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
-    return this->serveHomepage(httpRequest, httpResponse);
-  }
-
   // If the request starts with "fact/" is for this web app
   if (httpRequest.getURI().rfind("/fact", 0) == 0) {
     return this->serveFactorization(httpRequest, httpResponse);
@@ -44,34 +39,6 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
   return false;
 }
 
-// TODO(you): Fix code redundancy in the following methods
-
-bool FactWebApp::serveHomepage(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
-  (void)httpRequest;
-
-  // Set HTTP response metadata (headers)
-  httpResponse.setHeader("Server", "AttoServer v1.1");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  std::string title = "Prime factorization";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <form method=\"get\" action=\"/fact\">\n"
-    << "    <label for=\"number\">Number</label>\n"
-    << "    <input type=\"text\" name=\"number\" required/>\n"
-    << "    <button type=\"submit\">Factorize</button>\n"
-    << "  </form>\n"
-    << "</html>\n";
-
-  // Send the response to the client (user agent)
-  return httpResponse.send();
-}
 
 bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
