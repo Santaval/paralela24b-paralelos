@@ -3,11 +3,14 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
+#include <thread>
 #include <vector>
 
 #include "TcpServer.hpp"
+#include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "Queue.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -57,6 +60,10 @@ is sent to the client.
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
 
+ private:
+    // Almacena la única instancia de HttpServer
+    static HttpServer* instance;
+
  protected:
   /// Lookup criteria for searching network information about this host
   struct addrinfo hints;
@@ -69,10 +76,26 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
+  // Sockets queue
+  // It is a pointer to a vector of sockets
+  // Queue is bounded
+  Queue<Socket>* socketsQueue;
+
+  // Connection handler threads
+  // It is a vector of threads
+  // Each thread will be a connection handler
+  std::vector<HttpConnectionHandler*> connectionHandlers;
+
+  /// Number of connection handler threads
+  // Initially, the server will use the number of cores in the system
+  int connectionHandlersCount = std::thread::hardware_concurrency();
+
  public:
+  // Método estático para obtener la única instancia del servidor
+  static HttpServer* getInstance();
   /// Constructor
   HttpServer();
-  /// Destructor
+  /// Destructor`
   ~HttpServer();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
@@ -82,6 +105,8 @@ class HttpServer : public TcpServer {
   /// for listening further connection requests at once, but pending HTTP
   /// requests that are enqueued will be allowed to finish
   void stop();
+  // handle the signal
+  static void handleSignal(int signal);
   /// Indefinitely listen for client connection requests and accept all of them.
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
@@ -97,24 +122,17 @@ class HttpServer : public TcpServer {
   /// Stop all running applications, given them a chance to clean their data
   /// structures
   void stopApps();
+  /// Create the connection handler threads
+  void createConnectionHandlers();
+
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
-  /// Called each time an HTTP request is received. Web server should analyze
-  /// the request object and assemble a response with the response object.
-  /// Finally send the response calling the httpResponse.send() method.
-  /// @return true on success and the server will continue handling further
-  /// HTTP requests, or false if server should stop accepting requests from
-  /// this client (e.g: HTTP/1.0)
-  virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse);
-  /// Route, that provide an answer according to the URI value
-  /// For example, home page is handled different than a number
-  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// Sends a page for a non found resource in this server. This method is
-  /// called if none of the registered web applications handled the request.
-  /// If you want to override this method, create a web app, e.g NotFoundWebApp
-  /// that reacts to all URIs, and chain it as the last web app
-  bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
+
+  // Init connection handlers
+  void initConnectionHandler();
+
+  // wait for connection handlers
+  void joinThreads();
 };
 
 #endif  // HTTPSERVER_H

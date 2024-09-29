@@ -1,15 +1,37 @@
 class FactCalc do
-  private factorization(number) do
-    string factores
+  private string Factorial
+
+  public Calculator_Factorial(number) do
+    int number
+    vector string factores
     Mientras n > 1 hacer
+      Si (number < 2) hacer
+        Factorial = false
+      Si no hacer
         Para i desde 2 hasta n hacer
-            Si n mod i == 0 entonces
-                factores = i
-                n = n / i
-                Romper el ciclo Para
-            Fin Si
-        Fin Para
+          Si n mod i == 0 entonces
+            factores.push (i)
+            n = n / i
+            Romper el ciclo Para
+        Fin Si
+      Fin Para
     Fin Mientras
-    return factores
+    Llamar Format_numbers(factores)
+    return
+  end
+
+  public Format_numbers(vector string factores) do
+    Mientras Factores no este vacio hacer
+      Factor actual = factores[0]
+      Factorial += Factor actual
+      Contador_factores = cantidad de un numero en factores
+      remover numero de factores
+      Factorial += Cantador_factores
+    Fin Mientras
+    return
+  end
+
+  public get_Factorial() do
+    return Factorial
   end
 end

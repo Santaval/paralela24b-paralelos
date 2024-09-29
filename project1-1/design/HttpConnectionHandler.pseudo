@@ -1,0 +1,70 @@
+class HttpConnectionHandler do
+
+  // Constructor
+  public constructor(applications) do
+      this.applications := applications
+  end
+
+  public consume(Socket) do
+      this.handleClientConnection(Socket)
+      return
+  end
+
+  public run() do
+      this.consumeForever()
+      return 0
+  end
+
+
+  private handleClientConnection(Socket) do
+      while true do
+          declare httpRequest := new HttpRequest(Socket)
+
+          if (!httpRequest.parse()) do
+              break
+          end
+
+          declare httpResponse := new HttpResponse(Socket)
+
+          declare handled := this.handleHttpRequest(httpRequest, httpResponse)
+
+          if (!handled or httpRequest.getHttpVersion() == "HTTP/1.0") do
+              Socket.close()
+              break
+          end
+
+          break
+      end
+  end
+
+  private handleHttpRequest(httpRequest, httpResponse) do
+      declare address := httpRequest.getNetworkAddress()
+      logInfo("connection", "connection established with client " + address.getIP() + " port " + address.getPort())
+
+      logInfo("request", httpRequest.getMethod() + ' ' + httpRequest.getURI() + ' ' + httpRequest.getHttpVersion())
+
+      return this.route(httpRequest, httpResponse)
+  end
+
+  private route(httpRequest, httpResponse) do
+      for each app in this.applications do
+          if (app.handleHttpRequest(httpRequest, httpResponse)) do
+              return true
+          end
+      end
+
+      return this.serveNotFound(httpRequest, httpResponse)
+  end
+)
+  private serveNotFound(httpRequest, httpResponse) do
+
+      httpResponse.setStatusCode(404)
+      httpResponse.setHeader("Server", "AttoServer v1.0")
+      httpResponse.setHeader("Content-type", "text/html; charset=ascii")
+
+      construccion of bodyy page
+
+      return httpResponse.send()
+  end
+
+end class
