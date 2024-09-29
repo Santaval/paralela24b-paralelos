@@ -28,6 +28,7 @@ class HttpConnectionHandler : public Consumer<Socket> {
       bool handleHttpRequest(HttpRequest& httpRequest,
       HttpResponse& httpResponse);
       bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
+      bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
 #endif  // _HTTP_HTTPCONNECTIONHANDLER_HPP_

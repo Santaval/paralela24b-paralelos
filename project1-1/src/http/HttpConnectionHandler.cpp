@@ -79,5 +79,30 @@ bool HttpConnectionHandler::route(HttpRequest& httpRequest,
   }
 
   // Unrecognized request
-  // return this->serveNotFound(httpRequest, httpResponse);
+  return this->serveNotFound(httpRequest, httpResponse);
+}
+
+bool HttpConnectionHandler::serveNotFound(HttpRequest& httpRequest
+  , HttpResponse& httpResponse) {
+  (void)httpRequest;
+
+  // Set HTTP response metadata (headers)
+  httpResponse.setStatusCode(404);
+  httpResponse.setHeader("Server", "AttoServer v1.0");
+  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
+
+  // Build the body of the response
+  std::string title = "Not found";
+  httpResponse.body() << "<!DOCTYPE html>\n"
+    << "<html lang=\"en\">\n"
+    << "  <meta charset=\"ascii\"/>\n"
+    << "  <title>" << title << "</title>\n"
+    << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
+    << "  <h1>" << title << "</h1>\n"
+    << "  <p>The requested resource was not found on this server.</p>\n"
+    << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
+    << "</html>\n";
+
+  // Send the response to the client (user agent)
+  return httpResponse.send();
 }
