@@ -44,13 +44,50 @@ bool HomeWebApp::serveHomepage(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.1");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
+//     <style>
+//     body {
+//       font-family: monospace;
+//     }
+
+//     form {
+//       margin-bottom: 20px;
+//       padding-bottom: 20px;
+//       border-bottom: 1px solid #ccc;
+//     }
+
+//     input[type="text"] {
+//       outline: none;
+//       border-radius: 20px;
+//       border: 1px solid #ccc;
+//       padding: 5px;
+//     }
+
+//     label {
+//       margin-right: 10px;
+//       color: gray;
+//     }
+
+//     button {
+//       padding: 5px 10px;
+//       background-color: #007bff;
+//       color: white;
+//       border: none;
+//       cursor: pointer;
+//       border-radius: 10px;
+//     }
+//   </style>
   // Build the body of the response
   std::string title = "Prime factorization";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
     << "  <meta charset=\"ascii\"/>\n"
     << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace}</style>\n"
+    << "  <style>body {font-family: monospace} .err {color: red} \n"
+    << "  form {margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #ccc;}\n"
+    << "  input[type=\"text\"] {outline: none; border-radius: 20px; border: 1px solid #ccc; padding: 5px;}\n"
+    << "  label {margin-right: 10px; color: gray;}\n"
+    << "  button {padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 10px;}\n"
+    << "  </style>\n"
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/fact\">\n"
     << "    <label for=\"number\">Number</label>\n"
