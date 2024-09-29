@@ -176,64 +176,6 @@ void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
 }
 
-// TODO(you): Move the following methods to your HttpConnectionHandler
-
-bool HttpServer::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
-  // Print IP and port from client
-
-  const NetworkAddress& address = httpRequest.getNetworkAddress();
-  Log::append(Log::INFO, "connection",
-    std::string("connection established with client ") + address.getIP()
-    + " port " + std::to_string(address.getPort()));
-
-  // Print HTTP request
-  Log::append(Log::INFO, "request", httpRequest.getMethod()
-    + ' ' + httpRequest.getURI()
-    + ' ' + httpRequest.getHttpVersion());
-
-  return this->route(httpRequest, httpResponse);
-}
-
-bool HttpServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
-  // Traverse the chain of applications
-  for (size_t index = 0; index < this->applications.size(); ++index) {
-    HttpApp* application = this->applications[index];
-    if (application->handleHttpRequest(httpRequest, httpResponse)) {
-      return true;
-    }
-  }
-
-  // If no application handled the request, send a 404 response
-  return this->serveNotFound(httpRequest, httpResponse);
-}
-
-
-bool HttpServer::serveNotFound(HttpRequest& httpRequest
-  , HttpResponse& httpResponse) {
-  (void)httpRequest;
-
-  // Set HTTP response metadata (headers)
-  httpResponse.setStatusCode(404);
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  std::string title = "Not found";
-  httpResponse.body() << "<!DOCTYPE html>\n"
-    << "<html lang=\"en\">\n"
-    << "  <meta charset=\"ascii\"/>\n"
-    << "  <title>" << title << "</title>\n"
-    << "  <style>body {font-family: monospace} h1 {color: red}</style>\n"
-    << "  <h1>" << title << "</h1>\n"
-    << "  <p>The requested resource was not found on this server.</p>\n"
-    << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
-    << "</html>\n";
-
-  // Send the response to the client (user agent)
-  return httpResponse.send();
-}
-
 void HttpServer::handleSignal(int signal) {
   Log::append(Log::INFO, "signal", "Signal " +
       std::to_string(signal) + " received");
