@@ -57,6 +57,18 @@ The comands that you need for the test are:
 * $ bin/webserv 8080 30 70
 * $ httperf --server 10.137.1.117 --port 8080 --num-conns 200 --rate 50 --num-call 3 --uri /fact?number=123 --timeout 1
 
+Explain arguments
+* --server 10.137.1.117: It is the IP address of the computer
+* --port 8080: It is the port od the computer
+* --num-conns 200: the connections to be made
+* --rate 50: The connectios per second
+* --num-call 3: How many calls per connection
+* --uri /fact?number=123: The URL
+* --timeout 1: The time that the program wait per the other connections
+
 On the github page you will see how to install and read the data that this tool gives when using these commands
+
+Expected response (Data may vary)
+<img src="./design/img/tests.png">
 
 ***
