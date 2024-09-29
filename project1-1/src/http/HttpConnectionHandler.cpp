@@ -1,10 +1,13 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+
 #include "HttpConnectionHandler.hpp"
 #include "Socket.hpp"
 #include "Log.hpp"
-#include "NetworkAddress.hpp" // Include the header for NetworkAddress
+#include "NetworkAddress.hpp"  // Include the header for NetworkAddress
 
-HttpConnectionHandler::HttpConnectionHandler(std::vector<HttpApp*> applications, const Socket& stopCondition)
-    : applications(applications) {
+HttpConnectionHandler::HttpConnectionHandler
+    (std::vector<HttpApp*> applications) {
+    this->applications = applications;
 }
 
 void HttpConnectionHandler::consume(Socket socket) {
@@ -12,7 +15,7 @@ void HttpConnectionHandler::consume(Socket socket) {
     return;
 }
 
-int HttpConnectionHandler::run () {
+int HttpConnectionHandler::run() {
     this->consumeForever();
     return 0;
 }
@@ -63,7 +66,8 @@ bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
 }
 
 
-bool HttpConnectionHandler::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+bool HttpConnectionHandler::route(HttpRequest& httpRequest,
+    HttpResponse& httpResponse) {
   // Traverse the chain of applications
   for (size_t index = 0; index < this->applications.size(); ++index) {
     // If this application handles the request

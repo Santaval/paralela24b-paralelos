@@ -1,3 +1,8 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+
+#include <vector>
+#include <string>
+
 #include "Consumer.hpp"
 #include "Socket.hpp"
 #include "HttpApp.hpp"
@@ -8,15 +13,14 @@
 #define HTTPCONNECTIONHANDLER_H
 
 class HttpConnectionHandler : public Consumer<Socket> {
-
     DISABLE_COPY(HttpConnectionHandler);
 
-    protected:
+ protected:
       std::vector<HttpApp*> applications;
 
-    public:
+ public:
       /// Constructor
-      explicit HttpConnectionHandler(std::vector<HttpApp*> applications, const Socket& stopCondition = Socket());
+      explicit HttpConnectionHandler(std::vector<HttpApp*> applications);
       int run() override;
       /// Override this method to process any data extracted from the queue
       void consume(Socket data) override;
@@ -24,8 +28,6 @@ class HttpConnectionHandler : public Consumer<Socket> {
       bool handleHttpRequest(HttpRequest& httpRequest,
       HttpResponse& httpResponse);
       bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
-
-  
 };
 
-#endif
+#endif  // _HTTP_HTTPCONNECTIONHANDLER_HPP_
