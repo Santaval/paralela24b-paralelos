@@ -24,7 +24,7 @@ class FactCal {
 
   /**
  * @brief Method that is responsible for calculating the factorial
- * @param Number Input extracted from the URL
+ * @param number Input extracted from the URL
  */
   void Calculator_Factorial(int64_t number);
 
@@ -35,7 +35,7 @@ class FactCal {
 
   /**
   * @brief Formatting method for displaying the result
-  * @param Factor Vector whit all resulting numbers from Factorial 
+  * @param factors Vector whit all resulting numbers from Factorial 
   */
   void Format_numbers(std::vector<std::string> factors);
 };

@@ -12,22 +12,44 @@
 #ifndef HTTPCONNECTIONHANDLER_H
 #define HTTPCONNECTIONHANDLER_H
 
+/**
+@brief class Threads that handle the request of the users.
+*/
 class HttpConnectionHandler : public Consumer<Socket> {
+    /// Desactivar copias de la clase
     DISABLE_COPY(HttpConnectionHandler);
 
  protected:
+      /// Matrix whit applications
       std::vector<HttpApp*> applications;
 
  public:
       /// Constructor
       explicit HttpConnectionHandler(std::vector<HttpApp*> applications);
       int run() override;
-      /// Override this method to process any data extracted from the queue
+      /// Consume
+      /// Get requests from the stack
+      /// @param data Queue whit requests
       void consume(Socket data) override;
+      /// @brief handle Client Connection.
+      /// Create the new http whit the request
+      /// @param client Specific request from user
       void handleClientConnection(Socket& client);
+      /// @brief handle Http Request.
+      /// Show IP and Request and retunr rute
+      /// @param httpRequest Request from user
+      /// @param httpResponse Response from Web
       bool handleHttpRequest(HttpRequest& httpRequest,
       HttpResponse& httpResponse);
+      /// @brief route.
+      /// Give the route from the applications
+      /// @param httpRequest Request from user
+      /// @param httpResponse Response from Web
       bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
+      /// @brief serveNotFound.
+      /// Show page if there isn't an applications
+      /// @param httpRequest Request from user
+      /// @param httpResponse Response from Web
       bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
