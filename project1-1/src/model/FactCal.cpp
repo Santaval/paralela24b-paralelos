@@ -8,6 +8,10 @@ FactCal::FactCal() {
 FactCal::~FactCal() {
 }
 
+std::string FactCal::get_Factorial() {
+  return this->Factorial;
+}
+
 void FactCal::Calculator_Factorial(int64_t number) {
   int64_t first = number;
   std::vector<std::string> factors;
@@ -26,10 +30,6 @@ void FactCal::Calculator_Factorial(int64_t number) {
     }
     FactCal::Format_numbers(factors);
   }
-}
-
-std::string FactCal::get_Factorial() {
-  return this->Factorial;
 }
 
 void FactCal::Format_numbers(std::vector<std::string> factors) {
