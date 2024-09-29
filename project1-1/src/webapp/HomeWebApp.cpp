@@ -59,6 +59,15 @@ bool HomeWebApp::serveHomepage(HttpRequest& httpRequest
     << "  </form>\n"
     << "</html>\n";
 
+    std::string title2 = "Golbach";
+  httpResponse.body() << "  <h1>" << title2 << "</h1>\n"
+    << "  <form method=\"get\" action=\"/golbach\">\n"
+    << "    <label for=\"number\">Number</label>\n"
+    << "    <input type=\"text\" name=\"number\" required/>\n"
+    << "    <button type=\"submit\">Calculate</button>\n"
+    << "  </form>\n";
+
+
   // Send the response to the client (user agent)
   return httpResponse.send();
 }

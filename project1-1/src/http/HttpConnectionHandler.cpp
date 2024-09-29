@@ -46,6 +46,7 @@ void HttpConnectionHandler::handleClientConnection(Socket& client) {
       client.close();
       break;
     }
+    break;
   }
 }
 
