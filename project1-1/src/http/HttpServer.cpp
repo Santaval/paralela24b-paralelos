@@ -55,14 +55,11 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
       // Start socket queue
-      this->socketsQueue = new Queue<Socket>();
-
-
+      this->createSocketsQueue();
       // Create connection handlers
       this->createConnectionHandlers();
 
       this->initConnectionHandler();
-
 
       // Start all web applications
       this->startApps();
@@ -105,6 +102,8 @@ int HttpServer::run(int argc, char* argv[]) {
 
   // Stop the log service
   Log::getInstance().stop();
+
+  this->~HttpServer();
   return EXIT_SUCCESS;
 }
 
@@ -161,6 +160,10 @@ void HttpServer::createConnectionHandlers() {
     handler->setConsumingQueue(this->socketsQueue);
     this->connectionHandlers.push_back(handler);
   }
+}
+
+void HttpServer::createSocketsQueue() {
+  this->socketsQueue = new Queue<Socket>();
 }
 
 void HttpServer::initConnectionHandler() {
