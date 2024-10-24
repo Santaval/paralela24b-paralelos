@@ -105,6 +105,8 @@ int HttpServer::run(int argc, char* argv[]) {
 
   // Stop the log service
   Log::getInstance().stop();
+
+  this->~HttpServer();
   return EXIT_SUCCESS;
 }
 

@@ -93,10 +93,6 @@ class HttpServer : public TcpServer {
  public:
   // Método estático para obtener la única instancia del servidor
   static HttpServer* getInstance();
-  /// Constructor
-  HttpServer();
-  /// Destructor`
-  ~HttpServer();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
   /// Start the web server for listening client connections and HTTP requests
@@ -111,6 +107,12 @@ class HttpServer : public TcpServer {
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
+
+  private:
+  /// Constructor is private to avoid multiple instances
+  HttpServer();
+  /// Destructor
+  ~HttpServer();
 
  protected:
   /// Analyze the command line arguments
