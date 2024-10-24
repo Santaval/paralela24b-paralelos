@@ -126,6 +126,8 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// Create the connection handler threads
   void createConnectionHandlers();
+  /// Create sockets queue
+  void createSocketsQueue();
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
