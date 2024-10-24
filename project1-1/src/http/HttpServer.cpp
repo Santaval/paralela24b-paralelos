@@ -82,7 +82,9 @@ int HttpServer::run(int argc, char* argv[]) {
       // catch below. Then, the main thread can continue stopping apps,
       /// finishing the server and any further cleaning it requires.
       this->acceptAllConnections();
-    } 
+    } else {
+      return EXIT_FAILURE;
+    }
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
   }
