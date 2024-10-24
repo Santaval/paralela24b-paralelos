@@ -147,6 +147,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     this->connectionHandlersCount = std::stoi(argv[2]);
   }
 
+  if (argc >= 4) {
+    this->queueCapacity = std::stoi(argv[3]);
+  }
+
   return true;
 }
 
