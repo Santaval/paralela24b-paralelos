@@ -168,10 +168,6 @@ void HttpServer::createConnectionHandlers() {
 
 void HttpServer::createSocketsQueue() {
   this->socketsQueue = new Queue<Socket>(this->queueCapacity);
-
-  // log the queue capacity
-  Log::append(Log::INFO, "webserver", "Queue capacity: " +
-    std::to_string(this->queueCapacity));
 }
 
 void HttpServer::initConnectionHandler() {
