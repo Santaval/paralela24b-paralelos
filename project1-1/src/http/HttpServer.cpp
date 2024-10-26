@@ -39,6 +39,12 @@ HttpServer::HttpServer() {
 }
 
 HttpServer::~HttpServer() {
+  // Delete all connection handlers
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    delete this->connectionHandlers.at(index);
+  }
+  // Delete the sockets queue
+  delete this->socketsQueue;
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -51,7 +57,6 @@ void HttpServer::chainWebApp(HttpApp* application) {
 }
 
 int HttpServer::run(int argc, char* argv[]) {
-  bool stopApps = false;
   try {
     if (this->analyzeArguments(argc, argv)) {
       // Start the log service
@@ -65,7 +70,7 @@ int HttpServer::run(int argc, char* argv[]) {
 
       // Start all web applications
       this->startApps();
-      stopApps = true;
+      this->appsStarted = true;
 
       // Start waiting for connections
       // TODO(you): Log the main thread id
@@ -89,25 +94,6 @@ int HttpServer::run(int argc, char* argv[]) {
     std::cerr << error.what() << std::endl;
   }
 
-  // Enqueue a stop condition for each connection handler
-  for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    this->socketsQueue->enqueue(Socket());
-  }
-
-  // If applications were started
-  if (stopApps) {
-    this->stopApps();
-  }
-
-  this->joinThreads();
-
-  // destroy the queue
-  delete this->socketsQueue;
-
-  // Stop the log service
-  Log::getInstance().stop();
-
-  this->~HttpServer();
   return EXIT_SUCCESS;
 }
 
@@ -124,12 +110,32 @@ void HttpServer::stopApps() {
   }
 }
 
+void HttpServer::stopConnectionHandlers() {
+  // Enqueue a stop condition for each connection handler
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->socketsQueue->enqueue(Socket());
+  }
+}
+
 void HttpServer::stop() {
   // Stop listening for incoming client connection requests. When stopListing()
   // method is called -maybe by a secondary thread-, the web server -running
   // by the main thread- will stop executing the acceptAllConnections() method.
-  this->stopListening();
-  throw std::runtime_error("Stop server in progress...");
+  this->stopConnectionHandlers();
+
+  // If applications were started
+  if (this->appsStarted) {
+    // Stop all web applications
+    this->stopApps();
+  }
+
+  //  join threads
+  this->joinThreads();
+
+  // Stop the log service
+  Log::getInstance().stop();
+
+  this->~HttpServer();
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {
@@ -190,6 +196,7 @@ void HttpServer::handleClientConnection(Socket& client) {
 void HttpServer::handleSignal(int signal) {
   Log::append(Log::INFO, "signal", "Signal " +
       std::to_string(signal) + " received");
-    HttpServer::getInstance()->stop();
+    HttpServer::getInstance()->stopListening();
+    throw std::runtime_error("Stop server in progress...");
 }
 
