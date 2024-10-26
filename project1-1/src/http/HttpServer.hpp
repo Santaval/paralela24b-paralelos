@@ -88,6 +88,9 @@ class HttpServer : public TcpServer {
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
 
+  /// indicate if apps were started
+  bool appsStarted = false;
+
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
@@ -128,6 +131,8 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// Create the connection handler threads
   void createConnectionHandlers();
+  /// stop connection handlers
+  void stopConnectionHandlers();
   /// Create sockets queue
   void createSocketsQueue();
 
