@@ -69,6 +69,8 @@ class HttpServer : public TcpServer {
   struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  /// Queue capacity for queues capacity
+  int queueCapacity = SEM_VALUE_MAX;
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
   /// If an application detects the request is for it, the application will
@@ -126,6 +128,8 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// Create the connection handler threads
   void createConnectionHandlers();
+  /// Create sockets queue
+  void createSocketsQueue();
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;

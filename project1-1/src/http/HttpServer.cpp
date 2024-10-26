@@ -20,7 +20,9 @@ const char* const usage =
   "\n"
   "  port        Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
-  "  handlers     Number of connection handler theads\n";
+  "  handlers     Number of connection handler theads\n"
+  "  queue       Queue capacity\n"
+  ;
 
 // Inicializa el puntero de la instancia como nullptr
 HttpServer* HttpServer::instance = nullptr;
@@ -55,14 +57,11 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
       // Start socket queue
-      this->socketsQueue = new Queue<Socket>();
-
-
+      this->createSocketsQueue();
       // Create connection handlers
       this->createConnectionHandlers();
 
       this->initConnectionHandler();
-
 
       // Start all web applications
       this->startApps();
@@ -83,6 +82,8 @@ int HttpServer::run(int argc, char* argv[]) {
       // catch below. Then, the main thread can continue stopping apps,
       /// finishing the server and any further cleaning it requires.
       this->acceptAllConnections();
+    } else {
+      return EXIT_FAILURE;
     }
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
@@ -149,6 +150,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     this->connectionHandlersCount = std::stoi(argv[2]);
   }
 
+  if (argc >= 4) {
+    this->queueCapacity = std::stoi(argv[3]);
+  }
+
   return true;
 }
 
@@ -159,6 +164,10 @@ void HttpServer::createConnectionHandlers() {
     handler->setConsumingQueue(this->socketsQueue);
     this->connectionHandlers.push_back(handler);
   }
+}
+
+void HttpServer::createSocketsQueue() {
+  this->socketsQueue = new Queue<Socket>(this->queueCapacity);
 }
 
 void HttpServer::initConnectionHandler() {
