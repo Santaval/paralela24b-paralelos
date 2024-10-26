@@ -1,6 +1,6 @@
 #include "HttpFactPendingRequest.hpp"
 
-std::string HttpPendingRequest::buildResponse() {
+std::string HttpFactPendingRequest::buildResponse() {
     std::string response = "The factorial of ";
     response += std::to_string(numbers[0]);
     response += " is ";
