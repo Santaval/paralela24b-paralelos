@@ -79,9 +79,7 @@ class HttpPendingRequest {
          * 
          * @param result The result to push.
          */
-        void pushNUmber(int number) {
-            numbers.push_back(number);
-        }
+        void pushNUmber(int number);
 
         /**
          * @brief Pushes a result to the results vector in the specified index.
@@ -90,7 +88,5 @@ class HttpPendingRequest {
          * @param result The result to push.
          */
 
-        void pushResult(int index, int result) {
-            results[index].push_back(result);
-        }
+        void pushResult(int index, int result);
 };
