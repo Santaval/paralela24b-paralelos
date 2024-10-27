@@ -65,9 +65,10 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       }
 
       this->produce(pendingRequest);
-    
+      return true;
     }
   }
+  return false;
 }
 
 
