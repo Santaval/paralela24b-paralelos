@@ -93,4 +93,25 @@ class HttpPendingRequest {
          */
 
         void pushResult(int index, int result);
+
+        /// getter for the results vector
+        std::vector<std::vector<int>> getResults() {
+            return results;
+        }
+
+        /// getter for the numbers vector
+        std::vector<int> getNumbers() {
+            return numbers;
+        }
+
+        /// getter for the processedCount
+        int getProcessedCount() {
+            return processedCount;
+        }
+
+        /// getter for the response object
+        HttpResponse getResponse() {
+            return response;
+        }
+        
 };
