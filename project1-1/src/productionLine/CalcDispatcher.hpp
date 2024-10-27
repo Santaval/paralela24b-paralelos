@@ -10,7 +10,7 @@
 /**
  * @brief A Dispatcher class example
  */
-class CalcDispatcher : public Consumer<HttpPendingRequest*>, Producer<Calculator*> {
+class CalcDispatcher : public Consumer<HttpPendingRequest*>, public Producer<Calculator*> {
   DISABLE_COPY(CalcDispatcher);
 
  protected:

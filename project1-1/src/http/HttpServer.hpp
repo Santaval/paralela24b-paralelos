@@ -11,6 +11,7 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "../productionLine/CalcDispatcher.hpp"
+#include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
 
 #define DEFAULT_PORT "8080"
@@ -84,6 +85,9 @@ class HttpServer : public TcpServer {
   // Queue is bounded
   Queue<Socket>* socketsQueue;
 
+  /// Pending calcs queue
+  Queue<Calculator*>* pendingCalcsQueue;
+
   // Pending request queue
 
   // Connection handler threads
@@ -141,13 +145,16 @@ class HttpServer : public TcpServer {
   /// stop connection handlers
   void stopConnectionHandlers();
   /// Create sockets queue
-  void createSocketsQueue();
+  void createQueues();
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
 
   // Init connection handlers
   void initConnectionHandler();
+
+  // Start production line
+  void startProductionLine();
 
   // wait for connection handlers
   void joinThreads();

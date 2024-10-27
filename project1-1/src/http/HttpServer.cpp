@@ -45,6 +45,8 @@ HttpServer::~HttpServer() {
   }
   // Delete the sockets queue
   delete this->socketsQueue;
+  // Delete the pending calcs queue
+  delete this->pendingCalcsQueue;
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -62,16 +64,12 @@ int HttpServer::run(int argc, char* argv[]) {
     if (this->analyzeArguments(argc, argv)) {
       // Start the log service
       Log::getInstance().start();
-      // Start socket queue
-      this->createSocketsQueue();
+      this->createQueues();
       // Create connection handlers
       this->createConnectionHandlers();
 
-      this->initConnectionHandler();
-
-      // Start all web applications
-      this->startApps();
-      this->appsStarted = true;
+      
+      this->startProductionLine();
 
       // Start waiting for connections
       // TODO(you): Log the main thread id
@@ -175,8 +173,19 @@ void HttpServer::createConnectionHandlers() {
   }
 }
 
-void HttpServer::createSocketsQueue() {
+void HttpServer::createQueues() {
   this->socketsQueue = new Queue<Socket>(this->queueCapacity);
+  this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+}
+
+void HttpServer::startProductionLine() {
+    // connect calcDispatcher whit the pendingCalcsQueue
+    this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
+
+    this->initConnectionHandler();
+    // Start all web applications
+    this->startApps();
+    this->appsStarted = true;
 }
 
 void HttpServer::initConnectionHandler() {
