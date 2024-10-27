@@ -17,12 +17,17 @@ I our case we need modify the code to convert it from serial implementation to a
 ## Architecture
 The server is built with a modular architecture, where different components handle specific tasks:
 - **Connection Pool**: Manages threads that handle incoming client requests.
-- **Request Queue**: Stores incoming connection requests, which are processed by the thread pool.
-- **HttpConnectionHandler**: Processes each client’s HTTP request and generates the appropriate response.
+- **Request Queue**: Stack in which the different requests arrive
+- HandleConnection: It is responsible for differentiating the different connections and putting them in the pending request stack
+- Pending Request Queue: The requests arrive divided by their number, for their respective processes
+- Calculators team: It is responsible for processing the numbers, saving the result and then putting it in the pile to pack them
+- Processed cal Queue: Queue in which the results arrive to wait to be sent to the user
+- Packer: It is responsible for verifying if all the results requested by the user are there, in order to send the complete response
+- Dispacher: Create and deliver complete solutions to users
 
 The following diagram illustrates the server's architecture:
 
-![Architecture Diagram](img/diagram.svg)
+![Architecture Diagram](img/diagram2.svg)
 
 ## Server Workflow
 1. **Listening for Connections**: The server listens on a specified port for incoming HTTP requests.
@@ -40,19 +45,21 @@ GET /fact?number=<'number'>
 
 
 ### Goldbach Sums
-- **Endpoint**: `/goldbach`
+- **Endpoint**: `/golbach`
 - **Function**: Finds pairs of prime numbers that sum up to a specified even number.
 - **Request Format**: 
 GET /goldbach?number=<'number'>
 
 
 ## Concurrency Details
-The server uses a **producer-consumer model**:
-- **Producer**: Accepts incoming connections and enqueues them.
-- **Consumer**: A pool of threads that dequeues and processes each request. Each thread runs an instance of `HttpConnectionHandler`, which processes the request and sends the response.
+The server uses an **extended producer-consumer model**:
 
-This concurrent model allows the server to handle multiple client connections efficiently, balancing load across threads.
+- **Producers**: There are multiple producers that accept incoming connections and place them into different work queues. Each queue can be intended for specific types of requests or priority levels, allowing for better organization and handling of incoming tasks.
+    
+- **Consumers**: A group of consumer threads, organized into several thread pools, dequeue and process each request. Each thread runs focused on your own task, this ensures that many parts of the project can be executed at the same time
+    
 
+This concurrent model allows the server to handle multiple client connections efficiently, distributing the load across threads and queues in a balanced manner. The implementation of multiple queues and specialized consumers ensures that requests are processed in an orderly and prioritized manner, improving the system's responsiveness and scalability.
 ## Installation and Setup
 
 ### Prerequisites
