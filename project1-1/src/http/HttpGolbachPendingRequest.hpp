@@ -25,5 +25,5 @@ class HttpGolbachPendingRequest : public HttpPendingRequest {
      * 
      * @return A string representing the built response.
      */
-    std::stringstream buildResponse() override;
+    void sendResponse() override;
 };

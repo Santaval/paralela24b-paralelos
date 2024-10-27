@@ -78,7 +78,7 @@ class HttpPendingRequest {
          * 
          * @return A string representing the built response.
          */
-        virtual std::stringstream buildResponse() = 0;
+        virtual void sendResponse() = 0;
 
         /**
          * @brief Pushes a number to the numbers vector.
