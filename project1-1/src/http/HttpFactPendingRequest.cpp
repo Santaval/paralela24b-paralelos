@@ -44,8 +44,8 @@ void HttpFactPendingRequest::sendResponse()
                               << "  <hr><p><a href=\"/\">Back</a></p>\n"
                               << "</html>\n";
 
-        // Enviar la respuesta
-        this->response.send();
     }
+    // Enviar la respuesta
+    this->response.send();
 }
 
