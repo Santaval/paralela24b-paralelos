@@ -10,10 +10,11 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "../productionLine/CalcDispatcher.hpp"
+// #include "../productionLine/CalcDispatcher.hpp"
 #include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
 #include "../productionLine/CalculatorWorker.hpp"
+#include "../productionLine/Packer.hpp"
 
 
 #define DEFAULT_PORT "8080"
@@ -103,9 +104,13 @@ class HttpServer : public TcpServer {
   std::vector<CalculatorWorker*> calcWorkers;
 
 
-  // CalcDispatcher
-  // It is a pointer to a CalcDispatcher
-  CalcDispatcher* calcDispatcher;
+  // // CalcDispatcher
+  // // It is a pointer to a CalcDispatcher
+  // CalcDispatcher* calcDispatcher;
+
+  /// Packer 
+  // It is a pointer to a packer thread
+  Packer* packer;
 
   /// indicate if apps were started
   bool appsStarted = false;

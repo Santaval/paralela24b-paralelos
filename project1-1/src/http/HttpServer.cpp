@@ -59,7 +59,7 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::chainWebApp(HttpApp* application) {
   assert(application);
   this->applications.push_back(application);
-  application->setProducingQueue(this->calcDispatcher->getConsumingQueue());
+  application->setProducingQueue(this->pendingCalcsQueue);
 }
 
 int HttpServer::run(int argc, char* argv[]) {
@@ -191,12 +191,16 @@ void HttpServer::createQueues() {
 }
 
 void HttpServer::startProductionLine() {
-    // connect calcDispatcher whit the pendingCalcsQueue
-    this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
+
+    // create packer
+    this->packer = new Packer();
+
+    // // connect calcDispatcher whit the pendingCalcsQueue
+    // this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 
     this->initConnectionHandler();
     this->initCalcWorkers();
-    this->calcDispatcher->startThread();
+    // this->calcDispatcher->startThread();
     // Start all web applications
     this->startApps();
     this->appsStarted = true;
@@ -220,7 +224,7 @@ void HttpServer::joinThreads() {
   for (int index = 0; index < this->calcWorkersCount; ++index) {
     this->calcWorkers.at(index)->waitToFinish();
   }
-  calcDispatcher->waitToFinish();
+  // calcDispatcher->waitToFinish();
 }
 
 
