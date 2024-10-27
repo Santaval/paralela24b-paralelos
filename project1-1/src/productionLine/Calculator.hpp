@@ -1,6 +1,9 @@
-#pragma once 
-#include "../http/HttpPendingRequest.hpp"
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+#pragma once
+
 #include <vector>
+
+#include "../http/HttpPendingRequest.hpp"
 
 
 class Calculator {

@@ -1,3 +1,6 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+#pragma once
+
 #include "FactCalculator.hpp"
 
 std::vector<int64_t> FactCalculator::calculate(int number) {

@@ -41,7 +41,7 @@
 class HttpPendingRequest {
     protected:
         /// results (vector of vector of int)
-        std::vector<std::vector<int>> results;
+        std::vector<std::vector<int64_t>> results;
         /// request numbers
         std::vector<int> numbers;
         /// processed numbers counter
@@ -66,7 +66,6 @@ class HttpPendingRequest {
             processedCount(0),
             response(response) {
         }
-        
         /// destructor
         ~HttpPendingRequest() {
         }
@@ -92,10 +91,10 @@ class HttpPendingRequest {
          * @param result The result to push.
          */
 
-        void pushResult(int index, std::vector<int> result);
+        void pushResult(int index, std::vector<int64_t> result);
 
         /// getter for the results vector
-        std::vector<std::vector<int>> getResults() {
+        std::vector<std::vector<int64_t>> getResults() {
             return results;
         }
 
@@ -118,5 +117,4 @@ class HttpPendingRequest {
         void increaseProcessedCount() {
             processedCount++;
         }
-
 };
