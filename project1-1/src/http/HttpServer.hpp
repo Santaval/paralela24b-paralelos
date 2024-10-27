@@ -69,6 +69,8 @@ class HttpServer : public TcpServer {
   struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  /// Queue capacity for queues capacity
+  int queueCapacity = SEM_VALUE_MAX;
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
   /// If an application detects the request is for it, the application will
@@ -86,6 +88,9 @@ class HttpServer : public TcpServer {
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
 
+  /// indicate if apps were started
+  bool appsStarted = false;
+
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
@@ -93,10 +98,6 @@ class HttpServer : public TcpServer {
  public:
   // Método estático para obtener la única instancia del servidor
   static HttpServer* getInstance();
-  /// Constructor
-  HttpServer();
-  /// Destructor`
-  ~HttpServer();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
   /// Start the web server for listening client connections and HTTP requests
@@ -112,6 +113,12 @@ class HttpServer : public TcpServer {
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
 
+  private:
+  /// Constructor is private to avoid multiple instances
+  HttpServer();
+  /// Destructor
+  ~HttpServer();
+
  protected:
   /// Analyze the command line arguments
   /// @return true if program can continue execution, false otherwise
@@ -124,6 +131,10 @@ class HttpServer : public TcpServer {
   void stopApps();
   /// Create the connection handler threads
   void createConnectionHandlers();
+  /// stop connection handlers
+  void stopConnectionHandlers();
+  /// Create sockets queue
+  void createSocketsQueue();
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;

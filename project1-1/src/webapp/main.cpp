@@ -16,7 +16,7 @@
 int main(int argc, char* argv[]) {
   signal(SIGINT, HttpServer::handleSignal);
   // Create the web server
-  HttpServer httpServer;
+  HttpServer* httpServer = HttpServer::getInstance();
   // Create home web application
   HomeWebApp homeWebApp;
   // Create a factorization web application, and other apps if you want
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
   httpServer.chainWebApp(&homeWebApp);
   httpServer.chainWebApp(&goldWebApp);
   // Run the web server
-  return httpServer.run(argc, argv);
+  return httpServer->run(argc, argv);
 }
 
 #endif  // WEBSERVER
