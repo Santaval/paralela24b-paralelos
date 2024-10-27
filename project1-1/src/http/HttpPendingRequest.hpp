@@ -114,4 +114,9 @@ class HttpPendingRequest {
             return response;
         }
 
+        /// increases the processedCount by 1
+        void increaseProcessedCount() {
+            processedCount++;
+        }
+
 };
