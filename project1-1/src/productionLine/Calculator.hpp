@@ -2,17 +2,19 @@
 #include "../http/HttpPendingRequest.hpp"
 
 class Calculator {
-    protected:
+ protected:
         // Number to calculate
         int64_t calcIndex;
         // Pending request to calculate
         HttpPendingRequest* pendingRequest;
-    public:
+
+ public:
         // default constructor
         Calculator() {}
 
         // Constructor
-        Calculator(int64_t calcIndex, HttpPendingRequest* pendingRequest) : calcIndex(calcIndex), pendingRequest(pendingRequest) {}
+        Calculator(int64_t calcIndex, HttpPendingRequest* pendingRequest)
+            : calcIndex(calcIndex), pendingRequest(pendingRequest) {}
         // Destructor
         virtual ~Calculator() {}
 
@@ -23,11 +25,9 @@ class Calculator {
         int64_t getCalcIndex() const {
             return calcIndex;
         }
-        
         /// Get pendingRequest
         HttpPendingRequest* getPendingRequest() const {
             return pendingRequest;
         }
-        
 };
 
