@@ -12,6 +12,7 @@ class Packer : public Assembler<Calculator*, HttpPendingRequest*> {
     , Queue<HttpPendingRequest*>* httpPendingRequestQueue = nullptr
     , Calculator* stopCondition = nullptr)
     : Assembler<Calculator*, HttpPendingRequest*>(calculatorQueue, httpPendingRequestQueue, stopCondition) {
+    this->createOwnQueue();
   }
 
   virtual ~Packer() {
