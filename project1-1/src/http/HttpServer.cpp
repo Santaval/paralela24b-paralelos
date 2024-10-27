@@ -50,6 +50,11 @@ HttpServer::~HttpServer() {
   delete this->socketsQueue;
   // Delete the pending calcs queue
   delete this->pendingCalcsQueue;
+  // Delete the packer
+  delete this->packer;
+  // Delete the response dispatcher
+  delete this->responseDispatcher;
+
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -189,8 +194,12 @@ void HttpServer::createQueues() {
 }
 
 void HttpServer::startProductionLine() {
+    // create response dispatcher
+    this->responseDispatcher = new HttpResponseDispatcher();
     // create packer
       this->packer = new Packer();
+      this->packer->setProducingQueue(this->responseDispatcher->getConsumingQueue());
+
       this->createQueues();
       // Create connection handlers
       this->createConnectionHandlers();

@@ -15,6 +15,7 @@
 #include "Queue.hpp"
 #include "../productionLine/CalculatorWorker.hpp"
 #include "../productionLine/Packer.hpp"
+#include "HttpResponseDispatcher.hpp"
 
 
 #define DEFAULT_PORT "8080"
@@ -111,6 +112,10 @@ class HttpServer : public TcpServer {
   /// Packer 
   // It is a pointer to a packer thread
   Packer* packer;
+
+  /// Response dispatcher
+  // It is a pointer to a response dispatcher
+  HttpResponseDispatcher* responseDispatcher;
 
   /// indicate if apps were started
   bool appsStarted = false;

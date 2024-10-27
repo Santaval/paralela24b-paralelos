@@ -6,6 +6,7 @@ void Packer::consume(Calculator* calculator) {
 
   if (pendingRequest->getProcessedCount() == pendingRequest->getNumbers().size()) {
     this->produce(pendingRequest);
+
   } else {
     delete calculator;
   }
