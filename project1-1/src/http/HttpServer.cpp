@@ -217,6 +217,10 @@ void HttpServer::joinThreads() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->waitToFinish();
   }
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    this->calcWorkers.at(index)->waitToFinish();
+  }
+  calcDispatcher->waitToFinish();
 }
 
 
