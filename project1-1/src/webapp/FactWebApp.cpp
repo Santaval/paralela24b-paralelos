@@ -61,7 +61,8 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       std::vector<std::string> numbers = Util::split(number, ",");
       HttpFactPendingRequest* pendingRequest = new HttpFactPendingRequest(number.size(), httpResponse);
       // Construccion Respuesta
-      for (ino64_t i = 0; i <= numbers.size()-1; i++) {
+      // log numbers size
+      for (ino64_t i = 0; i < numbers.size() ; i++) {
       Calculator* calculator = new FactCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(std::stoll(numbers[i]));
         this->produce(calculator);

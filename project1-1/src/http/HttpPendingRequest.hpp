@@ -66,6 +66,8 @@ class HttpPendingRequest {
             numbers(count),
             processedCount(0),
             response(response) {
+                this->results.clear();
+                this->numbers.clear();
         }
         /// destructor
         ~HttpPendingRequest() {

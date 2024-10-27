@@ -15,7 +15,7 @@
 #include "GoldWebApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "GoldCal.hpp"
+#include "../productionLine/GoldCalculator.hpp"
 #include "HttpGolbachPendingRequest.hpp"
 
 GoldWebApp::GoldWebApp() {
@@ -60,9 +60,10 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
       HttpGolbachPendingRequest* pendingRequest =
           new HttpGolbachPendingRequest(number.size(), httpResponse);
       for (ino64_t i = 0; i <= numbers.size()-1; i++) {
-        //GoldCal* calculator = new GoldCal(i, pendingRequest);
+        GoldCalculator* calculator = new GoldCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(std::stoll(numbers[i]));
-      return true;
+        this->produce(calculator);
+        return true;
       }
     }
   }
