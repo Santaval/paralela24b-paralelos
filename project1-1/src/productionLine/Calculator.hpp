@@ -18,5 +18,16 @@ class Calculator {
 
         // Calculate the number
         virtual std::vector<int> calculate() = 0;
+
+        /// Get calcIndex
+        int64_t getCalcIndex() const {
+            return calcIndex;
+        }
+        
+        /// Get pendingRequest
+        HttpPendingRequest* getPendingRequest() const {
+            return pendingRequest;
+        }
+        
 };
 
