@@ -1,6 +1,7 @@
 // Copyright 2024 Isaias Alfaro Ugalde
 
 #include "FactCal.hpp"
+#include "Log.hpp"
 
 FactCal::FactCal() {
 }
@@ -12,6 +13,7 @@ FactCal::~FactCal() {
 std::vector<int64_t> FactCal::Calculator_Factorial(int64_t number) {
   int64_t first = number;
   std::vector<int64_t> factors;
+  factors.clear();
   if (number < 2) {
     factors.push_back(0);
     return factors;

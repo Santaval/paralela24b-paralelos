@@ -2,6 +2,7 @@
 
 void Packer::consume(Calculator* calculator) {
   HttpPendingRequest* pendingRequest = calculator->getPendingRequest();
+
   pendingRequest->increaseProcessedCount();
 
   if (pendingRequest->getProcessedCount() == pendingRequest->getNumbers().size()) {
