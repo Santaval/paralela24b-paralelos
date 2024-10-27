@@ -23,7 +23,7 @@ FactWebApp::~FactWebApp() {
 }
 
 int FactWebApp::run() {
-
+  return 0;
 }
 
 void FactWebApp::start() {
