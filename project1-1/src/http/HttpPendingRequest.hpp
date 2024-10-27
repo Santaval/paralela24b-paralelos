@@ -52,7 +52,8 @@ class HttpPendingRequest {
 
  public:
         /// default constructor
-        HttpPendingRequest(HttpResponse response) : response(response) {
+        explicit HttpPendingRequest(HttpResponse response)
+                : response(response) {
         }
 
         /**

@@ -1,3 +1,4 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
 #pragma once
 
 #include "../prodcons/Consumer.hpp"
@@ -6,7 +7,8 @@
 
 class HttpResponseDispatcher : public Consumer<HttpPendingRequest*> {
  public:
-    explicit HttpResponseDispatcher(Queue<HttpPendingRequest*>* httpPendingRequestQueue = nullptr)
+    explicit HttpResponseDispatcher(Queue<HttpPendingRequest*>* 
+            httpPendingRequestQueue = nullptr)
         : Consumer<HttpPendingRequest*>(httpPendingRequestQueue) {
             this->createOwnQueue();
     }
@@ -15,7 +17,7 @@ class HttpResponseDispatcher : public Consumer<HttpPendingRequest*> {
  protected:
         /// @brief Consume a HttpPendingRequest
         /// @param HttpPendingRequest
-        virtual void consume(HttpPendingRequest* httpPendingRequest) override;
+        void consume(HttpPendingRequest* httpPendingRequest) override;
         /// @brief Override of run method from Thread
-        virtual int run() override;
+        int run() override;
 };

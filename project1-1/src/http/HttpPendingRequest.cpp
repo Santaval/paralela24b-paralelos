@@ -9,5 +9,4 @@ void HttpPendingRequest::pushNUmber(int number) {
 
 void HttpPendingRequest::pushResult(int index, std::vector<int64_t> result) {
     results.push_back(result);
-
 }
