@@ -5,7 +5,7 @@
 
 #include "common.hpp"
 #include "Producer.hpp"
-#include "../http/HttpPendingRequest.hpp"
+#include "../productionLine/Calculator.hpp"
 
 class HttpRequest;
 class HttpResponse;
@@ -14,7 +14,7 @@ class HttpResponse;
 @brief Base class for all web applications that can be registered with the
 web server.
 */
-class HttpApp : public Producer<HttpPendingRequest*> {
+class HttpApp : public Producer<Calculator*> {
   /// Web application objects are usually complex. This base class does not
   /// require child classes to allow copying
   DISABLE_COPY(HttpApp);

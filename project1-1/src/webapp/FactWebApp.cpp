@@ -15,6 +15,7 @@
 #include "HttpResponse.hpp"
 #include "FactCal.hpp"
 #include "HttpFactPendingRequest.hpp"
+#include "../productionLine/FactCalculator.hpp"
 
 FactWebApp::FactWebApp() {
 }
@@ -61,10 +62,11 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       HttpFactPendingRequest* pendingRequest = new HttpFactPendingRequest(number.size(), httpResponse);
       // Construccion Respuesta
       for (ino64_t i = 0; i <= numbers.size()-1; i++) {
+      Calculator* calculator = new FactCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(std::stoll(numbers[i]));
+        this->produce(calculator);
       }
 
-      this->produce(pendingRequest);
       return true;
     }
   }
