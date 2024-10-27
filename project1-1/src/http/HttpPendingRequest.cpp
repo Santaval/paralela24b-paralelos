@@ -1,3 +1,4 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
 
 #include "HttpPendingRequest.hpp"
 #include "Log.hpp"
