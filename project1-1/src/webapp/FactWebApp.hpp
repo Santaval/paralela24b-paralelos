@@ -5,6 +5,7 @@
 
 #include "HttpApp.hpp"
 #include "../prodcons/Producer.hpp"
+#include "../http/HttpPendingRequest.hpp"
 
 /**
 @brief A web application that calculates prime factors
@@ -28,6 +29,8 @@ class FactWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   void stop() override;
+  /// run 
+  int run() override;
 
 };
 
