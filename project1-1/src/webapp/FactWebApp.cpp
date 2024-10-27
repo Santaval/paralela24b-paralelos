@@ -59,7 +59,8 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       }
       // URI only with numbers
       std::vector<std::string> numbers = Util::split(number, ",");
-      HttpFactPendingRequest* pendingRequest = new HttpFactPendingRequest(number.size(), httpResponse);
+      HttpFactPendingRequest* pendingRequest =
+          new HttpFactPendingRequest(number.size(), httpResponse);
       // Construccion Respuesta
       // log numbers size
       for (ino64_t i = 0; i < numbers.size() ; i++) {
@@ -137,7 +138,8 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
 //       << "<html lang=\"en\">\n"
 //       << "  <meta charset=\"ascii\"/>\n"
 //       << "  <title>" << title << "</title>\n"
-//       << "  <style>body {font-family: monospace} .err {color: red} </style>\n"
+//       << "  <style>body {font-family: monospace}
+//            .err {color: red} </style>\n"
 //       << "  <h1 class=\"err\">" << title << "</h1>\n"
 //       << "  <p>Invalid request for factorization</p>\n"
 //       << "  <hr><p><a href=\"/\">Back</a></p>\n"

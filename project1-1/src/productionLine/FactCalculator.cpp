@@ -5,6 +5,6 @@
 
 std::vector<int64_t> FactCalculator::calculate(int number) {
     FactCal Calculator;
-    std::vector<int64_t> result= Calculator.Calculator_Factorial(number);
+    std::vector<int64_t> result = Calculator.Calculator_Factorial(number);
     return result;
 }

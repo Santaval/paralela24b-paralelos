@@ -1,3 +1,4 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
 #pragma once
 
 #include "../prodcons/Assembler.hpp"
@@ -11,7 +12,8 @@ class Packer : public Assembler<Calculator*, HttpPendingRequest*> {
   explicit Packer(Queue<Calculator*>* calculatorQueue = nullptr
     , Queue<HttpPendingRequest*>* httpPendingRequestQueue = nullptr
     , Calculator* stopCondition = nullptr)
-    : Assembler<Calculator*, HttpPendingRequest*>(calculatorQueue, httpPendingRequestQueue, stopCondition) {
+    : Assembler<Calculator*, HttpPendingRequest*>
+        (calculatorQueue, httpPendingRequestQueue, stopCondition) {
     this->createOwnQueue();
   }
 
@@ -20,9 +22,9 @@ class Packer : public Assembler<Calculator*, HttpPendingRequest*> {
 
  protected:
     /// @brief Consume a Calculator and produce a HttpPendingRequest
-    /// @param Calculator 
-    virtual void consume(Calculator* Calculator) override;
+    /// @param Calculator
+    void consume(Calculator* Calculator) override;
 
     /// @brief Override of run method from Thread
-    virtual int run() override;
-};  
+    int run() override;
+};

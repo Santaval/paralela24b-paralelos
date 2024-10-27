@@ -1,3 +1,6 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+#pragma once
+
 #include "Packer.hpp"
 
 void Packer::consume(Calculator* calculator) {
@@ -5,7 +8,8 @@ void Packer::consume(Calculator* calculator) {
 
   pendingRequest->increaseProcessedCount();
 
-  if (pendingRequest->getProcessedCount() == pendingRequest->getNumbers().size()) {
+  if (pendingRequest->getProcessedCount()
+      == pendingRequest->getNumbers().size()) {
     this->produce(pendingRequest);
   }
   delete calculator;
