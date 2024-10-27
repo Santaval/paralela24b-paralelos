@@ -29,9 +29,8 @@ class FactWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   void stop() override;
-  /// run 
+  /// run
   int run() override;
-
 };
 
 #endif  // FACTWEBAPP_HPP

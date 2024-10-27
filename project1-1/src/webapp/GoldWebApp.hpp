@@ -4,11 +4,13 @@
 #define _GOLDWEBAPPL_HPP_
 
 #include "HttpApp.hpp"
+#include "../prodcons/Producer.hpp"
+#include "../http/HttpPendingRequest.hpp"
 
 /**
 @brief A web application that calculates Goldbach
 */
-class GoldWebApp : public HttpApp {
+class GoldWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
   /// Objects of this class cannot be copied
   DISABLE_COPY(GoldWebApp);
 
@@ -19,6 +21,8 @@ class GoldWebApp : public HttpApp {
   ~GoldWebApp();
   /// Called by the web server when the web server is started
   void start() override;
+  /// run
+  int run() override;
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it

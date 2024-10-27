@@ -16,12 +16,16 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "GoldCal.hpp"
-#include "Log.hpp"
+#include "HttpGolbachPendingRequest.hpp"
 
 GoldWebApp::GoldWebApp() {
 }
 
 GoldWebApp::~GoldWebApp() {
+}
+
+int GoldWebApp::run() {
+  return 0;
 }
 
 void GoldWebApp::start() {
@@ -36,15 +40,37 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // If the request starts with "golbach/" is for this web app
   if (httpRequest.getURI().rfind("/golbach", 0) == 0) {
-    return this->serveGoldbach(httpRequest, httpResponse);
+    // Set HTTP response metadata (headers)
+    httpResponse.setHeader("Server", "AttoServer v1.0");
+    httpResponse.setHeader("Content-type", "text/html; charset=ascii");
+    std::smatch matches;
+    std::regex inQuery("^/golbach(/|\\?number=)([\\d%2C,-]+)$");
+    if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
+      assert(matches.length() >= 3);
+      std::string number = matches[2];
+      // Replace all % with ,
+      std::replace(number.begin(), number.end(), '%', ',');
+      // Eliminate al 2C
+      size_t position = 0;
+      while ((position = number.find("2C", position)) != std::string::npos) {
+        number.replace(position, 2, "");
+      }
+      // URI only with numbers
+      std::vector<std::string> numbers = Util::split(number, ",");
+      HttpGolbachPendingRequest* pendingRequest =
+          new HttpGolbachPendingRequest(number.size(), httpResponse);
+      for (ino64_t i = 0; i <= numbers.size()-1; i++) {
+        pendingRequest->pushNUmber(std::stoll(numbers[i]));
+      return true;
+      }
+    }
   }
-
   // Unrecognized request
   return false;
 }
 
 
-bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
+/*bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
 
@@ -52,10 +78,7 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // If a number was asked in the form "/golbach/1223"
-  // or "/golbach?number=1223"
-  // TODO(you): Modularize this method
-  GoldCal Calculator;
+
   std::smatch matches;
   std::regex inQuery("^/golbach(/|\\?number=)([\\d%2C,-]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
@@ -121,4 +144,4 @@ bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
 
   // Send the response to the client (user agent)
   return httpResponse.send();
-}
+}*/
