@@ -1,3 +1,4 @@
+// Copyright 2024 Aaron Santana, Isaias Alfaro
 #pragma once
 
 #include <vector>
@@ -39,7 +40,7 @@
  * @return A string representing the built response.
  */
 class HttpPendingRequest {
-    protected:
+ protected:
         /// results (vector of vector of int)
         std::vector<std::vector<int64_t>> results;
         /// request numbers
@@ -49,7 +50,7 @@ class HttpPendingRequest {
         /// response object
         HttpResponse response;
 
-    public:
+ public:
         /// default constructor
         HttpPendingRequest(HttpResponse response) : response(response) {
         }
@@ -75,7 +76,7 @@ class HttpPendingRequest {
          * 
          * @return A string representing the built response.
          */
-        virtual std::string buildResponse() = 0;
+        virtual std::stringstream buildResponse() = 0;
 
         /**
          * @brief Pushes a number to the numbers vector.

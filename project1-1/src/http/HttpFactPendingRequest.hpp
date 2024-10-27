@@ -1,9 +1,13 @@
-#pragma once 
+// Copyright 2024 Aaron Santana, Isaias Alfaro
+#pragma once
+
+#include <vector>
+#include <string>
 
 #include "HttpPendingRequest.hpp"
 
 class HttpFactPendingRequest : public HttpPendingRequest {
-    public:
+ public:
         /**
          * @brief Constructs a new HttpFactPendingRequest object.
          * 
@@ -23,5 +27,5 @@ class HttpFactPendingRequest : public HttpPendingRequest {
          * 
          * @return A string representing the built response.
          */
-        std::string buildResponse() override;
+        std::stringstream buildResponse() override;
 };
