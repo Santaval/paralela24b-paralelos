@@ -59,12 +59,12 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
       std::vector<std::string> numbers = Util::split(number, ",");
       HttpGolbachPendingRequest* pendingRequest =
           new HttpGolbachPendingRequest(number.size(), httpResponse);
-      for (ino64_t i = 0; i <= numbers.size()-1; i++) {
+      for (ino64_t i = 0; i < numbers.size(); i++) {
         GoldCalculator* calculator = new GoldCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(std::stoll(numbers[i]));
         this->produce(calculator);
-        return true;
       }
+      return true;
     }
   }
   // Unrecognized request
