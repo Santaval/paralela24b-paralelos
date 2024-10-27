@@ -1,5 +1,6 @@
 #pragma once 
 #include "../http/HttpPendingRequest.hpp"
+#include <vector>
 
 class Calculator {
  protected:

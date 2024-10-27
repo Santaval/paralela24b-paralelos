@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Calculator.hpp"
+#include <vector>
 
 class FactCalculator : public Calculator {
  public:

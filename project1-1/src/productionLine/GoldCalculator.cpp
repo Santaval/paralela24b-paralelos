@@ -1,7 +1,7 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
-#pragma once
+#include "GoldCalculator.hpp"
 
-std::vector<int> FactCalculator::calculate(int number) {
+std::vector<int> GoldCalculator::calculate(int number) {
   std::vector<int> factors;
   for (int i = 1; i <= number; i++) {
     if (number % i == 0) {
