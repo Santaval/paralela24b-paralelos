@@ -1,7 +1,11 @@
 #pragma once
 
-#include "Calculator.hpp"
 #include <vector>
+
+#include "Calculator.hpp"
+#include "../model/FactCal.hpp"
+
+
 
 class FactCalculator : public Calculator {
  public:
@@ -10,6 +14,6 @@ class FactCalculator : public Calculator {
             Calculator(calcIndex, pendingRequest) {}
     ~FactCalculator() {}
 
-    std::vector<int> calculate(int number) override;
+    std::vector<int64_t> calculate(int number) override;
 };
 

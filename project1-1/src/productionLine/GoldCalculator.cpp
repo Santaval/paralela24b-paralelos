@@ -1,12 +1,7 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
 #include "GoldCalculator.hpp"
 
-std::vector<int> GoldCalculator::calculate(int number) {
-  std::vector<int> factors;
-  for (int i = 1; i <= number; i++) {
-    if (number % i == 0) {
-      factors.push_back(i);
-    }
-  }
-  return factors;
+std::vector<int64_t> GoldCalculator::calculate(int number) {
+  GoldCal Calculator;
+  return (Calculator.Calc(number));
 }
