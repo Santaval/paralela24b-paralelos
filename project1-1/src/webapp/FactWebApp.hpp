@@ -5,6 +5,7 @@
 
 #include "HttpApp.hpp"
 
+
 /**
 @brief A web application that calculates prime factors
 */
@@ -27,12 +28,8 @@ class FactWebApp : public HttpApp {
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   void stop() override;
-
- protected:
-  /// Handle a HTTP request that starts with "/fact"
-  /// @return true if the factorization was handled, false if it must be
-  /// handled by another application
-  bool serveFactorization(HttpRequest& httpRequest, HttpResponse& httpResponse);
+  /// run
+  int run() override;
 };
 
 #endif  // FACTWEBAPP_HPP

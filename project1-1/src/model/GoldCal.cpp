@@ -6,45 +6,48 @@ GoldCal::GoldCal() {
 }
 GoldCal::~GoldCal() {
 }
-std::vector <int64_t> GoldCal::get_result() {
-  return this->result;
-}
-void GoldCal::Calc(int64_t number) {
-  this->result.clear();
+
+std::vector <int64_t> GoldCal::Calc(int64_t number) {
+  std::vector <int64_t> result;
   this->exist.clear();
   if ((number%2) == 0 && number > 2) {
-    Calc_Goldbach(number);
+    return (Calc_Goldbach(number));
   } else if (number > 8) {
-    Calc_Goldbach_Weak(number);
+    return (Calc_Goldbach_Weak(number));
   } else {
-    this->result.push_back(0);
-    this->result.push_back(0);
+    result.push_back(0);
+    result.push_back(0);
   }
+  return result;
 }
-void GoldCal::Calc_Goldbach(int64_t number) {
+std::vector <int64_t> GoldCal::Calc_Goldbach(int64_t number) {
+  std::vector <int64_t> result;
   for (int64_t n1 = 2; n1 <= number / 2; ++n1) {
     int64_t n2 = number - n1;
-    if ((Prime(n1) && Prime(n2)) && IsUnique(n1)) {
-      this->result.push_back(n1);
-      this->result.push_back(n2);
+    if ((Prime(n1) && Prime(n2)) && IsUnique(n1, result)) {
+      result.push_back(n1);
+      result.push_back(n2);
     }
   }
+  return result;
 }
-void GoldCal::Calc_Goldbach_Weak(int64_t number) {
+std::vector <int64_t> GoldCal::Calc_Goldbach_Weak(int64_t number) {
+  std::vector <int64_t> result;
   for (int64_t n1 = 2; n1 <= number; ++n1) {
     if (Prime(n1)) {
       for (int64_t n2 = 2; n2 <= number; ++n2) {
         if (Prime(n2)) {
           int64_t n3 = number - n1 - n2;
-          if ((n3 > 1 && Prime(n3)) && IsUnique(n1)) {
-            this->result.push_back(n1);
-            this->result.push_back(n2);
-            this->result.push_back(n3);
+          if ((n3 > 1 && Prime(n3)) && IsUnique(n1, result)) {
+            result.push_back(n1);
+            result.push_back(n2);
+            result.push_back(n3);
           }
         }
       }
     }
   }
+  return result;
 }
 bool GoldCal::Prime(int64_t number) {
   if (number <= 1) {
@@ -57,8 +60,8 @@ bool GoldCal::Prime(int64_t number) {
   }
   return true;
 }
-bool GoldCal::IsUnique(int64_t number) {
-  for (size_t i = 0; i < this->result.size(); i += 2) {
+bool GoldCal::IsUnique(int64_t number, std::vector <int64_t> result) {
+  for (size_t i = 0; i < result.size(); i += 2) {
     if (result[i] == number) {
       return false;
     }

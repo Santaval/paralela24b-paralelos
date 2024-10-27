@@ -43,8 +43,18 @@ HttpServer::~HttpServer() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     delete this->connectionHandlers.at(index);
   }
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    delete this->calcWorkers.at(index);
+  }
   // Delete the sockets queue
   delete this->socketsQueue;
+  // Delete the pending calcs queue
+  delete this->pendingCalcsQueue;
+  // Delete the packer
+  delete this->packer;
+  // Delete the response dispatcher
+  delete this->responseDispatcher;
+
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -54,6 +64,7 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::chainWebApp(HttpApp* application) {
   assert(application);
   this->applications.push_back(application);
+  application->setProducingQueue(this->pendingCalcsQueue);
 }
 
 int HttpServer::run(int argc, char* argv[]) {
@@ -61,16 +72,8 @@ int HttpServer::run(int argc, char* argv[]) {
     if (this->analyzeArguments(argc, argv)) {
       // Start the log service
       Log::getInstance().start();
-      // Start socket queue
-      this->createSocketsQueue();
-      // Create connection handlers
-      this->createConnectionHandlers();
 
-      this->initConnectionHandler();
-
-      // Start all web applications
-      this->startApps();
-      this->appsStarted = true;
+      this->startProductionLine();
 
       // Start waiting for connections
       // TODO(you): Log the main thread id
@@ -93,7 +96,6 @@ int HttpServer::run(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
   }
-  
   this->stop();
   return EXIT_SUCCESS;
 }
@@ -101,6 +103,7 @@ int HttpServer::run(int argc, char* argv[]) {
 void HttpServer::startApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->start();
+    this->applications[index]->setProducingQueue(this->pendingCalcsQueue);
   }
 }
 
@@ -174,13 +177,59 @@ void HttpServer::createConnectionHandlers() {
   }
 }
 
-void HttpServer::createSocketsQueue() {
+void HttpServer::createCalcWorkers() {
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    CalculatorWorker* worker = new CalculatorWorker();
+    worker->setConsumingQueue(this->pendingCalcsQueue);
+    worker->setProducingQueue(this->packer->getConsumingQueue());
+    this->calcWorkers.push_back(worker);
+  }
+
+}
+
+
+void HttpServer::createQueues() {
   this->socketsQueue = new Queue<Socket>(this->queueCapacity);
+  this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+}
+
+void HttpServer::startProductionLine() {
+    // create response dispatcher
+    this->responseDispatcher = new HttpResponseDispatcher();
+    // create packer
+      this->packer = new Packer();
+      this->packer->setProducingQueue(this->responseDispatcher->getConsumingQueue());
+
+      this->createQueues();
+      // Create connection handlers
+      this->createConnectionHandlers();
+      // Create calc workers
+      this->createCalcWorkers();
+
+
+    // // connect calcDispatcher whit the pendingCalcsQueue
+    // this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
+
+    // set packer consuming queue as producing queue of calcWorkers
+    this->initCalcWorkers();
+
+    this->initConnectionHandler();
+    this->packer->startThread();
+    this->responseDispatcher->startThread();
+    // this->calcDispatcher->startThread();
+    // Start all web applications
+    this->startApps();
+    this->appsStarted = true;
 }
 
 void HttpServer::initConnectionHandler() {
-    for (int index = 0; index < this->connectionHandlersCount; ++index) {
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->startThread();
+  }
+}
+void HttpServer::initCalcWorkers() {
+  for (int index = 0; index < this->calcWorkersCount ; ++index) {
+    this->calcWorkers.at(index)->startThread();
   }
 }
 
@@ -188,6 +237,11 @@ void HttpServer::joinThreads() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->waitToFinish();
   }
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    this->calcWorkers.at(index)->waitToFinish();
+  }
+  // calcDispatcher->waitToFinish();
+  this->packer->waitToFinish();
 }
 
 

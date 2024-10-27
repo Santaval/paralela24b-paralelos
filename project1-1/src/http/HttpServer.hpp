@@ -10,7 +10,13 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+// #include "../productionLine/CalcDispatcher.hpp"
+#include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
+#include "../productionLine/CalculatorWorker.hpp"
+#include "../productionLine/Packer.hpp"
+#include "HttpResponseDispatcher.hpp"
+
 
 #define DEFAULT_PORT "8080"
 
@@ -83,10 +89,33 @@ class HttpServer : public TcpServer {
   // Queue is bounded
   Queue<Socket>* socketsQueue;
 
+  /// Pending calcs queue
+  Queue<Calculator*>* pendingCalcsQueue;
+
+  // Pending request queue
+
   // Connection handler threads
   // It is a vector of threads
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
+
+  // Calculator Workers threads
+  // It is a vector of threads
+  // Each thread will be a Calculator worker
+  std::vector<CalculatorWorker*> calcWorkers;
+
+
+  // // CalcDispatcher
+  // // It is a pointer to a CalcDispatcher
+  // CalcDispatcher* calcDispatcher;
+
+  /// Packer 
+  // It is a pointer to a packer thread
+  Packer* packer;
+
+  /// Response dispatcher
+  // It is a pointer to a response dispatcher
+  HttpResponseDispatcher* responseDispatcher;
 
   /// indicate if apps were started
   bool appsStarted = false;
@@ -94,6 +123,7 @@ class HttpServer : public TcpServer {
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
+  int calcWorkersCount = std::thread::hardware_concurrency();
 
  public:
   // Método estático para obtener la única instancia del servidor
@@ -113,7 +143,7 @@ class HttpServer : public TcpServer {
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
 
-  private:
+ private:
   /// Constructor is private to avoid multiple instances
   HttpServer();
   /// Destructor
@@ -133,14 +163,22 @@ class HttpServer : public TcpServer {
   void createConnectionHandlers();
   /// stop connection handlers
   void stopConnectionHandlers();
+  /// Create the calcWorkers threads
+  void createCalcWorkers();
   /// Create sockets queue
-  void createSocketsQueue();
+  void createQueues();
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
 
   // Init connection handlers
   void initConnectionHandler();
+
+  // Init calc workers
+  void initCalcWorkers();
+
+  // Start production line
+  void startProductionLine();
 
   // wait for connection handlers
   void joinThreads();

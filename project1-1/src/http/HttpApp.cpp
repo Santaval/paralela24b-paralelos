@@ -2,10 +2,12 @@
 
 #include "HttpApp.hpp"
 
+// Create treads apps
 void HttpApp::start() {
-  // Default base class implementation does nothing
+  this->startThread();
 }
 
+// Finish treads apps
 void HttpApp::stop() {
-  // Default base class implementation does nothing
+  this->waitToFinish();
 }

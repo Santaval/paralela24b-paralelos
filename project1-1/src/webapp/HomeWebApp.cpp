@@ -15,6 +15,10 @@ HomeWebApp::HomeWebApp() {
 HomeWebApp::~HomeWebApp() {
 }
 
+int HomeWebApp::run() {
+  return 0;
+}
+
 void HomeWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
 }

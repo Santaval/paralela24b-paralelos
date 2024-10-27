@@ -5,6 +5,7 @@
 
 #include "HttpApp.hpp"
 
+
 /**
 @brief A web application that calculates Goldbach
 */
@@ -19,6 +20,8 @@ class GoldWebApp : public HttpApp {
   ~GoldWebApp();
   /// Called by the web server when the web server is started
   void start() override;
+  /// run
+  int run() override;
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
