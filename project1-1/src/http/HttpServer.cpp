@@ -198,8 +198,14 @@ void HttpServer::startProductionLine() {
     // // connect calcDispatcher whit the pendingCalcsQueue
     // this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 
+    // set packer consuming queue as producing queue of calcWorkers
+    for (int index = 0; index < this->calcWorkersCount; ++index) {
+      this->calcWorkers.at(index)->setProducingQueue(this->packer->getConsumingQueue());
+    }
+
     this->initConnectionHandler();
     this->initCalcWorkers();
+    this->packer->startThread();
     // this->calcDispatcher->startThread();
     // Start all web applications
     this->startApps();
@@ -225,6 +231,7 @@ void HttpServer::joinThreads() {
     this->calcWorkers.at(index)->waitToFinish();
   }
   // calcDispatcher->waitToFinish();
+  this->packer->waitToFinish();
 }
 
 
