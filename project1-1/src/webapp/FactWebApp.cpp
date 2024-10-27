@@ -22,6 +22,10 @@ FactWebApp::FactWebApp() {
 FactWebApp::~FactWebApp() {
 }
 
+int FactWebApp::run() {
+
+}
+
 void FactWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
 }
