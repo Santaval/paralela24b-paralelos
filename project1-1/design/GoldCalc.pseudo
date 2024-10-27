@@ -1,0 +1,65 @@
+CLASE GoldCal
+// Constructor
+CONSTRUCTOR GoldCal()
+FIN CONSTRUCTOR
+
+// Destructor
+DESTRUCTOR ~GoldCal()
+FIN DESTRUCTOR
+
+// Método para obtener el resultado
+FUNCIÓN get_result() RETORNA VECTOR DE ENTEROS
+    RETORNAR this.result
+FIN FUNCIÓN
+
+// Método principal para calcular según la conjetura de Goldbach
+FUNCIÓN Calc(número: ENTERO)
+    SI (número % 2 == 0) Y (número > 2) ENTONCES
+        Calc_Goldbach(número)
+    SINO SI (número >= 9) ENTONCES
+        Calc_Goldbach_Weak(número)
+    FIN SI
+FIN FUNCIÓN
+
+// Cálculo de la conjetura fuerte de Goldbach
+FUNCIÓN Calc_Goldbach(número: ENTERO)
+    PARA n1 DESDE 2 HASTA (número / 2) HACER
+        n2 = número - n1
+        SI (Prime(n1)) Y (Prime(n2)) ENTONCES
+            this.result.AÑADIR(n2)
+            this.result.AÑADIR(n2)
+        FIN SI
+    FIN PARA
+FIN FUNCIÓN
+
+// Cálculo de la conjetura débil de Goldbach
+FUNCIÓN Calc_Goldbach_Weak(número: ENTERO)
+    PARA n1 DESDE 2 HASTA número HACER
+        SI (Prime(n1)) ENTONCES
+            PARA n2 DESDE 2 HASTA número HACER
+                SI (Prime(n2)) ENTONCES
+                    n3 = número - n1 - n2
+                    SI (n3 > 1) Y (Prime(n3)) ENTONCES
+                        this.result.AÑADIR(n1)
+                        this.result.AÑADIR(n2)
+                        this.result.AÑADIR(n3)
+                    FIN SI
+                FIN SI
+            FIN PARA
+        FIN SI
+    FIN PARA
+FIN FUNCIÓN
+
+// Método para verificar si un número es primo
+FUNCIÓN Prime(número: ENTERO) RETORNA BOOLEANO
+    SI (número <= 1) ENTONCES
+        RETORNAR FALSO
+    FIN SI
+    PARA i DESDE 2 HASTA RAÍZ(número) HACER
+        SI (número % i == 0) ENTONCES
+            RETORNAR FALSO
+        FIN SI
+    FIN PARA
+    RETORNAR VERDADERO
+FIN FUNCIÓN
+FIN CLASE
