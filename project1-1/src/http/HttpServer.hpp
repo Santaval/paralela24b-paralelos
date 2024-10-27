@@ -10,6 +10,7 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "../productionLine/CalcDispatcher.hpp"
 #include "Queue.hpp"
 
 #define DEFAULT_PORT "8080"
@@ -89,6 +90,10 @@ class HttpServer : public TcpServer {
   // It is a vector of threads
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
+
+  // CalcDispatcher
+  // It is a pointer to a CalcDispatcher
+  CalcDispatcher* calcDispatcher;
 
   /// indicate if apps were started
   bool appsStarted = false;

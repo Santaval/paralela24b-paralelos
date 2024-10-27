@@ -54,6 +54,7 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::chainWebApp(HttpApp* application) {
   assert(application);
   this->applications.push_back(application);
+  application->setProducingQueue(this->calcDispatcher->getConsumingQueue());
 }
 
 int HttpServer::run(int argc, char* argv[]) {
