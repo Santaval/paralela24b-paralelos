@@ -13,6 +13,8 @@
 #include "../productionLine/CalcDispatcher.hpp"
 #include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
+#include "../productionLine/CalculatorWorker.hpp"
+
 
 #define DEFAULT_PORT "8080"
 
@@ -95,6 +97,12 @@ class HttpServer : public TcpServer {
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
 
+  // Calculator Workers threads
+  // It is a vector of threads
+  // Each thread will be a Calculator worker
+  std::vector<CalculatorWorker*> calcWorkers;
+
+
   // CalcDispatcher
   // It is a pointer to a CalcDispatcher
   CalcDispatcher* calcDispatcher;
@@ -105,6 +113,7 @@ class HttpServer : public TcpServer {
   /// Number of connection handler threads
   // Initially, the server will use the number of cores in the system
   int connectionHandlersCount = std::thread::hardware_concurrency();
+  int calcWorkersCount = std::thread::hardware_concurrency();
 
  public:
   // Método estático para obtener la única instancia del servidor
@@ -124,7 +133,7 @@ class HttpServer : public TcpServer {
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
 
-  private:
+ private:
   /// Constructor is private to avoid multiple instances
   HttpServer();
   /// Destructor
@@ -144,6 +153,8 @@ class HttpServer : public TcpServer {
   void createConnectionHandlers();
   /// stop connection handlers
   void stopConnectionHandlers();
+  /// Create the calcWorkers threads
+  void createCalcWorkers();
   /// Create sockets queue
   void createQueues();
 
@@ -152,6 +163,9 @@ class HttpServer : public TcpServer {
 
   // Init connection handlers
   void initConnectionHandler();
+
+  // Init calc workers
+  void initCalcWorkers();
 
   // Start production line
   void startProductionLine();

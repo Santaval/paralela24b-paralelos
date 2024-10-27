@@ -2,6 +2,11 @@
 
 #include "CalculatorWorker.hpp"
 
+int CalculatorWorker::run() {
+  this->consumeForever();
+  return 0;
+}
+
 void CalculatorWorker::consume(Calculator* Calc) {
   int index = Calc->getCalcIndex();
   int number = Calc->getPendingRequest()->getNumbers()[index];

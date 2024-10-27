@@ -43,6 +43,9 @@ HttpServer::~HttpServer() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     delete this->connectionHandlers.at(index);
   }
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    delete this->calcWorkers.at(index);
+  }
   // Delete the sockets queue
   delete this->socketsQueue;
   // Delete the pending calcs queue
@@ -68,7 +71,7 @@ int HttpServer::run(int argc, char* argv[]) {
       // Create connection handlers
       this->createConnectionHandlers();
 
-      
+
       this->startProductionLine();
 
       // Start waiting for connections
@@ -92,7 +95,6 @@ int HttpServer::run(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
   }
-  
   this->stop();
   return EXIT_SUCCESS;
 }
@@ -173,6 +175,16 @@ void HttpServer::createConnectionHandlers() {
   }
 }
 
+void HttpServer::createCalcWorkers() {
+  this->calcWorkers.reserve(this->calcWorkersCount);
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    CalculatorWorker* worker = new CalculatorWorker();
+    worker->setConsumingQueue(this->pendingCalcsQueue);
+    this->calcWorkers.push_back(worker);
+  }
+}
+
+
 void HttpServer::createQueues() {
   this->socketsQueue = new Queue<Socket>(this->queueCapacity);
   this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
@@ -183,14 +195,20 @@ void HttpServer::startProductionLine() {
     this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 
     this->initConnectionHandler();
+    this->initCalcWorkers();
     // Start all web applications
     this->startApps();
     this->appsStarted = true;
 }
 
 void HttpServer::initConnectionHandler() {
-    for (int index = 0; index < this->connectionHandlersCount; ++index) {
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->connectionHandlers.at(index)->startThread();
+  }
+}
+void HttpServer::initCalcWorkers() {
+  for (int index = 0; index < this->calcWorkersCount ; ++index) {
+    this->calcWorkers.at(index)->startThread();
   }
 }
 

@@ -7,5 +7,6 @@
 
 class CalculatorWorker : public Consumer<Calculator*>,
     public Producer<Calculator*> {
+  int run() override;
   void consume(Calculator*) override;
 };
