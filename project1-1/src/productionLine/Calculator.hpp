@@ -17,7 +17,7 @@ class Calculator {
         virtual ~Calculator() {}
 
         // Calculate the number
-        virtual std::vector<int> calculate() = 0;
+        virtual std::vector<int> calculate(int number) = 0;
 
         /// Get calcIndex
         int64_t getCalcIndex() const {
