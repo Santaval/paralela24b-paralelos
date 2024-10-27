@@ -4,11 +4,12 @@
 #define FACTWEBAPP_HPP
 
 #include "HttpApp.hpp"
+#include "../prodcons/Producer.hpp"
 
 /**
 @brief A web application that calculates prime factors
 */
-class FactWebApp : public HttpApp {
+class FactWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
   /// Objects of this class cannot be copied
   DISABLE_COPY(FactWebApp);
 
@@ -28,11 +29,6 @@ class FactWebApp : public HttpApp {
   /// clean up and finish as well
   void stop() override;
 
- protected:
-  /// Handle a HTTP request that starts with "/fact"
-  /// @return true if the factorization was handled, false if it must be
-  /// handled by another application
-  bool serveFactorization(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
 #endif  // FACTWEBAPP_HPP
