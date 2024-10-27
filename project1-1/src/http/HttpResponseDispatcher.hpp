@@ -7,7 +7,7 @@
 
 class HttpResponseDispatcher : public Consumer<HttpPendingRequest*> {
  public:
-    explicit HttpResponseDispatcher(Queue<HttpPendingRequest*>* 
+    explicit HttpResponseDispatcher(Queue<HttpPendingRequest*>*
             httpPendingRequestQueue = nullptr)
         : Consumer<HttpPendingRequest*>(httpPendingRequestQueue) {
             this->createOwnQueue();
