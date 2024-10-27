@@ -38,7 +38,8 @@ void HttpFactPendingRequest::sendResponse() {
                               << "  <meta charset=\"ascii\"/>\n"
                               << "  <title>Factorization Results</title>\n"
                               << "  <style>body {font-family: monospace}"
-                                 ".err {color: red} span {margin-right: 20px}</style>\n"
+                              <<".err {color: red} span {margin-right:"
+                               << "20px}</style>\n"
                               << body.str()
                               << "  <hr><p><a href=\"/\">Back</a></p>\n"
                               << "</html>\n";
