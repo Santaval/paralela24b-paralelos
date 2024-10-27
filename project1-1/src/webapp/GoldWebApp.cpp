@@ -1,3 +1,5 @@
+// Copyright 2024 Isaias Alfaro Ugalde
+
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
 #include <algorithm>
@@ -10,30 +12,31 @@
 #include <sstream>
 #include <Util.hpp>
 
-#include "FactWebApp.hpp"
+#include "GoldWebApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "FactCal.hpp"
+#include "GoldCal.hpp"
+#include "Log.hpp"
 
-FactWebApp::FactWebApp() {
+GoldWebApp::GoldWebApp() {
 }
 
-FactWebApp::~FactWebApp() {
+GoldWebApp::~GoldWebApp() {
 }
 
-void FactWebApp::start() {
+void GoldWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
 }
 
-void FactWebApp::stop() {
+void GoldWebApp::stop() {
   // TODO(you): Stop producers, consumers, assemblers...
 }
 
-bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
+bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
-  // If the request starts with "fact/" is for this web app
-  if (httpRequest.getURI().rfind("/fact", 0) == 0) {
-    return this->serveFactorization(httpRequest, httpResponse);
+  // If the request starts with "golbach/" is for this web app
+  if (httpRequest.getURI().rfind("/golbach", 0) == 0) {
+    return this->serveGoldbach(httpRequest, httpResponse);
   }
 
   // Unrecognized request
@@ -41,7 +44,7 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
 }
 
 
-bool FactWebApp::serveFactorization(HttpRequest& httpRequest
+bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;
 
@@ -49,12 +52,12 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 
-  // If a number was asked in the form "/fact/1223"
-  // or "/fact?number=1223"
+  // If a number was asked in the form "/golbach/1223"
+  // or "/golbach?number=1223"
   // TODO(you): Modularize this method
-  FactCal Calculator;
+  GoldCal Calculator;
   std::smatch matches;
-  std::regex inQuery("^/fact(/|\\?number=)([\\d%2C,-]+)$");
+  std::regex inQuery("^/golbach(/|\\?number=)([\\d%2C,-]+)$");
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
     std::string number = matches[2];
@@ -65,24 +68,30 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     // Eliminate al 2C
     size_t position = 0;
     while ((position = number.find("2C", position)) != std::string::npos) {
-      number.replace(position, 2, "");
+    number.replace(position, 2, "");
     }
     // URI only with numbers
     std::vector<std::string> numbers = Util::split(number, ",");
     // Construccion Respuesta
     for (ino64_t i = 0; i <= numbers.size()-1; i++) {
-      Calculator.Calculator_Factorial(std::stoll(numbers[i]));
-      std::vector <int64_t> numero = Calculator.get_Factorial();
+      std::vector <int64_t> numero;
+      Calculator.Calc(std::stoll(numbers[i]));
+      numero = Calculator.get_result();
       if (numero[0] == 0) {
         body << "  <h2 class=\"err\">" << numbers[i] << "</h2>\n"
-        << "  <p>" << numbers[i] << ": invalid number</p>\n";
+             << "  <p>" << numbers[i] << ": invalid number</p>\n";
       } else {
-        std::string title = "Prime factorization of " + numbers[i];
+        std::string title = "Goldbach of " + (numbers[i]);
         body << "<h1>" << title << "</h1>\n";
-        for (ino64_t j = 0; j < numero.size(); j+=2) {
-          body << "<span >" << numero[j] << "<sup>"
-          << numero[j+1] << "</sup></span>";
+        // Show the answer
+        for (ino64_t j = 0; j < numero.size(); j++) {
+          body << "<span >" <<numero[j];
+          if (j < numero.size() - 1) {
+            body << " +";
+          }
+          body << "</span>";
         }
+        body << "<br>\n";
       }
     }
     // TODO(you): Factorization must not be done by factorization threads
@@ -105,10 +114,11 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <title>" << title << "</title>\n"
       << "  <style>body {font-family: monospace} .err {color: red} </style>\n"
       << "  <h1 class=\"err\">" << title << "</h1>\n"
-      << "  <p>Invalid request for factorization</p>\n"
+      << "  <p>Invalid request for Goldbach</p>\n"
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
   }
+
   // Send the response to the client (user agent)
   return httpResponse.send();
 }

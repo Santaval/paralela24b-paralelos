@@ -1,7 +1,7 @@
 // Copyright 2024 Isaias Alfaro Ugalde
 
-#ifndef _ROOT_FACTCAL_HPP_
-#define _ROOT_FACTCAL_HPP_
+#ifndef _FACTCAL_HPP_
+#define _FACTCAL_HPP_
 
 #include <iostream>
 #include <string>
@@ -14,7 +14,7 @@
 class FactCal {
  private:
   /// attributes
-  std::string Factorial;
+  std::vector <int64_t> Factorial;
 
  public:
   /// Constructor
@@ -31,13 +31,13 @@ class FactCal {
   /**
  * @brief Method that returnal factorial
  */
-  std::string get_Factorial();
+  std::vector <int64_t> get_Factorial();
 
   /**
   * @brief Formatting method for displaying the result
   * @param factors Vector whit all resulting numbers from Factorial 
   */
-  void Format_numbers(std::vector<std::string> factors);
+  void Format_numbers(std::vector<int64_t> factors);
 };
 
-#endif  // _ROOT_FACTCAL_HPP_
+#endif  // _FACTCAL_HPP_
