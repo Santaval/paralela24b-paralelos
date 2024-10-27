@@ -50,6 +50,10 @@ class HttpPendingRequest {
         HttpResponse response;
 
     public:
+        /// default constructor
+        HttpPendingRequest(HttpResponse response) : response(response) {
+        }
+
         /**
          * @brief Constructs a new HttpPendingRequest object.
          * 

@@ -83,6 +83,8 @@ class HttpServer : public TcpServer {
   // Queue is bounded
   Queue<Socket>* socketsQueue;
 
+  // Pending request queue
+
   // Connection handler threads
   // It is a vector of threads
   // Each thread will be a connection handler
