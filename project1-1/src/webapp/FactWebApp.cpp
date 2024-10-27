@@ -65,7 +65,7 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
     // Eliminate al 2C
     size_t position = 0;
     while ((position = number.find("2C", position)) != std::string::npos) {
-    number.replace(position, 2, "");
+      number.replace(position, 2, "");
     }
     // URI only with numbers
     std::vector<std::string> numbers = Util::split(number, ",");
@@ -83,9 +83,8 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
           body << "<span >" << numero[j] << "<sup>"
           << numero[j+1] << "</sup></span>";
         }
-        }
       }
-
+    }
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response
     httpResponse.body() << "<!DOCTYPE html>\n"
@@ -110,7 +109,6 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
       << "  <hr><p><a href=\"/\">Back</a></p>\n"
       << "</html>\n";
   }
-
   // Send the response to the client (user agent)
   return httpResponse.send();
 }
