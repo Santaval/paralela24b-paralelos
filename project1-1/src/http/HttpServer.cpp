@@ -196,6 +196,7 @@ void HttpServer::startProductionLine() {
 
     this->initConnectionHandler();
     this->initCalcWorkers();
+    this->calcDispatcher->startThread();
     // Start all web applications
     this->startApps();
     this->appsStarted = true;
