@@ -5,21 +5,17 @@
 
 
 class HttpResponseDispatcher : public Consumer<HttpPendingRequest*> {
-
-    public:
+ public:
     explicit HttpResponseDispatcher(Queue<HttpPendingRequest*>* httpPendingRequestQueue = nullptr)
         : Consumer<HttpPendingRequest*>(httpPendingRequestQueue) {
             this->createOwnQueue();
     }
-    
     virtual ~HttpResponseDispatcher() {
     }
-    
-    protected:
+ protected:
         /// @brief Consume a HttpPendingRequest
-        /// @param HttpPendingRequest 
+        /// @param HttpPendingRequest
         virtual void consume(HttpPendingRequest* httpPendingRequest) override;
-    
         /// @brief Override of run method from Thread
         virtual int run() override;
 };

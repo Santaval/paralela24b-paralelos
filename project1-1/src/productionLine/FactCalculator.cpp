@@ -1,5 +1,4 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
-#pragma once
 
 #include "FactCalculator.hpp"
 
