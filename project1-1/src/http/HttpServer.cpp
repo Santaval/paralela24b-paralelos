@@ -93,7 +93,8 @@ int HttpServer::run(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
   }
-
+  
+  this->stop();
   return EXIT_SUCCESS;
 }
 
