@@ -92,7 +92,7 @@ class HttpPendingRequest {
          * @param result The result to push.
          */
 
-        void pushResult(int index, int result);
+        void pushResult(int index, std::vector<int> result);
 
         /// getter for the results vector
         std::vector<std::vector<int>> getResults() {
@@ -113,5 +113,5 @@ class HttpPendingRequest {
         HttpResponse getResponse() {
             return response;
         }
-        
+
 };
