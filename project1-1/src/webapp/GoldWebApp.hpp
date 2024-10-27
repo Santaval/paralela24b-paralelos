@@ -4,13 +4,12 @@
 #define _GOLDWEBAPPL_HPP_
 
 #include "HttpApp.hpp"
-#include "../prodcons/Producer.hpp"
-#include "../http/HttpPendingRequest.hpp"
+
 
 /**
 @brief A web application that calculates Goldbach
 */
-class GoldWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
+class GoldWebApp : public HttpApp {
   /// Objects of this class cannot be copied
   DISABLE_COPY(GoldWebApp);
 

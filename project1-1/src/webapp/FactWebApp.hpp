@@ -4,13 +4,12 @@
 #define FACTWEBAPP_HPP
 
 #include "HttpApp.hpp"
-#include "../prodcons/Producer.hpp"
-#include "../http/HttpPendingRequest.hpp"
+
 
 /**
 @brief A web application that calculates prime factors
 */
-class FactWebApp : public HttpApp, public Producer<HttpPendingRequest*> {
+class FactWebApp : public HttpApp {
   /// Objects of this class cannot be copied
   DISABLE_COPY(FactWebApp);
 
