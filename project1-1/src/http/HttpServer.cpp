@@ -212,10 +212,10 @@ void HttpServer::startProductionLine() {
 
     // set packer consuming queue as producing queue of calcWorkers
     this->initCalcWorkers();
-    Log::append(Log::INFO, "webserver", "Workers and packer started");
 
     this->initConnectionHandler();
     this->packer->startThread();
+    this->responseDispatcher->startThread();
     // this->calcDispatcher->startThread();
     // Start all web applications
     this->startApps();

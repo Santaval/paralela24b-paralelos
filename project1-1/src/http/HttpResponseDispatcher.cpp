@@ -8,6 +8,7 @@ int HttpResponseDispatcher::run() {
 }
 
 void HttpResponseDispatcher::consume(HttpPendingRequest* httpPendingRequest) {
+    Log::append(Log::INFO, "HttpResponseDispatcher", "Processing request");
     std::stringstream html = httpPendingRequest->buildResponse();
     HttpResponse httpResponse = httpPendingRequest->getResponse();
     httpResponse.body() << html.str();
