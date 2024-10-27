@@ -67,10 +67,6 @@ int HttpServer::run(int argc, char* argv[]) {
     if (this->analyzeArguments(argc, argv)) {
       // Start the log service
       Log::getInstance().start();
-      this->createQueues();
-      // Create connection handlers
-      this->createConnectionHandlers();
-
 
       this->startProductionLine();
 
@@ -102,6 +98,7 @@ int HttpServer::run(int argc, char* argv[]) {
 void HttpServer::startApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->start();
+    this->applications[index]->setProducingQueue(this->pendingCalcsQueue);
   }
 }
 
@@ -176,12 +173,13 @@ void HttpServer::createConnectionHandlers() {
 }
 
 void HttpServer::createCalcWorkers() {
-  this->calcWorkers.reserve(this->calcWorkersCount);
   for (int index = 0; index < this->calcWorkersCount; ++index) {
     CalculatorWorker* worker = new CalculatorWorker();
     worker->setConsumingQueue(this->pendingCalcsQueue);
+    worker->setProducingQueue(this->packer->getConsumingQueue());
     this->calcWorkers.push_back(worker);
   }
+
 }
 
 
@@ -191,20 +189,23 @@ void HttpServer::createQueues() {
 }
 
 void HttpServer::startProductionLine() {
-
     // create packer
-    this->packer = new Packer();
+      this->packer = new Packer();
+      this->createQueues();
+      // Create connection handlers
+      this->createConnectionHandlers();
+      // Create calc workers
+      this->createCalcWorkers();
+
 
     // // connect calcDispatcher whit the pendingCalcsQueue
     // this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 
     // set packer consuming queue as producing queue of calcWorkers
-    for (int index = 0; index < this->calcWorkersCount; ++index) {
-      this->calcWorkers.at(index)->setProducingQueue(this->packer->getConsumingQueue());
-    }
+    this->initCalcWorkers();
+    Log::append(Log::INFO, "webserver", "Workers and packer started");
 
     this->initConnectionHandler();
-    this->initCalcWorkers();
     this->packer->startThread();
     // this->calcDispatcher->startThread();
     // Start all web applications
