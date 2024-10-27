@@ -21,8 +21,7 @@ const char* const usage =
   "  port        Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
   "  handlers     Number of connection handler theads\n"
-  "  queue       Queue capacity\n"
-  ;
+  "  queue       Queue capacity\n";
 
 // Inicializa el puntero de la instancia como nullptr
 HttpServer* HttpServer::instance = nullptr;
@@ -54,7 +53,6 @@ HttpServer::~HttpServer() {
   delete this->packer;
   // Delete the response dispatcher
   delete this->responseDispatcher;
-
 }
 
 void HttpServer::listenForever(const char* port) {
@@ -184,7 +182,6 @@ void HttpServer::createCalcWorkers() {
     worker->setProducingQueue(this->packer->getConsumingQueue());
     this->calcWorkers.push_back(worker);
   }
-
 }
 
 
@@ -198,7 +195,8 @@ void HttpServer::startProductionLine() {
     this->responseDispatcher = new HttpResponseDispatcher();
     // create packer
       this->packer = new Packer();
-      this->packer->setProducingQueue(this->responseDispatcher->getConsumingQueue());
+      this->packer->setProducingQueue(this->responseDispatcher->
+          getConsumingQueue());
 
       this->createQueues();
       // Create connection handlers

@@ -109,7 +109,7 @@ class HttpServer : public TcpServer {
   // // It is a pointer to a CalcDispatcher
   // CalcDispatcher* calcDispatcher;
 
-  /// Packer 
+  /// Packer
   // It is a pointer to a packer thread
   Packer* packer;
 

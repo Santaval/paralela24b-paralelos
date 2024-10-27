@@ -12,7 +12,6 @@
  * @brief Class that is responsible for calculating the factorial
  */
 class FactCal {
-
  public:
   /// Constructor
   FactCal();
