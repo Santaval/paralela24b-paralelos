@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <Util.hpp>
 
 #include "FactWebApp.hpp"
 #include "HttpRequest.hpp"
@@ -50,8 +51,6 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
 
   // If a number was asked in the form "/fact/1223"
   // or "/fact?number=1223"
-  // TODO(you): URI can be a multi-value list, e.g: 100,2784,-53,200771728
-  // TODO(you): Use arbitrary precision for numbers larger than int64_t
   // TODO(you): Modularize this method
   FactCal Calculator;
   std::smatch matches;
@@ -59,72 +58,33 @@ bool FactWebApp::serveFactorization(HttpRequest& httpRequest
   if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
     assert(matches.length() >= 3);
     std::string number = matches[2];
-
-    std::vector<int64_t> numbers;
-
-    std::string auxiliar = "";
+    // Response
     std::stringstream body;
-
+    // Replace all % with ,
     std::replace(number.begin(), number.end(), '%', ',');
-
-
+    // Eliminate al 2C
     size_t position = 0;
     while ((position = number.find("2C", position)) != std::string::npos) {
     number.replace(position, 2, "");
     }
-
-    std::stringstream ss(number);
-    while (std::getline(ss, auxiliar, ',')) {
-        numbers.push_back(std::stoi(auxiliar));
-    }
-
+    // URI only with numbers
+    std::vector<std::string> numbers = Util::split(number, ",");
     // Construccion Respuesta
-
     for (ino64_t i = 0; i <= numbers.size()-1; i++) {
-      Calculator.Calculator_Factorial(numbers[i]);
-      if (Calculator.get_Factorial() == "false") {
+      Calculator.Calculator_Factorial(std::stoll(numbers[i]));
+      std::vector <int64_t> numero = Calculator.get_Factorial();
+      if (numero[0] == 0) {
         body << "  <h2 class=\"err\">" << numbers[i] << "</h2>\n"
-             << "  <p>" << numbers[i] << ": invalid number</p>\n";
+        << "  <p>" << numbers[i] << ": invalid number</p>\n";
       } else {
-        std::string title = "Prime factorization of "
-            + std::to_string(numbers[i]);
+        std::string title = "Prime factorization of " + numbers[i];
         body << "<h1>" << title << "</h1>\n";
-        ino64_t startPos = 0;
-        ino64_t spacePos;
-        std::string numero, potency;
-
-        while ((spacePos = Calculator.get_Factorial().
-            find(" ", startPos)) != std::string::npos) {
-            // Extraer el primer número (number)
-            numero = Calculator.get_Factorial().
-                substr(startPos, spacePos - startPos);
-
-            // Actualizar startPos para apuntar a la siguiente posición
-            startPos = spacePos + 1;
-
-            // Encontrar la siguiente posición de espacio para extraer "potency"
-            spacePos = Calculator.get_Factorial().find(" ", startPos);
-
-            // Verificar si se encontró otro espacio (si no, es la última parte)
-            if (spacePos != std::string::npos) {
-                // Extraer la potencia (potency)
-                potency = Calculator.get_Factorial().
-                    substr(startPos, spacePos - startPos);
-
-                // Actualizar startPos nuevamente para continuar
-                startPos = spacePos + 1;
-            } else {
-                // extraer el último valor como "potency"
-                potency = Calculator.get_Factorial().substr(startPos);
-                startPos = Calculator.get_Factorial().length();
-            }
-
-            // Imprimir o procesar la pareja number y potency
-            body << "<span >" << numero << "<sup>"
-                << potency << "</sup></span>";
+        for (ino64_t j = 0; j < numero.size(); j+=2) {
+          body << "<span >" << numero[j] << "<sup>"
+          << numero[j+1] << "</sup></span>";
+        }
         }
       }
-    }
 
     // TODO(you): Factorization must not be done by factorization threads
     // Build the body of the response
