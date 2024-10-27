@@ -165,6 +165,7 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 void HttpServer::createConnectionHandlers() {
+  this->connectionHandlers.reserve(this->connectionHandlersCount);
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     HttpConnectionHandler* handler =
         new HttpConnectionHandler(this->applications);
