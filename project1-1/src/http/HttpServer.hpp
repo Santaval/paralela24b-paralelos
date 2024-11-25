@@ -87,10 +87,10 @@ class HttpServer : public TcpServer {
   // Sockets queue
   // It is a pointer to a vector of sockets
   // Queue is bounded
-  Queue<Socket>* socketsQueue;
+  Queue<Socket>* socketsQueue = nullptr;
 
   /// Pending calcs queue
-  Queue<Calculator*>* pendingCalcsQueue;
+  Queue<Calculator*>* pendingCalcsQueue = nullptr;
 
   // Pending request queue
 
@@ -111,11 +111,11 @@ class HttpServer : public TcpServer {
 
   /// Packer
   // It is a pointer to a packer thread
-  Packer* packer;
+  Packer* packer = nullptr;
 
   /// Response dispatcher
   // It is a pointer to a response dispatcher
-  HttpResponseDispatcher* responseDispatcher;
+  HttpResponseDispatcher* responseDispatcher = nullptr;
 
   /// indicate if apps were started
   bool appsStarted = false;
