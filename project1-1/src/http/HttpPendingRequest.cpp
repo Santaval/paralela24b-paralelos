@@ -8,5 +8,11 @@ void HttpPendingRequest::pushNUmber(int number) {
 }
 
 void HttpPendingRequest::pushResult(int index, std::vector<int64_t> result) {
-    results.push_back(result);
+    if (index >= 0 && index < results.size()) {
+        results[index] = result;  // Asignar en la posición específica
+    } else {
+        // Si el índice es inválido, puedes manejar el error
+        // o simplemente usar push_back para agregar al final.
+        results.push_back(result);
+    }
 }
