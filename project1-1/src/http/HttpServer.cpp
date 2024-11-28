@@ -109,7 +109,8 @@ void HttpServer::startApps() {
 
   for (size_t index = 0; index < this->productionLineApps.size(); ++index) {
     this->productionLineApps[index]->start();
-    this->productionLineApps[index]->setProducingQueue(this->pendingCalcsQueue);
+    this->productionLineApps[index]->setProducingQueue(this->calcDispatcher->
+        getConsumingQueue());
   }
 }
 
@@ -205,6 +206,8 @@ void HttpServer::createQueues() {
 void HttpServer::startProductionLine() {
     // create response dispatcher
     this->responseDispatcher = new HttpResponseDispatcher();
+    this->calcDispatcher = new CalcDispatcher();
+    this->calcDispatcher->createOwnQueue();
     // create packer
       this->packer = new Packer();
       this->packer->setProducingQueue(this->responseDispatcher->
@@ -217,8 +220,8 @@ void HttpServer::startProductionLine() {
       this->createCalcWorkers();
 
 
-    // // connect calcDispatcher whit the pendingCalcsQueue
-    // this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
+    // connect calcDispatcher whit the pendingCalcsQueue
+    this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 
     // set packer consuming queue as producing queue of calcWorkers
     this->initCalcWorkers();
@@ -226,7 +229,7 @@ void HttpServer::startProductionLine() {
     this->initConnectionHandler();
     this->packer->startThread();
     this->responseDispatcher->startThread();
-    // this->calcDispatcher->startThread();
+    this->calcDispatcher->startThread();
     // Start all web applications
     this->startApps();
     this->appsStarted = true;

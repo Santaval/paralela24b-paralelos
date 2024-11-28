@@ -47,12 +47,14 @@ class HttpPendingRequest {
         /// request numbers
         std::vector<int> numbers = std::vector<int>();
         /// processed numbers count
-        int processedCount;
+        int processedCount = 0;
         /// response object
         HttpResponse response;
 
  public:
         /// default constructor
+        HttpPendingRequest() : response(HttpResponse(Socket())) {}
+
         explicit HttpPendingRequest(HttpResponse response)
                 : response(response) {
         }
@@ -81,6 +83,14 @@ class HttpPendingRequest {
          * @return A string representing the built response.
          */
         virtual void sendResponse() = 0;
+
+        /**
+         * @brief Pure virtual function to get the type of the HTTP request.
+         * 
+         * This function must be overridden by any derived class to provide
+         * the specific type of the HTTP request.
+         */
+        virtual std::string getType() = 0;
 
         /**
          * @brief Pushes a number to the numbers vector.

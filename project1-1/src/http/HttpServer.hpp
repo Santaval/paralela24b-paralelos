@@ -10,7 +10,7 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-// #include "../productionLine/CalcDispatcher.hpp"
+#include "../productionLine/CalcDispatcher.hpp"
 #include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
 #include "../productionLine/CalculatorWorker.hpp"
@@ -119,6 +119,10 @@ class HttpServer : public TcpServer {
   /// Response dispatcher
   // It is a pointer to a response dispatcher
   HttpResponseDispatcher* responseDispatcher = nullptr;
+
+  /// Calculators dispatcher
+  // It is a pointer to a calculator dispatcher
+  CalcDispatcher* calcDispatcher = nullptr;
 
   /// indicate if apps were started
   bool appsStarted = false;

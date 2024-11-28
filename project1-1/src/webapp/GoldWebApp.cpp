@@ -36,7 +36,7 @@ void GoldWebApp::start() {
 
 void GoldWebApp::stop() {
   Log::append(Log::INFO, "GoldWebApp", "stop");
-  this->produce(new  GoldCalculator());
+  this->produce(new  HttpGolbachPendingRequest());
 }
 
 bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
@@ -63,9 +63,8 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
       HttpGolbachPendingRequest* pendingRequest =
           new HttpGolbachPendingRequest(number.size(), httpResponse);
       for (ino64_t i = 0; i < numbers.size(); i++) {
-        GoldCalculator* calculator = new GoldCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(i, std::stoll(numbers[i]));
-        this->produce(calculator);
+        this->produce(pendingRequest);
       }
       return true;
     }

@@ -33,7 +33,7 @@ void FactWebApp::start() {
 }
 
 void FactWebApp::stop() {
-  this->produce(new  FactCalculator());
+  this->produce(new  HttpFactPendingRequest());
 }
 
 bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
@@ -65,9 +65,8 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       // Construccion Respuesta
       // log numbers size
       for (ino64_t i = 0; i < numbers.size() ; i++) {
-      Calculator* calculator = new FactCalculator(i, pendingRequest);
         pendingRequest->pushNUmber(i, std::stoll(numbers[i]));
-        this->produce(calculator);
+        this->produce(pendingRequest);
       }
 
       return true;

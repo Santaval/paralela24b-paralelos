@@ -6,6 +6,7 @@
 
 class HttpGolbachPendingRequest : public HttpPendingRequest {
  public:
+    HttpGolbachPendingRequest() {}
     /**
      * @brief Constructs a new HttpGolbachPendingRequest object.
      * 
@@ -19,6 +20,10 @@ class HttpGolbachPendingRequest : public HttpPendingRequest {
      * @brief Destroys the HttpGolbachPendingRequest object.
      */
     ~HttpGolbachPendingRequest() {}
+
+    std::string getType() override {
+        return "goldbach";
+    }
 
     /**
      * @brief Builds the response for the fact request.

@@ -8,6 +8,8 @@
 
 class HttpFactPendingRequest : public HttpPendingRequest {
  public:
+        HttpFactPendingRequest() {}
+
         /**
          * @brief Constructs a new HttpFactPendingRequest object.
          * 
@@ -22,6 +24,10 @@ class HttpFactPendingRequest : public HttpPendingRequest {
          * @brief Destroys the HttpFactPendingRequest object.
          */
         ~HttpFactPendingRequest() {}
+
+        std::string getType() override {
+            return "fact";
+        }
 
         /**
          * @brief Builds the response for the fact request.

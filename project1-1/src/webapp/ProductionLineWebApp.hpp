@@ -2,12 +2,12 @@
 
 #include "Producer.hpp"
 #include "HttpApp.hpp"
-#include "../productionLine/Calculator.hpp"
+#include "HttpPendingRequest.hpp"
 
-class ProductionLineWebApp : public Producer<Calculator*>, public HttpApp {
+class ProductionLineWebApp : public Producer<HttpPendingRequest*>, public HttpApp {
 
     public:
-    ProductionLineWebApp() : Producer<Calculator*>() {
+    ProductionLineWebApp() : Producer<HttpPendingRequest*>() {
     }
 
     ~ProductionLineWebApp() {
