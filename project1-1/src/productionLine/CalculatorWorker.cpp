@@ -5,6 +5,7 @@
 
 int CalculatorWorker::run() {
   this->consumeForever();
+  Log::append(Log::INFO, "CalculatorWorker", "stop");
   return 0;
 }
 

@@ -11,6 +11,13 @@ int CalcDispatcher::run() {
         this->consumeForever();
     }
     Log::append(Log::INFO, "CalcDispatcher", "stop");
+
+    // stop calculator workers
+    int calcWorkersCount = std::thread::hardware_concurrency();
+
+    for (int i = 0; i < calcWorkersCount; i++) {
+        this->produce(nullptr);
+    }
     return 0;
 }
 

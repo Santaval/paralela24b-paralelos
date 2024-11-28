@@ -5,10 +5,10 @@
 
 
 class CalculatorWorker : public Assembler<Calculator*, Calculator*> {
-  public:
+ public:
   CalculatorWorker(Queue<Calculator*>* consumingQueue = nullptr,
       Queue<Calculator*>* producingQueue = nullptr)
-    : Assembler(consumingQueue, producingQueue) {
+    : Assembler(consumingQueue, producingQueue, nullptr) {
   }
 
   int run() override;
