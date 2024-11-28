@@ -7,6 +7,7 @@
 
 #include "Queue.hpp"
 #include "Thread.hpp"
+#include "Log.hpp"
 
 /**
  * @brief A template that generates abstract base classes for Consumers

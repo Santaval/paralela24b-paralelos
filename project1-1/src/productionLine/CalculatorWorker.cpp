@@ -1,6 +1,7 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
 
 #include "CalculatorWorker.hpp"
+#include "Log.hpp"
 
 int CalculatorWorker::run() {
   this->consumeForever();

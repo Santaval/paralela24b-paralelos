@@ -33,7 +33,6 @@ void FactWebApp::start() {
 }
 
 void FactWebApp::stop() {
-  Log::append(Log::INFO, "FactWebApp", "stop");
   this->produce(new  FactCalculator());
 }
 
