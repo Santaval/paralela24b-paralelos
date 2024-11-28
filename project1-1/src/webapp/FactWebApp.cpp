@@ -33,7 +33,7 @@ void FactWebApp::start() {
 }
 
 void FactWebApp::stop() {
-  this->produce(new  HttpFactPendingRequest());
+  this->produce(nullptr);
   Log::append(Log::INFO, "FactWebApp", "stop");
 }
 

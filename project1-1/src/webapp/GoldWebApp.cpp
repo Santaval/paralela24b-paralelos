@@ -36,7 +36,7 @@ void GoldWebApp::start() {
 
 void GoldWebApp::stop() {
   Log::append(Log::INFO, "GoldWebApp", "stop");
-  this->produce(new  HttpGolbachPendingRequest());
+  this->produce(nullptr);
 }
 
 bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,

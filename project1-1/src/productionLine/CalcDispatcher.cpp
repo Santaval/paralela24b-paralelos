@@ -7,7 +7,10 @@
 
 
 int CalcDispatcher::run() {
-    this->consumeForever();
+    for (int i = 0; i < this->webAppsCount; i++) {
+        this->consumeForever();
+    }
+    Log::append(Log::INFO, "CalcDispatcher", "stop");
     return 0;
 }
 

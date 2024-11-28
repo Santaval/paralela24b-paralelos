@@ -202,7 +202,7 @@ void HttpServer::createQueues() {
 void HttpServer::startProductionLine() {
     // create response dispatcher
     this->responseDispatcher = new HttpResponseDispatcher();
-    this->calcDispatcher = new CalcDispatcher();
+    this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
     this->calcDispatcher->createOwnQueue();
     // create packer
       this->packer = new Packer();
