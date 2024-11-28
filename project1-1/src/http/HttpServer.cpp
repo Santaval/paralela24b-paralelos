@@ -119,10 +119,6 @@ void HttpServer::stopApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->stop();
   }
-
-  for (size_t index = 0; index < this->productionLineApps.size(); ++index) {
-    this->productionLineApps[index]->stop();
-  }
 }
 
 void HttpServer::stopConnectionHandlers() {

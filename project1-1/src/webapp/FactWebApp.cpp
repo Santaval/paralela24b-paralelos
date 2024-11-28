@@ -34,6 +34,7 @@ void FactWebApp::start() {
 
 void FactWebApp::stop() {
   this->produce(new  HttpFactPendingRequest());
+  Log::append(Log::INFO, "FactWebApp", "stop");
 }
 
 bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,

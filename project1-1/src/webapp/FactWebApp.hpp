@@ -1,7 +1,6 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
-#ifndef FACTWEBAPP_HPP
-#define FACTWEBAPP_HPP
+#pragma once
 
 #include "HttpApp.hpp"
 #include "ProductionLineWebApp.hpp"
@@ -32,5 +31,3 @@ class FactWebApp : public ProductionLineWebApp {
   /// run
   int run() override;
 };
-
-#endif  // FACTWEBAPP_HPP

@@ -21,12 +21,12 @@ int main(int argc, char* argv[]) {
   HomeWebApp homeWebApp;
   // Create a factorization web application, and other apps if you want
   FactWebApp factWebApp;
-  // GoldWebApp goldWebApp;
+  GoldWebApp goldWebApp;
 
   // Register the web application(s) with the web server
   httpServer->chainProductionLineApp(&factWebApp);
   httpServer->chainWebApp(&homeWebApp);
-  //httpServer->chainProductionLineApp(&goldWebApp);
+  httpServer->chainProductionLineApp(&goldWebApp);
   // Run the web server
   return httpServer->run(argc, argv);
 }
