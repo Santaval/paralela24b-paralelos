@@ -1,15 +1,14 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
-#pragma once
 
 #include "Packer.hpp"
+#include "Log.hpp"
 
 void Packer::consume(Calculator* calculator) {
   HttpPendingRequest* pendingRequest = calculator->getPendingRequest();
 
   pendingRequest->increaseProcessedCount();
-
   if (pendingRequest->getProcessedCount()
-      == pendingRequest->getNumbers().size()) {
+      == pendingRequest->getNumbersCount()) {
     this->produce(pendingRequest);
   }
   delete calculator;

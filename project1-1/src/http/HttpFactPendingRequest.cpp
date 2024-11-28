@@ -5,7 +5,6 @@
 void HttpFactPendingRequest::sendResponse() {
     // Verificar si numbers y getResults() tienen el mismo tamaño
     auto results = this->getResults();
-    auto numbers = this->getNumbers();
 
     if (results.size() != numbers.size()) {
         Log::append(Log::ERROR, "SR", "Mismatch between results and numbers size.");
@@ -26,7 +25,7 @@ void HttpFactPendingRequest::sendResponse() {
          << "  <style>body {font-family: monospace}.err {color: red} span {margin-right: 20px}</style>\n";
 
     // Iterar sobre los resultados
-    for (size_t i = 0; i < numbers.size(); i++) {
+    for (size_t i = 0; i < this->numbers.size(); i++) {
         const std::vector<int64_t>& numero = results[i];
 
         // Verificar si el vector está vacío o si el primer elemento indica un número inválido

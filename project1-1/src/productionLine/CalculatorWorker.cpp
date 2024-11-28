@@ -9,7 +9,7 @@ int CalculatorWorker::run() {
 
 void CalculatorWorker::consume(Calculator* Calc) {
   int index = Calc->getCalcIndex();
-  int number = Calc->getPendingRequest()->getNumbers()[index];
+  int number = Calc->getPendingRequest()->getNumber(index);
   Calc->getPendingRequest()->pushResult(index, Calc->calculate(number));
   this->produce(Calc);
 }

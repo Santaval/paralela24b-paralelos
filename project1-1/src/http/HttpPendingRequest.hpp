@@ -42,10 +42,12 @@
 class HttpPendingRequest {
  protected:
         /// results (vector of vector of int)
-        std::vector<std::vector<int64_t>> results;
+        std::vector<std::vector<int64_t>> results = std::vector<std::vector<int64_t>>();
         /// request numbers
-        std::vector<int> numbers;
-        /// processed numbers counter
+        std::vector<int> numbers = std::vector<int>();
+        /// numbers count
+        int numbersCount = 0;
+        /// processed numbers count
         int processedCount;
         /// response object
         HttpResponse response;
@@ -71,8 +73,7 @@ class HttpPendingRequest {
                 this->numbers.clear();
         }
         /// destructor
-        ~HttpPendingRequest() {
-        }
+        ~HttpPendingRequest() {}
 
         /**
          * @brief Pure virtual function to build the HTML response.
@@ -103,8 +104,13 @@ class HttpPendingRequest {
         }
 
         /// getter for the numbers vector
-        std::vector<int> getNumbers() {
-            return numbers;
+        int getNumber(int index) {
+            return numbers[index];
+        }
+
+        /// getter count of numbers
+        int getNumbersCount() {
+            return numbersCount;
         }
 
         /// getter for the processedCount
