@@ -24,9 +24,9 @@ int main(int argc, char* argv[]) {
   GoldWebApp goldWebApp;
 
   // Register the web application(s) with the web server
-  httpServer->chainWebApp(&factWebApp);
+  httpServer->chainProductionLineApp(&factWebApp);
   httpServer->chainWebApp(&homeWebApp);
-  httpServer->chainWebApp(&goldWebApp);
+  httpServer->chainProductionLineApp(&goldWebApp);
   // Run the web server
   return httpServer->run(argc, argv);
 }

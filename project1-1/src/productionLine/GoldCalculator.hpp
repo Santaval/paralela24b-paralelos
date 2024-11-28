@@ -7,6 +7,8 @@
 
 class GoldCalculator : public Calculator {
  public:
+  GoldCalculator() {}
+
   GoldCalculator(int64_t calcIndex, HttpPendingRequest* pendingRequest) :
       Calculator(calcIndex, pendingRequest) {}
   ~GoldCalculator() {}

@@ -4,10 +4,8 @@
 
 // Create treads apps
 void HttpApp::start() {
-  this->startThread();
 }
 
 // Finish treads apps
 void HttpApp::stop() {
-  this->waitToFinish();
 }

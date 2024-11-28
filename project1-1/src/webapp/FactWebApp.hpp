@@ -4,12 +4,13 @@
 #define FACTWEBAPP_HPP
 
 #include "HttpApp.hpp"
+#include "ProductionLineWebApp.hpp"
 
 
 /**
 @brief A web application that calculates prime factors
 */
-class FactWebApp : public HttpApp {
+class FactWebApp : public ProductionLineWebApp {
   /// Objects of this class cannot be copied
   DISABLE_COPY(FactWebApp);
 

@@ -62,7 +62,11 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::chainWebApp(HttpApp* application) {
   assert(application);
   this->applications.push_back(application);
-  application->setProducingQueue(this->pendingCalcsQueue);
+}
+
+void HttpServer::chainProductionLineApp(ProductionLineWebApp* application) {
+  this->chainWebApp(application);
+  this->productionLineApps.push_back(application);
 }
 
 int HttpServer::run(int argc, char* argv[]) {
@@ -101,7 +105,11 @@ int HttpServer::run(int argc, char* argv[]) {
 void HttpServer::startApps() {
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->start();
-    this->applications[index]->setProducingQueue(this->pendingCalcsQueue);
+  }
+
+  for (size_t index = 0; index < this->productionLineApps.size(); ++index) {
+    this->productionLineApps[index]->start();
+    this->productionLineApps[index]->setProducingQueue(this->pendingCalcsQueue);
   }
 }
 
@@ -109,6 +117,10 @@ void HttpServer::stopApps() {
   // Stop web applications. Give them an opportunity to clean up
   for (size_t index = 0; index < this->applications.size(); ++index) {
     this->applications[index]->stop();
+  }
+
+  for (size_t index = 0; index < this->productionLineApps.size(); ++index) {
+    this->productionLineApps[index]->stop();
   }
 }
 

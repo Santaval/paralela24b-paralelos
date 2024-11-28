@@ -33,7 +33,8 @@ void FactWebApp::start() {
 }
 
 void FactWebApp::stop() {
-  // TODO(you): Stop producers, consumers, assemblers...
+  Log::append(Log::INFO, "FactWebApp", "stop");
+  this->produce(new  FactCalculator());
 }
 
 bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,

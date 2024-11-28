@@ -4,12 +4,13 @@
 #define _GOLDWEBAPPL_HPP_
 
 #include "HttpApp.hpp"
+#include "ProductionLineWebApp.hpp"
 
 
 /**
 @brief A web application that calculates Goldbach
 */
-class GoldWebApp : public HttpApp {
+class GoldWebApp : public ProductionLineWebApp {
   /// Objects of this class cannot be copied
   DISABLE_COPY(GoldWebApp);
 

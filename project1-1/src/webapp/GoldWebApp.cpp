@@ -17,6 +17,8 @@
 #include "HttpResponse.hpp"
 #include "../productionLine/GoldCalculator.hpp"
 #include "HttpGolbachPendingRequest.hpp"
+#include "Log.hpp"
+
 
 GoldWebApp::GoldWebApp() {
 }
@@ -33,7 +35,8 @@ void GoldWebApp::start() {
 }
 
 void GoldWebApp::stop() {
-  // TODO(you): Stop producers, consumers, assemblers...
+  Log::append(Log::INFO, "GoldWebApp", "stop");
+  this->produce(new  GoldCalculator());
 }
 
 bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,

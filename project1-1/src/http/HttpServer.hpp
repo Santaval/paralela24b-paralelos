@@ -16,6 +16,7 @@
 #include "../productionLine/CalculatorWorker.hpp"
 #include "../productionLine/Packer.hpp"
 #include "HttpResponseDispatcher.hpp"
+#include "../webapp/ProductionLineWebApp.hpp"
 
 
 #define DEFAULT_PORT "8080"
@@ -84,6 +85,8 @@ class HttpServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<HttpApp*> applications;
 
+  std::vector<ProductionLineWebApp*> productionLineApps;
+
   // Sockets queue
   // It is a pointer to a vector of sockets
   // Queue is bounded
@@ -130,6 +133,7 @@ class HttpServer : public TcpServer {
   static HttpServer* getInstance();
   /// Registers a web application to the chain
   void chainWebApp(HttpApp* application);
+  void chainProductionLineApp(ProductionLineWebApp* application);
   /// Start the web server for listening client connections and HTTP requests
   int run(int argc, char* argv[]);
   /// Stop the web server. The server may stop not immediately. It will stop

@@ -28,9 +28,6 @@ class HomeWebApp : public HttpApp {
   /// clean up and finish as well
   void stop() override;
 
-  /// run
-  int run() override;
-
  protected:
   bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
