@@ -3,11 +3,10 @@
 #include "HttpPendingRequest.hpp"
 #include "Log.hpp"
 
-void HttpPendingRequest::pushNUmber(int number) {
-    this->numbers.push_back(number);
-    this->numbersCount++;
+void HttpPendingRequest::pushNUmber(int index, int number) {
+    this->numbers[index] = number;
 }
 
 void HttpPendingRequest::pushResult(int index, std::vector<int64_t> result) {
-    results[index] = result;
+    this->results[index] = result; 
 }

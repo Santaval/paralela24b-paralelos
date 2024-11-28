@@ -7,7 +7,9 @@ void Packer::consume(Calculator* calculator) {
   HttpPendingRequest* pendingRequest = calculator->getPendingRequest();
 
   pendingRequest->increaseProcessedCount();
-  if (pendingRequest->getProcessedCount()
+
+
+if (pendingRequest->getProcessedCount()
       == pendingRequest->getNumbersCount()) {
     this->produce(pendingRequest);
   }

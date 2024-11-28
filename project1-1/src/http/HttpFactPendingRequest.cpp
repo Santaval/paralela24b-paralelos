@@ -13,9 +13,6 @@ void HttpFactPendingRequest::sendResponse() {
         return;
     }
 
-    Log::append(Log::INFO, "SR", "Results size: " + std::to_string(results.size()));
-    Log::append(Log::INFO, "SR", "Numbers size: " + std::to_string(numbers.size()));
-
     // Construir encabezado HTML (solo una vez)
     std::stringstream body;
     body << "<!DOCTYPE html>\n"

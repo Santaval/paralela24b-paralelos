@@ -9,6 +9,6 @@ int HttpResponseDispatcher::run() {
 
 void HttpResponseDispatcher::consume(HttpPendingRequest* httpPendingRequest) {
     httpPendingRequest->sendResponse();
-    delete httpPendingRequest;
+    //delete httpPendingRequest;
     return;
 }

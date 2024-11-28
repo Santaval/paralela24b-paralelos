@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "HttpResponse.hpp"
+#include "Log.hpp"
 
 
 /**
@@ -45,8 +46,6 @@ class HttpPendingRequest {
         std::vector<std::vector<int64_t>> results = std::vector<std::vector<int64_t>>();
         /// request numbers
         std::vector<int> numbers = std::vector<int>();
-        /// numbers count
-        int numbersCount = 0;
         /// processed numbers count
         int processedCount;
         /// response object
@@ -66,11 +65,12 @@ class HttpPendingRequest {
          */
         HttpPendingRequest(const int count, HttpResponse response) :
             results(count),
-            numbers(count),
+            numbers(0),
             processedCount(0),
             response(response) {
-                this->results.clear();
-                this->numbers.clear();
+
+                this->numbers.resize(count);
+                this->results.resize(count);
         }
         /// destructor
         ~HttpPendingRequest() {}
@@ -87,7 +87,7 @@ class HttpPendingRequest {
          * 
          * @param result The result to push.
          */
-        void pushNUmber(int number);
+        void pushNUmber(int index, int number);
 
         /**
          * @brief Pushes a result to the results vector in the specified index.
@@ -110,12 +110,12 @@ class HttpPendingRequest {
 
         /// getter count of numbers
         int getNumbersCount() {
-            return numbersCount;
+            return this->numbers.size();
         }
 
         /// getter for the processedCount
         int getProcessedCount() {
-            return processedCount;
+            return this->processedCount;
         }
 
         /// getter for the response object
@@ -125,6 +125,6 @@ class HttpPendingRequest {
 
         /// increases the processedCount by 1
         void increaseProcessedCount() {
-            processedCount++;
+            this->processedCount++;
         }
 };

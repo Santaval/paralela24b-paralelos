@@ -15,7 +15,8 @@ class HttpFactPendingRequest : public HttpPendingRequest {
          * @param response The HttpResponse object associated with this request.
          */
         HttpFactPendingRequest(const int count, HttpResponse response) :
-            HttpPendingRequest(count, response) {}
+            HttpPendingRequest(count, response) {
+            }
 
         /**
          * @brief Destroys the HttpFactPendingRequest object.
