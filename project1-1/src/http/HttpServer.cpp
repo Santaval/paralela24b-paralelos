@@ -251,6 +251,7 @@ void HttpServer::joinThreads() {
   }
   // calcDispatcher->waitToFinish();
   this->packer->waitToFinish();
+  this->responseDispatcher->waitToFinish();
 }
 
 
