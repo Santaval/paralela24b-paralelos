@@ -19,5 +19,6 @@ int Packer::run() {
     this->consumeForever();
   }
   Log::append(Log::INFO, "Packer", "stop");
+  this->produce(nullptr);
   return 0;
 }
