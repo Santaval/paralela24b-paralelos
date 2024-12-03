@@ -3,8 +3,9 @@
 #include "../prodcons/Assembler.hpp"
 #include "../http/HttpPendingRequest.hpp"
 #include "Calculator.hpp"
+#include "../network/TcpClient.hpp"
 
-class CalcDispatcher : public Assembler<HttpPendingRequest*, Calculator*> {
+class CalcDispatcher : public Assembler<HttpPendingRequest*, Calculator*>, TcpClient {
  private:
     int webAppsCount;
  public:

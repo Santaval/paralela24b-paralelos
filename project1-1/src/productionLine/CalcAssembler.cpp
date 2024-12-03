@@ -47,7 +47,6 @@ void CalcAssembler::handleClientConnection(Socket& client) {
       client.close();
       break;
     }
-    break;
   }
 }
 

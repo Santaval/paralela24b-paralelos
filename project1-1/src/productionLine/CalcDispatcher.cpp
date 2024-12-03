@@ -23,6 +23,8 @@ int CalcDispatcher::run() {
 }
 
 void CalcDispatcher::consume(HttpPendingRequest* request) {
+    Socket socket =  this->connect("192.168.0.113", "8081");
+    socket << "hola";
     // Create a new calculator
     Calculator* calculator = nullptr;
     std::string type = request->getType();
@@ -34,6 +36,7 @@ void CalcDispatcher::consume(HttpPendingRequest* request) {
         }
     }
 
+    this->close();
 
     // Produce the calculator
     this->produce(calculator);
