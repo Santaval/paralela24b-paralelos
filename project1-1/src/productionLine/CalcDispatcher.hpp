@@ -1,17 +1,16 @@
 // Copyright 2024 Aaron Santana Valdelomar. Universidad de Costa Rica. CC BY 4.0
 #pragma once
-#include "../prodcons/Assembler.hpp"
+#include "../prodcons/Consumer.hpp"
 #include "../http/HttpPendingRequest.hpp"
-#include "Calculator.hpp"
 #include "../network/TcpClient.hpp"
 
-class CalcDispatcher : public Assembler<HttpPendingRequest*, Calculator*>, TcpClient {
+class CalcDispatcher : public Consumer<HttpPendingRequest*>, TcpClient {
  private:
     int webAppsCount;
  public:
-    explicit CalcDispatcher(int webAppsCount) : Assembler<HttpPendingRequest*,
-        Calculator*>(
-        nullptr, nullptr, nullptr), webAppsCount(webAppsCount) {}
+    explicit CalcDispatcher(int webAppsCount)
+        : Consumer<HttpPendingRequest*>
+            (nullptr, nullptr), webAppsCount(webAppsCount) {}
     virtual ~CalcDispatcher() {}
 
     int run() override;

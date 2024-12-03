@@ -227,8 +227,6 @@ void HttpServer::createQueues() {
   this->calcDispatcher->createOwnQueue();
   this->packer->setProducingQueue(this->responseDispatcher->
           getConsumingQueue());
-  // connect calcDispatcher whit the pendingCalcsQueue
-  this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 }
 
 void HttpServer::startMasterProductionLine() {
