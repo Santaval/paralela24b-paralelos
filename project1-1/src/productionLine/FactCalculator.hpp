@@ -11,8 +11,8 @@
 class FactCalculator : public Calculator {
  public:
     FactCalculator() : Calculator() {}
-    FactCalculator(int64_t calcIndex, HttpPendingRequest* pendingRequest) :
-            Calculator(calcIndex, pendingRequest) {}
+    explicit FactCalculator(CalcRequest request) :
+            Calculator(request) {}
     ~FactCalculator() {}
 
     std::vector<int64_t> calculate(int number) override;

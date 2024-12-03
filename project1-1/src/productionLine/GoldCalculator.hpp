@@ -9,8 +9,8 @@ class GoldCalculator : public Calculator {
  public:
   GoldCalculator() {}
 
-  GoldCalculator(int64_t calcIndex, HttpPendingRequest* pendingRequest) :
-      Calculator(calcIndex, pendingRequest) {}
+  explicit GoldCalculator(CalcRequest request) :
+      Calculator(request) {}
   ~GoldCalculator() {}
 
   std::vector<int64_t> calculate(int number) override;

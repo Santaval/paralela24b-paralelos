@@ -29,5 +29,5 @@ class FactWebApp : public ProductionLineWebApp {
   /// clean up and finish as well
   void stop() override;
   // build calculator
-  Calculator* buildCalculator() override;
+  Calculator* buildCalculator(CalcRequest request) override;
 };

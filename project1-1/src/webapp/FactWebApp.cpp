@@ -69,9 +69,12 @@ AppResponse FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
   return {NO_PRODUCTION_LINE_APP, nullptr, false};
 }
 
-Calculator* FactWebApp::buildCalculator() {
-  Calculator* calculator = new FactCalculator();
-  return calculator;
+Calculator* FactWebApp::buildCalculator(CalcRequest request) {
+  if (request.type == "fact") {
+    return new FactCalculator(request);
+  } else {
+    return nullptr;
+  }
 }
 
 

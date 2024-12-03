@@ -3,6 +3,8 @@
 #ifndef _GOLDWEBAPP_HPP_
 #define _GOLDWEBAPPL_HPP_
 
+#include <string>
+
 #include "HttpApp.hpp"
 #include "ProductionLineWebApp.hpp"
 
@@ -30,7 +32,7 @@ class GoldWebApp : public ProductionLineWebApp {
   /// clean up and finish as well
   void stop() override;
   /// build calculator
-  Calculator* buildCalculator() override;
+  Calculator* buildCalculator(CalcRequest request) override;
 
  protected:
   /// Handle a HTTP request that starts with "/gold"

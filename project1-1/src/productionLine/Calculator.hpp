@@ -4,11 +4,15 @@
 #include <vector>
 
 #include "../http/HttpPendingRequest.hpp"
+#include "CalcRequest.hpp"
+
 
 
 class Calculator {
  protected:
-        // Number to calculate
+        // NUmber to calculate
+        int number;
+        // Index of number to calculate
         int64_t calcIndex;
         // Pending request to calculate
         HttpPendingRequest* pendingRequest;
@@ -18,16 +22,18 @@ class Calculator {
         Calculator() {}
 
         // Constructor
-        Calculator(int64_t calcIndex, HttpPendingRequest* pendingRequest)
-            : calcIndex(calcIndex), pendingRequest(pendingRequest) {}
+        Calculator(CalcRequest request)
+            : number(request.number),
+            calcIndex(request.numberIndex),
+            pendingRequest(request.pendingRequest) {}
         // Destructor
         virtual ~Calculator() {}
 
         // Calculate the number
-        virtual std::vector<int64_t> calculate(int number) = 0;
+        virtual std::vector<int64_t > calculate(int number) = 0;
 
         /// Get calcIndex
-        int64_t getCalcIndex() const {
+        int64_t  getCalcIndex() const {
             return calcIndex;
         }
         /// Get pendingRequest
