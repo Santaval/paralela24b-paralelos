@@ -7,8 +7,10 @@ void HttpFactPendingRequest::sendResponse() {
     auto results = this->getResults();
 
     if (results.size() != numbers.size()) {
-        Log::append(Log::ERROR, "SR", "Mismatch between results and numbers size.");
-        this->response.body() << "<h1>Error: Mismatch between results and numbers size</h1>";
+        Log::append(Log::ERROR, "SR",
+            "Mismatch between results andnumbers size.");
+        this->response.body() <<
+            "<h1>Error: Mismatch between results and numbers size</h1>";
         this->response.send();
         return;
     }
@@ -19,7 +21,7 @@ void HttpFactPendingRequest::sendResponse() {
          << "<html lang=\"en\">\n"
          << "  <meta charset=\"ascii\"/>\n"
          << "  <title>Factorization Results</title>\n"
-         << "  <style>body {font-family: monospace}.err {color: red} span {margin-right: 20px}</style>\n";
+         << "  <style>body {font-family: monospace}.err{color: red} span {margin-right: 20px}</style>\n";
 
     // Iterar sobre los resultados
     for (size_t i = 0; i < this->numbers.size(); i++) {
