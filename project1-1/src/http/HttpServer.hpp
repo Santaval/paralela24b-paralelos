@@ -16,6 +16,7 @@
 #include "Queue.hpp"
 #include "../productionLine/CalculatorWorker.hpp"
 #include "../productionLine/Packer.hpp"
+#include "../productionLine/CalcAssembler.hpp"
 #include "HttpResponseDispatcher.hpp"
 #include "../webapp/ProductionLineWebApp.hpp"
 
@@ -131,6 +132,10 @@ class HttpServer : public TcpServer {
   /// Calculators dispatcher
   // It is a pointer to a calculator dispatcher
   CalcDispatcher* calcDispatcher = nullptr;
+
+  /// Slave mode calc assembler
+  // It is a pointer to a calculator dispatcher
+  CalcAssembler* calcAssembler = nullptr;
 
   /// indicate if apps were started
   bool appsStarted = false;

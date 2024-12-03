@@ -120,8 +120,8 @@ void HttpServer::startApps() {
 
   for (size_t index = 0; index < this->productionLineApps.size(); ++index) {
     this->productionLineApps[index]->start();
-    this->productionLineApps[index]->setProducingQueue(this->calcDispatcher->
-        getConsumingQueue());
+    // this->productionLineApps[index]->setProducingQueue(this->calcDispatcher->
+    //     getConsumingQueue());
   }
 }
 
@@ -249,6 +249,14 @@ void HttpServer::startMasterProductionLine() {
 }
 
 void HttpServer::startSlaveProductionLine() {
+    this->calcAssembler = new CalcAssembler(this->productionLineApps);
+    this->socketsQueue = new Queue<Socket>(this->queueCapacity);
+    this->calcAssembler->setConsumingQueue(this->socketsQueue);
+    this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+    this->calcAssembler->startThread();
+    // Start all web applications
+    this->startApps();
+    this->appsStarted = true;
 }
 
 void HttpServer::initConnectionHandler() {
