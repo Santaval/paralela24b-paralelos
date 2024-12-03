@@ -2,7 +2,7 @@
 #pragma once
 #include "defines.hpp"
 class Vector {
- private:
+ public:
     /**
      * @brief Represents the x, y, and z components of a vector.
      * 
@@ -11,6 +11,7 @@ class Vector {
      * @var z The z component of the vector.
      */
     magnitude_t x, y, z;
+
  public:
     /**
      * @brief Constructs a Vector with the given x, y, and z components.
@@ -20,6 +21,13 @@ class Vector {
      * @param z The z component of the vector.
      */
     Vector(magnitude_t x, magnitude_t y, magnitude_t z);
+   /**
+    * @brief Default constructor for the Vector class.
+    * 
+    * Initializes a new instance of the Vector class with
+    * default values <0, 0, 0>.
+    */
+    Vector();
     /**
      * @brief Destructor for the Vector class.
      * 
@@ -36,7 +44,7 @@ class Vector {
      * 
      * @param scalar The scalar value to multiply the vector by.
      */
-    void operator*(magnitude_t scalar);
+    Vector operator*(magnitude_t scalar);
     /**
      * @brief Overloads the + operator to add two Vector objects.
      * 
@@ -50,5 +58,14 @@ class Vector {
      * @param other The Vector object to be subtracted from the current Vector.
      * @return Vector The result of the subtraction as a new Vector object.
      */
-    Vector operator-(const Vector& other);
+    Vector operator-(const Vector& other) const;
+
+    /**
+     * @brief Calculate the magnitude of the vector.
+     * 
+     * This function computes and returns the magnitude (or length) of the vector.
+     * 
+     * @return magnitude_t The magnitude of the vector.
+     */
+    magnitude_t magnitude();
 };
