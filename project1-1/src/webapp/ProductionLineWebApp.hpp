@@ -15,4 +15,5 @@ class ProductionLineWebApp : public Producer<HttpPendingRequest*>,
     }
 
     virtual void stop() = 0;
+    virtual Calculator* buildCalculator() = 0;
 };

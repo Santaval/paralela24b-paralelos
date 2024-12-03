@@ -31,6 +31,8 @@ class GoldWebApp : public ProductionLineWebApp {
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well
   void stop() override;
+  /// build calculator
+  Calculator* buildCalculator() override;
 
  protected:
   /// Handle a HTTP request that starts with "/gold"

@@ -74,6 +74,10 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
 }
 
 
+Calculator* GoldWebApp::buildCalculator() {
+  return new GoldCalculator();
+}
+
 /*bool GoldWebApp::serveGoldbach(HttpRequest& httpRequest
   , HttpResponse& httpResponse) {
   (void)httpRequest;

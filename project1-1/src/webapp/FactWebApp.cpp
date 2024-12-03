@@ -76,6 +76,11 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
   return false;
 }
 
+Calculator* FactWebApp::buildCalculator() {
+  Calculator* calculator = new FactCalculator();
+  return calculator;
+}
+
 
 // bool FactWebApp::serveFactorization(HttpRequest& httpRequest
 //   , HttpResponse& httpResponse) {

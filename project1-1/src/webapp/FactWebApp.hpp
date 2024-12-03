@@ -30,4 +30,7 @@ class FactWebApp : public ProductionLineWebApp {
   void stop() override;
   /// run
   int run() override;
+
+  // build calculator
+  Calculator* buildCalculator() override;
 };
