@@ -17,6 +17,7 @@ void HttpConnectionHandler::consume(Socket socket) {
 
 int HttpConnectionHandler::run() {
     this->consumeForever();
+    this->produce(nullptr);
     return 0;
 }
 
@@ -69,14 +70,25 @@ bool HttpConnectionHandler::handleHttpRequest(HttpRequest& httpRequest,
 
 bool HttpConnectionHandler::route(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
-  // Traverse the chain of applications
-  for (size_t index = 0; index < this->applications.size(); ++index) {
-    // If this application handles the request
-    HttpApp* app = this->applications[index];
-    if (app->handleHttpRequest(httpRequest, httpResponse)) {
-      return true;
+    // Traverse the chain of applications
+    for (size_t index = 0; index < this->applications.size(); ++index) {
+      // If this application handles the request
+      HttpApp* app = this->applications[index];
+      AppResponse appResponse = app->handleHttpRequest(httpRequest, httpResponse);
+      if (appResponse.handled) {
+        Log::append(Log::INFO, "app", "Application " + std::to_string(index)
+          + " handled the request");
+        // If the application is a production line, then the request is
+        // forwarded to the production line
+        if (appResponse.type == PRODUCTION_LINE_APP) {
+          Log::append(Log::INFO, "app", "Forwarding request to production line");
+          this->produce(appResponse.pendingRequest);
+        }
+        return true;
+      }
     }
-  }
+
+
 
   // Unrecognized request
   return this->serveNotFound(httpRequest, httpResponse);

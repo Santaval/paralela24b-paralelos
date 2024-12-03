@@ -24,20 +24,14 @@ FactWebApp::FactWebApp() {
 FactWebApp::~FactWebApp() {
 }
 
-int FactWebApp::run() {
-  return 0;
-}
-
 void FactWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
 }
 
 void FactWebApp::stop() {
-  this->produce(nullptr);
-  Log::append(Log::INFO, "FactWebApp", "stop");
 }
 
-bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
+AppResponse FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // If the request starts with "fact/" is for this web app
   if (httpRequest.getURI().rfind("/fact", 0) == 0) {
@@ -67,13 +61,12 @@ bool FactWebApp::handleHttpRequest(HttpRequest& httpRequest,
       // log numbers size
       for (ino64_t i = 0; i < numbers.size() ; i++) {
         pendingRequest->pushNUmber(i, std::stoll(numbers[i]));
-        this->produce(pendingRequest);
       }
 
-      return true;
+      return {PRODUCTION_LINE_APP, pendingRequest, true};
     }
   }
-  return false;
+  return {NO_PRODUCTION_LINE_APP, nullptr, false};
 }
 
 Calculator* FactWebApp::buildCalculator() {

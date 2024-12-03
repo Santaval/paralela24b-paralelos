@@ -3,12 +3,21 @@
 #ifndef HTTPAPP_H
 #define HTTPAPP_H
 
+#define PRODUCTION_LINE_APP 1
+#define NO_PRODUCTION_LINE_APP 0
+
 #include "common.hpp"
 #include "Producer.hpp"
 #include "../productionLine/Calculator.hpp"
 
 class HttpRequest;
 class HttpResponse;
+
+struct AppResponse {
+  int type;
+  HttpPendingRequest* pendingRequest;
+  bool handled;
+};
 
 /**
 @brief Base class for all web applications that can be registered with the
@@ -29,7 +38,7 @@ class HttpApp {
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
-  virtual bool handleHttpRequest(HttpRequest& httpRequest,
+  virtual AppResponse handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) = 0;
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well

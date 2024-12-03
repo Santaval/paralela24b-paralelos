@@ -26,20 +26,14 @@ GoldWebApp::GoldWebApp() {
 GoldWebApp::~GoldWebApp() {
 }
 
-int GoldWebApp::run() {
-  return 0;
-}
-
 void GoldWebApp::start() {
   // TODO(you): Start producers, consumers, assemblers...
 }
 
 void GoldWebApp::stop() {
-  Log::append(Log::INFO, "GoldWebApp", "stop");
-  this->produce(nullptr);
 }
 
-bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
+AppResponse GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // If the request starts with "golbach/" is for this web app
   if (httpRequest.getURI().rfind("/golbach", 0) == 0) {
@@ -64,13 +58,12 @@ bool GoldWebApp::handleHttpRequest(HttpRequest& httpRequest,
           new HttpGolbachPendingRequest(number.size(), httpResponse);
       for (ino64_t i = 0; i < numbers.size(); i++) {
         pendingRequest->pushNUmber(i, std::stoll(numbers[i]));
-        this->produce(pendingRequest);
       }
-      return true;
+      return {PRODUCTION_LINE_APP, pendingRequest, true};
     }
   }
   // Unrecognized request
-  return false;
+  return {PRODUCTION_LINE_APP, nullptr, false};
 }
 
 

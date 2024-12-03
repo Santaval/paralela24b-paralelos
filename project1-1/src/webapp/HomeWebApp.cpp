@@ -23,15 +23,16 @@ void HomeWebApp::stop() {
   // TODO(you): Stop producers, consumers, assemblers...
 }
 
-bool HomeWebApp::handleHttpRequest(HttpRequest& httpRequest,
+AppResponse HomeWebApp::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
   // If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
-    return this->serveHomepage(httpRequest, httpResponse);
+    this->serveHomepage(httpRequest, httpResponse);
+    return {NO_PRODUCTION_LINE_APP, nullptr, true};
   }
 
   // Unrecognized request
-  return false;
+  return {NO_PRODUCTION_LINE_APP, nullptr, false};
 }
 
 // TODO(you): Fix code redundancy in the following methods

@@ -3,11 +3,12 @@
 #include <vector>
 #include <string>
 
-#include "Consumer.hpp"
+#include "Assembler.hpp"
 #include "Socket.hpp"
 #include "HttpApp.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "HttpPendingRequest.hpp"
 
 #ifndef HTTPCONNECTIONHANDLER_H
 #define HTTPCONNECTIONHANDLER_H
@@ -15,7 +16,7 @@
 /**
 @brief class Threads that handle the request of the users.
 */
-class HttpConnectionHandler : public Consumer<Socket> {
+class HttpConnectionHandler : public Assembler<Socket, HttpPendingRequest*>{
     /// Desactivar copias de la clase
     DISABLE_COPY(HttpConnectionHandler);
 

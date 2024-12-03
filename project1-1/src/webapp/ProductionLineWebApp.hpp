@@ -5,10 +5,9 @@
 #include "HttpApp.hpp"
 #include "HttpPendingRequest.hpp"
 
-class ProductionLineWebApp : public Producer<HttpPendingRequest*>,
-    public HttpApp {
+class ProductionLineWebApp : public HttpApp {
  public:
-    ProductionLineWebApp() : Producer<HttpPendingRequest*>() {
+    ProductionLineWebApp() {
     }
 
     ~ProductionLineWebApp() {

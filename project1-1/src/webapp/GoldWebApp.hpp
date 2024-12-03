@@ -21,12 +21,10 @@ class GoldWebApp : public ProductionLineWebApp {
   ~GoldWebApp();
   /// Called by the web server when the web server is started
   void start() override;
-  /// run
-  int run() override;
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
   /// @return true If this application handled the request, false otherwise
   /// and another chained application should handle it
-  bool handleHttpRequest(HttpRequest& httpRequest,
+  AppResponse handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) override;
   /// Called when the web server stops, in order to allow the web application
   /// clean up and finish as well

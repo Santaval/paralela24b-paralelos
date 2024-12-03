@@ -206,6 +206,7 @@ void HttpServer::createConnectionHandlers() {
     HttpConnectionHandler* handler =
         new HttpConnectionHandler(this->applications);
     handler->setConsumingQueue(this->socketsQueue);
+    handler->setProducingQueue(this->calcDispatcher->getConsumingQueue());
     this->connectionHandlers.push_back(handler);
   }
 }
