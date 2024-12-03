@@ -1,5 +1,7 @@
 // Copyright 2024 Aaron Santana
 
+#include <string>
+
 #include "CalcAssembler.hpp"
 #include "Socket.hpp"
 #include "Log.hpp"
@@ -22,61 +24,35 @@ int CalcAssembler::run() {
 }
 
 void CalcAssembler::handleClientConnection(Socket& client) {
-    while (true) {
-    // Create an object that parses the HTTP request from the socket
-    HttpRequest httpRequest(client);
-
-    // If the request is not valid or an error happened
-    if (!httpRequest.parse()) {
-      // Non-valid requests are normal after a previous valid request. Do not
-      // close the connection yet, because the valid request may take time to
-      // be processed. Just stop waiting for more requests
-      break;
+  while (true) {
+    std::string requestLine;
+    // Leer una línea completa desde el socket
+    if (!client.readLine(requestLine, '\n')) {
+      Log::append(Log::ERROR, "CalcAssembler", "Failed to read from client");
+      break; // Salir del bucle si no hay más datos
     }
 
-    // A complete HTTP client request was received. Create an object for the
-    // server responds to that client's request
-    HttpResponse httpResponse(client);
+    Log::append(Log::INFO, "CalcAssembler", "Received line: " + requestLine);
 
-    // Give subclass a chance to respond the HTTP request
-    const bool handled = this->handleHttpRequest(httpRequest, httpResponse);
+    // Procesar la línea recibida para extraer los números
+    std::istringstream lineStream(requestLine);
+    std::string number;
+    std::vector<int> numbers;
 
-    // If subclass did not handle the request or the client used HTTP/1.0
-    if (!handled || httpRequest.getHttpVersion() == "HTTP/1.0") {
-      // The socket will not be more used, close the connection
-      client.close();
-      break;
+    while (std::getline(lineStream, number, ',')) {
+      try {
+        numbers.push_back(std::stoi(number)); // Convertir a entero
+      } catch (const std::invalid_argument& e) {
+        Log::append(Log::ERROR, "CalcAssembler", "Invalid number: " + number);
+      }
     }
+
+    // Loguear los números obtenidos
+    for (int num : numbers) {
+      Log::append(Log::INFO, "CalcAssembler", "Number: " + std::to_string(num));
+    }
+
+    // Aquí puedes continuar procesando los números como desees
   }
 }
 
-bool CalcAssembler::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
-  // Print IP and port from client
-  const NetworkAddress& address = httpRequest.getNetworkAddress();
-  Log::append(Log::INFO, "connection",
-    std::string("connection established with client ") + address.getIP()
-    + " port " + std::to_string(address.getPort()));
-
-  // Print HTTP request
-  Log::append(Log::INFO, "request", httpRequest.getMethod()
-    + ' ' + httpRequest.getURI()
-    + ' ' + httpRequest.getHttpVersion());
-
-  return this->route(httpRequest, httpResponse);
-}
-
-
-bool CalcAssembler::route(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
-  // Traverse the chain of applications
-  for (size_t index = 0; index < this->applications.size(); ++index) {
-    // If this application handles the request
-    ProductionLineWebApp* app = this->applications[index];
-    Calculator* calculator = app->buildCalculator();
-    if (calculator != nullptr) {
-        this->produce(calculator);
-      return true;
-    }
-  }
-}

@@ -12,6 +12,7 @@ int CalculatorWorker::run() {
 }
 
 void CalculatorWorker::consume(Calculator* Calc) {
+  Log::append(Log::INFO, "CalculatorWorker", "consume");
   int index = Calc->getCalcIndex();
   int number = Calc->getPendingRequest()->getNumber(index);
   Calc->getPendingRequest()->pushResult(index, Calc->calculate(number));

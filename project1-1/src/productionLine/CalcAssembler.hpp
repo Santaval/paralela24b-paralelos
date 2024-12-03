@@ -20,15 +20,4 @@ class CalcAssembler : public Assembler<Socket, Calculator*> {
     /// Create the new http whit the request
     /// @param client Specific request from user
     void handleClientConnection(Socket& client);
-    /// @brief handle Http Request.
-    /// Show IP and Request and retunr rute
-    /// @param httpRequest Request from user
-    /// @param httpResponse Response from Web
-    bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse);
-    /// @brief route.
-    /// Give the route from the applications
-    /// @param httpRequest Request from user
-    /// @param httpResponse Response from Web
-    bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
