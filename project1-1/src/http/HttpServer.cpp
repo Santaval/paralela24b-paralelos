@@ -16,12 +16,13 @@
 
 
 const char* const usage =
-  "Usage: webserv [port] [handlers]\n"
+  "Usage: webserv [port] [handlers] --slave\n"
   "\n"
   "  port        Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
   "  handlers     Number of connection handler theads\n"
-  "  queue       Queue capacity\n";
+  "  queue       Queue capacity\n"
+  "  --slave     Run as slave server\n";
 
 // Inicializa el puntero de la instancia como nullptr
 HttpServer* HttpServer::instance = nullptr;
@@ -75,7 +76,11 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
 
-      this->startProductionLine();
+      if (!this->slaveMode) {
+        this->startMasterProductionLine();
+      } else {
+        this->startSlaveProductionLine();
+      }
 
       // Start waiting for connections
       // TODO(you): Log the main thread id
@@ -98,7 +103,13 @@ int HttpServer::run(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << error.what() << std::endl;
   }
-  this->stop();
+
+  if (!this->slaveMode) {
+    this->stopMaster();
+  } else {
+    this->stopSlave();
+  }
+
   return EXIT_SUCCESS;
 }
 
@@ -128,7 +139,7 @@ void HttpServer::stopConnectionHandlers() {
   }
 }
 
-void HttpServer::stop() {
+void HttpServer::stopMaster() {
   // Stop listening for incoming client connection requests. When stopListing()
   // method is called -maybe by a secondary thread-, the web server -running
   // by the main thread- will stop executing the acceptAllConnections() method.
@@ -141,12 +152,22 @@ void HttpServer::stop() {
   }
 
   //  join threads
-  this->joinThreads();
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->connectionHandlers.at(index)->waitToFinish();
+  }
+
+  // calcDispatcher->waitToFinish();
+  this->packer->waitToFinish();
+  this->responseDispatcher->waitToFinish();
 
   // Stop the log service
   Log::getInstance().stop();
 
   this->~HttpServer();
+}
+
+void HttpServer::stopSlave() {
+
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {
@@ -156,6 +177,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     if (argument.find("help") != std::string::npos) {
       std::cout << usage;
       return false;
+    }
+
+    if (argument.find("--slave") != std::string::npos) {
+      this->slaveMode = true;
     }
   }
 
@@ -170,6 +195,7 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
   if (argc >= 4) {
     this->queueCapacity = std::stoi(argv[3]);
   }
+
 
   return true;
 }
@@ -197,30 +223,21 @@ void HttpServer::createCalcWorkers() {
 void HttpServer::createQueues() {
   this->socketsQueue = new Queue<Socket>(this->queueCapacity);
   this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+  this->calcDispatcher->createOwnQueue();
+  this->packer->setProducingQueue(this->responseDispatcher->
+          getConsumingQueue());
+  // connect calcDispatcher whit the pendingCalcsQueue
+  this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
 }
 
-void HttpServer::startProductionLine() {
-    // create response dispatcher
+void HttpServer::startMasterProductionLine() {
     this->responseDispatcher = new HttpResponseDispatcher();
     this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
-    this->calcDispatcher->createOwnQueue();
-    // create packer
-      this->packer = new Packer();
-      this->packer->setProducingQueue(this->responseDispatcher->
-          getConsumingQueue());
+    this->packer = new Packer();
 
-      this->createQueues();
-      // Create connection handlers
-      this->createConnectionHandlers();
-      // Create calc workers
-      this->createCalcWorkers();
-
-
-    // connect calcDispatcher whit the pendingCalcsQueue
-    this->calcDispatcher->setProducingQueue(this->pendingCalcsQueue);
-
-    // set packer consuming queue as producing queue of calcWorkers
-    this->initCalcWorkers();
+    this->createQueues();
+    // Create connection handlers
+    this->createConnectionHandlers();
 
     this->initConnectionHandler();
     this->packer->startThread();
@@ -229,6 +246,9 @@ void HttpServer::startProductionLine() {
     // Start all web applications
     this->startApps();
     this->appsStarted = true;
+}
+
+void HttpServer::startSlaveProductionLine() {
 }
 
 void HttpServer::initConnectionHandler() {

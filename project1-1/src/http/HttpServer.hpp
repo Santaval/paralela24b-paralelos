@@ -5,6 +5,7 @@
 
 #include <thread>
 #include <vector>
+#include <string>
 
 #include "TcpServer.hpp"
 #include "HttpConnectionHandler.hpp"
@@ -78,6 +79,13 @@ class HttpServer : public TcpServer {
   const char* port = DEFAULT_PORT;
   /// Queue capacity for queues capacity
   int queueCapacity = SEM_VALUE_MAX;
+  /// Run mode of the server (slave or master)
+  bool slaveMode = false;
+  // slave nodes file path
+  std::string slaveNodesFilePath = "slaveNodes.txt";
+  // master node address
+  std::string masterNodeRoute = "localhost:8080";
+
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
   /// If an application detects the request is for it, the application will
@@ -143,7 +151,8 @@ class HttpServer : public TcpServer {
   /// Stop the web server. The server may stop not immediately. It will stop
   /// for listening further connection requests at once, but pending HTTP
   /// requests that are enqueued will be allowed to finish
-  void stop();
+  void stopMaster();
+  void stopSlave();
   // handle the signal
   static void handleSignal(int signal);
   /// Indefinitely listen for client connection requests and accept all of them.
@@ -185,8 +194,12 @@ class HttpServer : public TcpServer {
   // Init calc workers
   void initCalcWorkers();
 
-  // Start production line
-  void startProductionLine();
+  // Start master production line
+  void startMasterProductionLine();
+
+  // Start slave production line
+  void startSlaveProductionLine();
+
 
   // wait for connection handlers
   void joinThreads();
