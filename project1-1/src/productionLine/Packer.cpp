@@ -3,14 +3,12 @@
 #include "Packer.hpp"
 #include "Log.hpp"
 
-void Packer::consume(Calculator* calculator) {
-  HttpPendingRequest* pendingRequest = calculator->getPendingRequest();
+void Packer::consume(HttpPendingRequest* pendingRequest) {
   pendingRequest->increaseProcessedCount();
   if (pendingRequest->getProcessedCount()
         == pendingRequest->getNumbersCount()) {
       this->produce(pendingRequest);
     }
-    delete calculator;
 }
 
 int Packer::run() {

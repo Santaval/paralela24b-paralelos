@@ -2,17 +2,16 @@
 #pragma once
 
 #include "../prodcons/Assembler.hpp"
-#include "Calculator.hpp"
 #include "../http/HttpPendingRequest.hpp"
 
-class Packer : public Assembler<Calculator*, HttpPendingRequest*> {
+class Packer : public Assembler<HttpPendingRequest*, HttpPendingRequest*> {
   DISABLE_COPY(Packer);
 
  public:
-  explicit Packer(Queue<Calculator*>* calculatorQueue = nullptr
+  explicit Packer(Queue<HttpPendingRequest*>* calculatorQueue = nullptr
     , Queue<HttpPendingRequest*>* httpPendingRequestQueue = nullptr
-    , Calculator* stopCondition = nullptr)
-    : Assembler<Calculator*, HttpPendingRequest*>
+    , HttpPendingRequest* stopCondition = nullptr)
+    : Assembler<HttpPendingRequest*, HttpPendingRequest*>
         (calculatorQueue, httpPendingRequestQueue, stopCondition) {
     this->createOwnQueue();
   }
@@ -23,7 +22,7 @@ class Packer : public Assembler<Calculator*, HttpPendingRequest*> {
  protected:
     /// @brief Consume a Calculator and produce a HttpPendingRequest
     /// @param Calculator
-    void consume(Calculator* Calculator) override;
+    void consume(HttpPendingRequest* Calculator) override;
 
     /// @brief Override of run method from Thread
     int run() override;

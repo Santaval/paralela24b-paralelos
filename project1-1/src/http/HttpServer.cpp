@@ -245,8 +245,8 @@ void HttpServer::startMasterProductionLine() {
     // create queues
     this->socketsQueue = new Queue<Socket>(this->queueCapacity);
     this->setConnectionHandlersQueues();
-    // this->resultAssembler->setProducingQueue(this->
-    //   packer->getConsumingQueue());
+    this->resultAssembler->setProducingQueue(this->
+      packer->getConsumingQueue());
     this->packer->setProducingQueue(this->responseDispatcher->
             getConsumingQueue());
 
