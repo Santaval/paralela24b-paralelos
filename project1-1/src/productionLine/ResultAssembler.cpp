@@ -20,6 +20,7 @@ void ResultAssembler::handleClientConnection(Socket& client) {
     CalcResult result = this->parseRequestLine(client);
     if (result == CalcResult()) {
       this->produce(nullptr);
+      this->stopListening();
       return;
     }
     result.pendingRequest->pushResult(result.numberIndex, result.result);

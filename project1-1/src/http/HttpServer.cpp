@@ -133,6 +133,10 @@ void HttpServer::stopConnectionHandlers() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->socketsQueue->enqueue(Socket());
   }
+
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->connectionHandlers.at(index)->waitToFinish();
+  }
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {
