@@ -28,9 +28,17 @@ int CalcAssembler::run() {
 
 void CalcAssembler::handleClientConnection(Socket& client) {
   CalcRequest request = this->parseRequestLine(client);
-  // log request pendingRequest
-  std::ostringstream oss;
-  oss << request.pendingRequest;
+
+
+
+  if (request == CalcRequest()) {
+    int threadsNumber = std::thread::hardware_concurrency();
+    for (int i = 0; i < threadsNumber; i++) {
+      this->produce(nullptr);
+    }
+    return;
+  }
+
   if (request.number != -1) {
     Calculator* calculator = this->assembleCalculator(request);
     this->produce(calculator);

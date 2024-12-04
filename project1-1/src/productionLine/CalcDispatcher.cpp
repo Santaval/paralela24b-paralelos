@@ -12,9 +12,7 @@ int CalcDispatcher::run() {
         this->consumeForever();
     }
     Log::append(Log::INFO, "CalcDispatcher", "stop");
-    Socket socket =  this->connect("192.168.0.113", "8081");
-    socket << "stop\n";
-    socket.send();
+    this->sendNetworkMessage(CalcRequest(), "192.168.0.113", "8081");
     return 0;
 }
 
