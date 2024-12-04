@@ -77,18 +77,12 @@ class HttpServer : public TcpServer {
     static HttpServer* instance;
 
  protected:
-  /// Lookup criteria for searching network information about this host
-  struct addrinfo hints;
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
   /// Queue capacity for queues capacity
   int queueCapacity = SEM_VALUE_MAX;
-  /// Run mode of the server (slave or master)
-  bool slaveMode = false;
   // slave nodes file path
   std::string slaveNodesFilePath = "slaveNodes.txt";
-  // master node address
-  std::string masterNodeRoute = "localhost:8080";
 
   /// Chain of registered web applications. Each time an incoming HTTP request
   /// is received, the request is provided to each application of this chain.
@@ -176,8 +170,7 @@ class HttpServer : public TcpServer {
   /// Stop the web server. The server may stop not immediately. It will stop
   /// for listening further connection requests at once, but pending HTTP
   /// requests that are enqueued will be allowed to finish
-  void stopMaster();
-  void stopSlave();
+  void stop();
   // handle the signal
   static void handleSignal(int signal);
   /// Indefinitely listen for client connection requests and accept all of them.
@@ -207,7 +200,7 @@ class HttpServer : public TcpServer {
   void stopConnectionHandlers();
   /// Create the calcWorkers threads
   void createCalcWorkers();
- 
+
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
@@ -219,11 +212,7 @@ class HttpServer : public TcpServer {
   void initCalcWorkers();
 
   // Start master production line
-  void startMasterProductionLine();
-
-  // Start slave production line
-  void startSlaveProductionLine();
-
+  void startProductionLine();
 };
 
 #endif  // HTTPSERVER_H

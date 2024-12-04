@@ -76,11 +76,7 @@ int HttpServer::run(int argc, char* argv[]) {
       // Start the log service
       Log::getInstance().start();
 
-      if (!this->slaveMode) {
-        this->startMasterProductionLine();
-      } else {
-        this->startSlaveProductionLine();
-      }
+      this->startProductionLine();
 
       // Start waiting for connections
       // TODO(you): Log the main thread id
@@ -108,12 +104,7 @@ int HttpServer::run(int argc, char* argv[]) {
     this->stopApps();
   }
 
-    Log::append(Log::INFO, "webserver", "Stopping slave");
-  if (!this->slaveMode) {
-    this->stopMaster();
-  } else {
-    this->stopSlave();
-  }
+  this->stop();
 
   return EXIT_SUCCESS;
 }
@@ -151,10 +142,6 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     if (argument.find("help") != std::string::npos) {
       std::cout << usage;
       return false;
-    }
-
-    if (argument.find("--slave") != std::string::npos) {
-      this->slaveMode = true;
     }
   }
 
@@ -208,7 +195,7 @@ void HttpServer::setCalcWorkersQueues() {
 }
 
 
-void HttpServer::startMasterProductionLine() {
+void HttpServer::startProductionLine() {
     // create production line elements
     this->responseDispatcher = new HttpResponseDispatcher();
     this->packer = new Packer();
@@ -236,28 +223,8 @@ void HttpServer::startMasterProductionLine() {
     this->appsStarted = true;
 }
 
-void HttpServer::startSlaveProductionLine() {
-  this->resultDispatcher = new ResultDispatcher();
-  this->createCalcWorkers();
-  this->calcAssembler = new CalcAssembler(this->productionLineApps);
 
-  // create queues
-  this->socketsQueue = new Queue<Socket>(this->queueCapacity);
-  this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
-  this->setCalcWorkersQueues();
-  this->calcAssembler->setConsumingQueue(this->socketsQueue);
-  this->calcAssembler->setProducingQueue(this->pendingCalcsQueue);
-
-  // start threads
-  this->initCalcWorkers();
-  this->calcAssembler->startThread();
-  this->resultDispatcher->startThread();
-
-  // Start all web applications
-  this->startApps();
-}
-
-void HttpServer::stopMaster() {
+void HttpServer::stop() {
     // join threads
     this->stopConnectionHandlers();
     this->calcDispatcher->waitToFinish();
@@ -265,15 +232,6 @@ void HttpServer::stopMaster() {
     this->responseDispatcher->waitToFinish();
     this->resultAssembler->waitToFinish();
 }
-
-void HttpServer::stopSlave() {
-    this->calcAssembler->waitToFinish();
-    this->resultDispatcher->waitToFinish();
-    for (int index = 0; index < this->calcWorkersCount; ++index) {
-      this->calcWorkers.at(index)->waitToFinish();
-    }
-}
-
 
 void HttpServer::initConnectionHandler() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {

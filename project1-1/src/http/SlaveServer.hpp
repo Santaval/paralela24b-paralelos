@@ -147,6 +147,7 @@ class SlaveServer : public TcpServer {
 
   /// Start production line
   void startProductionLine();
+
  private:
   /// Constructor is private to avoid multiple instances
   SlaveServer();
