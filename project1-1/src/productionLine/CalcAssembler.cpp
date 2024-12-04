@@ -28,9 +28,9 @@ int CalcAssembler::run() {
 
 void CalcAssembler::handleClientConnection(Socket& client) {
   CalcRequest request = this->parseRequestLine(client);
-  // log the request
-
-
+  // log request pendingRequest
+  std::ostringstream oss;
+  oss << request.pendingRequest;
   if (request.number != -1) {
     Calculator* calculator = this->assembleCalculator(request);
     this->produce(calculator);
@@ -58,13 +58,11 @@ CalcRequest CalcAssembler::parseRequestLine(Socket& client) {
 
     calcRequest.numberIndex = std::stoi(numberIndex);
     calcRequest.number = std::stoi(number);
-    // Log the request
-    Log::append(Log::INFO, "CalcAssembler", "Request: " + calcRequest.type + ", " + pendingRequest + ", " + std::to_string(calcRequest.numberIndex) + ", " + std::to_string(calcRequest.number));
-
 
     // convert the string to a pointer
+    std::uintptr_t address = std::stoull(pendingRequest, nullptr, 16);
     calcRequest.pendingRequest = reinterpret_cast<HttpPendingRequest*>
-      (std::stoll(pendingRequest));
+      (address);
     return calcRequest;
   }
   CalcRequest calcRequest;
