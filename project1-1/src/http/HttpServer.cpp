@@ -252,6 +252,7 @@ void HttpServer::startSlaveProductionLine() {
     this->socketsQueue = new Queue<Socket>(this->queueCapacity);
     this->calcAssembler->setConsumingQueue(this->socketsQueue);
     this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+    calcAssembler->setProducingQueue(this->pendingCalcsQueue);
     this->calcAssembler->startThread();
     // Start all web applications
     this->startApps();
