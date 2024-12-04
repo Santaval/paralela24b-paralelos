@@ -15,8 +15,9 @@ int CalcDispatcher::run() {
     }
     Log::append(Log::INFO, "CalcDispatcher", "stop");
     CalcRequest emptyCalcRequest;
-    for (int i = 0; i < this->connectionsHandlersCount; i++) {
-        //this->
+    for (int i = 0; i < this->clients.size(); i++) {
+        CalcDispatcherClient* client = this->clients[i];
+        client->sendNetworkMessage(emptyCalcRequest);
     }
     return 0;
 }
