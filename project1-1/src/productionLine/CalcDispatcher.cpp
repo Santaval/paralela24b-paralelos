@@ -12,11 +12,13 @@ int CalcDispatcher::run() {
         this->consumeForever();
     }
     Log::append(Log::INFO, "CalcDispatcher", "stop");
+    Socket socket =  this->connect("192.168.0.113", "8081");
+    socket << "stop\n";
+    socket.send();
     return 0;
 }
 
 void CalcDispatcher::consume(HttpPendingRequest* request) {
-
     // Create a new calculator
     for (int i = 0; i < request->getNumbersCount(); i++) {
     Socket socket =  this->connect("192.168.0.113", "8081");
@@ -28,6 +30,11 @@ void CalcDispatcher::consume(HttpPendingRequest* request) {
         socket.send();
         this->close();
     }
+}
 
+void CalcDispatcher::sendNetworkMessage(CalcRequest message, char* ip, char* port) {
+    Socket socket =  this->connect(ip, port);
+    socket << message << "\n";
+        this->close();
 }
 

@@ -3,6 +3,7 @@
 #include "../prodcons/Consumer.hpp"
 #include "../http/HttpPendingRequest.hpp"
 #include "../network/TcpClient.hpp"
+#include "CalcRequest.hpp"
 
 class CalcDispatcher : public Consumer<HttpPendingRequest*>, TcpClient {
  private:
@@ -19,4 +20,5 @@ class CalcDispatcher : public Consumer<HttpPendingRequest*>, TcpClient {
 
     int run() override;
     void consume(HttpPendingRequest* request) override;
+    void sendNetworkMessage(CalcRequest message, char* ip, char* port);
 };

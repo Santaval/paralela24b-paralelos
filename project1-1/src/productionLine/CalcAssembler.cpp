@@ -47,25 +47,25 @@ CalcRequest CalcAssembler::parseRequestLine(Socket& client) {
 
     // line format: "type:string,pendingRequest:HttpPendingRequest*,numberIndex:int,number:int"
 
-    CalcRequest calcRequest;
     std::istringstream lineStream(requestLine);
-    std::string pendingRequest, numberIndex, number;
+    std::string type, pendingRequest, numberIndexStr, numberStr;
 
-    std::getline(lineStream, calcRequest.type, ',');
+    std::getline(lineStream, type, ',');
     std::getline(lineStream, pendingRequest, ',');
-    std::getline(lineStream, numberIndex, ',');
-    std::getline(lineStream, number, ',');
+    std::getline(lineStream, numberIndexStr, ',');
+    std::getline(lineStream, numberStr, ',');
 
-    calcRequest.numberIndex = std::stoi(numberIndex);
-    calcRequest.number = std::stoi(number);
+    const int numberIndex = std::stoi(numberIndexStr);
+    const int number = std::stoi(numberStr);
 
     // convert the string to a pointer
     std::uintptr_t address = std::stoull(pendingRequest, nullptr, 16);
-    calcRequest.pendingRequest = reinterpret_cast<HttpPendingRequest*>
+    HttpPendingRequest* pointer = reinterpret_cast<HttpPendingRequest*>
       (address);
+    CalcRequest calcRequest = CalcRequest(type, pointer, numberIndex, number);
     return calcRequest;
   }
-  CalcRequest calcRequest;
+  return CalcRequest("", nullptr, -1, -1);
 }
 
 Calculator* CalcAssembler::assembleCalculator(CalcRequest request) {
