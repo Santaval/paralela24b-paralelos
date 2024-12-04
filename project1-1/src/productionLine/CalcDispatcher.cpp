@@ -76,7 +76,7 @@ int CalcDispatcher::generateRandomNumber() {
     int randomInt = std::rand();
 
     // Generar un número aleatorio entre un rango específico
-    int min = 0, max = this->clients.size();
+    int min = 0, max = this->clients.size() - 1;
     int randomInRange = min + (randomInt % (max - min + 1));
     return randomInRange;
 }

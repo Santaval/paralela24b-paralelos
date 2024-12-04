@@ -8,7 +8,7 @@
 
 
 class CalcDispatcherClient : public TcpClient {
- private:
+ public:
     std::string ip;
     std::string port;
  public:
