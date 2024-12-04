@@ -10,8 +10,12 @@ class CalcDispatcher : public Consumer<HttpPendingRequest*>, TcpClient {
  public:
     explicit CalcDispatcher(int webAppsCount)
         : Consumer<HttpPendingRequest*>
-            (nullptr, nullptr), webAppsCount(webAppsCount) {}
-    virtual ~CalcDispatcher() {}
+            (nullptr, nullptr), webAppsCount(webAppsCount) {
+        this->createOwnQueue();
+            }
+    virtual ~CalcDispatcher() {
+        this->createOwnQueue();
+    }
 
     int run() override;
     void consume(HttpPendingRequest* request) override;

@@ -111,6 +111,15 @@ class HttpServer : public TcpServer {
   // Each thread will be a connection handler
   std::vector<HttpConnectionHandler*> connectionHandlers;
 
+  // Set connection handlers queue
+  void setConnectionHandlersQueues();
+
+  // set calc workers queues
+  void setCalcWorkersQueues();
+
+
+
+
   // Calculator Workers threads
   // It is a vector of threads
   // Each thread will be a Calculator worker
@@ -187,8 +196,7 @@ class HttpServer : public TcpServer {
   void stopConnectionHandlers();
   /// Create the calcWorkers threads
   void createCalcWorkers();
-  /// Create sockets queue
-  void createQueues();
+ 
 
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
@@ -205,9 +213,6 @@ class HttpServer : public TcpServer {
   // Start slave production line
   void startSlaveProductionLine();
 
-
-  // wait for connection handlers
-  void joinThreads();
 };
 
 #endif  // HTTPSERVER_H

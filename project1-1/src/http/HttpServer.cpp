@@ -205,8 +205,6 @@ void HttpServer::createConnectionHandlers() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     HttpConnectionHandler* handler =
         new HttpConnectionHandler(this->applications);
-    handler->setConsumingQueue(this->socketsQueue);
-    handler->setProducingQueue(this->calcDispatcher->getConsumingQueue());
     this->connectionHandlers.push_back(handler);
   }
 }
@@ -214,49 +212,71 @@ void HttpServer::createConnectionHandlers() {
 void HttpServer::createCalcWorkers() {
   for (int index = 0; index < this->calcWorkersCount; ++index) {
     CalculatorWorker* worker = new CalculatorWorker();
-    worker->setConsumingQueue(this->pendingCalcsQueue);
-    worker->setProducingQueue(this->packer->getConsumingQueue());
     this->calcWorkers.push_back(worker);
   }
 }
 
 
-void HttpServer::createQueues() {
-  this->socketsQueue = new Queue<Socket>(this->queueCapacity);
-  this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
-  this->calcDispatcher->createOwnQueue();
-  this->packer->setProducingQueue(this->responseDispatcher->
-          getConsumingQueue());
+void HttpServer::setConnectionHandlersQueues() {
+  for (int index = 0; index < this->connectionHandlersCount; ++index) {
+    this->connectionHandlers.at(index)
+      ->setProducingQueue(this->calcDispatcher->getConsumingQueue());
+    this->connectionHandlers.at(index)->setConsumingQueue(this->socketsQueue);
+  }
 }
 
-void HttpServer::startMasterProductionLine() {
-    this->responseDispatcher = new HttpResponseDispatcher();
-    this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
-    this->packer = new Packer();
+void HttpServer::setCalcWorkersQueues() {
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    this->calcWorkers.at(index)->setConsumingQueue(this->pendingCalcsQueue);
+    // this->calcWorkers.at(index)->setProducingQueue(this->resultDispatcher->
+    //     getConsumingQueue());
+  }
+}
 
-    this->createQueues();
-    // Create connection handlers
+
+void HttpServer::startMasterProductionLine() {
+    // create production line elements
+    this->responseDispatcher = new HttpResponseDispatcher();
+    this->packer = new Packer();
+    // this->resultAssembler = new ResultAssembler();
+    this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
     this->createConnectionHandlers();
 
+    // create queues
+    this->socketsQueue = new Queue<Socket>(this->queueCapacity);
+    this->setConnectionHandlersQueues();
+    // this->resiltAssembler->setProducingQueue(this->
+    //   packer->getConsumingQueue());
+    this->packer->setProducingQueue(this->responseDispatcher->
+            getConsumingQueue());
+
+    // start threads
     this->initConnectionHandler();
+    this->calcDispatcher->startThread();
     this->packer->startThread();
     this->responseDispatcher->startThread();
-    this->calcDispatcher->startThread();
+
     // Start all web applications
     this->startApps();
     this->appsStarted = true;
 }
 
 void HttpServer::startSlaveProductionLine() {
-    this->calcAssembler = new CalcAssembler(this->productionLineApps);
-    this->socketsQueue = new Queue<Socket>(this->queueCapacity);
-    this->calcAssembler->setConsumingQueue(this->socketsQueue);
-    this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
-    calcAssembler->setProducingQueue(this->pendingCalcsQueue);
-    this->calcAssembler->startThread();
-    // Start all web applications
-    this->startApps();
-    this->appsStarted = true;
+  // this->resultDIspatcher = new ResultDispatcher();
+  this->createCalcWorkers();
+  this->calcAssembler = new CalcAssembler(this->productionLineApps);
+
+  // create queues
+  this->socketsQueue = new Queue<Socket>(this->queueCapacity);
+  this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+  this->setCalcWorkersQueues();
+  this->calcAssembler->setConsumingQueue(this->socketsQueue);
+  this->calcAssembler->setProducingQueue(this->pendingCalcsQueue);
+
+  // start threads
+  this->initCalcWorkers();
+  this->calcAssembler->startThread();
+  // this->resultDispatcher->startThread();
 }
 
 void HttpServer::initConnectionHandler() {
@@ -269,19 +289,6 @@ void HttpServer::initCalcWorkers() {
     this->calcWorkers.at(index)->startThread();
   }
 }
-
-void HttpServer::joinThreads() {
-  for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    this->connectionHandlers.at(index)->waitToFinish();
-  }
-  for (int index = 0; index < this->calcWorkersCount; ++index) {
-    this->calcWorkers.at(index)->waitToFinish();
-  }
-  // calcDispatcher->waitToFinish();
-  this->packer->waitToFinish();
-  this->responseDispatcher->waitToFinish();
-}
-
 
 void HttpServer::handleClientConnection(Socket& client) {
   this->socketsQueue->enqueue(client);
