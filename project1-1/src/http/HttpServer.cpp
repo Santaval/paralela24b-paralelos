@@ -22,7 +22,7 @@ const char* const usage =
     DEFAULT_PORT "\n"
   "  handlers     Number of connection handler theads\n"
   "  queue       Queue capacity\n"
-  "  --slave     Run as slave server\n";
+  "  slaves.txt  File path to the slave nodes configuration\n";
 
 // Inicializa el puntero de la instancia como nullptr
 HttpServer* HttpServer::instance = nullptr;
@@ -161,6 +161,10 @@ bool HttpServer::analyzeArguments(int argc, char* argv[]) {
     this->queueCapacity = std::stoi(argv[3]);
   }
 
+  if (argc >= 5) {
+    this->slaveNodesFilePath = argv[4];
+  }
+
 
   return true;
 }
@@ -204,7 +208,7 @@ void HttpServer::startProductionLine() {
     this->responseDispatcher = new HttpResponseDispatcher();
     this->packer = new Packer();
     this->resultAssembler = new ResultAssembler();
-    this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
+    this->calcDispatcher = new CalcDispatcher(this->connectionHandlersCount, this->slaveNodesFilePath);
     this->createConnectionHandlers();
 
     // create queues

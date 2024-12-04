@@ -85,6 +85,11 @@ class TcpClient {
   /// Get a socket for the first available address that works
   /// @throw std::runtime_error if no network address works
   void openSocketWithServer(const char* server, const char* port);
+
+  /// Return true if this client is connected to a server
+  inline bool isConnected() const { return static_cast<bool>(this->socket); }
+  /// Get access to the internal socket for sending or receiving data
+  inline Socket& getSocket() { return this->socket; }
 };
 
 #endif  // TCPCLIENT_H
