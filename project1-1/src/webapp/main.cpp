@@ -3,8 +3,11 @@
 
 #ifdef WEBSERVER
 #include <csignal>
+#include <iostream>
+#include <string>
 
 #include "HttpServer.hpp"
+#include "SlaveServer.hpp"
 #include "FactWebApp.hpp"
 #include "GoldWebApp.hpp"
 #include "HomeWebApp.hpp"
@@ -14,21 +17,35 @@
 
 /// Start the web server
 int main(int argc, char* argv[]) {
-  signal(SIGINT, HttpServer::handleSignal);
-  // Create the web server
-  HttpServer* httpServer = HttpServer::getInstance();
-  // Create home web application
-  HomeWebApp homeWebApp;
-  // Create a factorization web application, and other apps if you want
-  FactWebApp factWebApp;
-  GoldWebApp goldWebApp;
+  if (argc >= 5 && std::string(argv[4]) == "--slave") {
+    signal(SIGINT, SlaveServer::handleSignal);
+      // Create the web server
+      SlaveServer* slaveServer = SlaveServer::getInstance();
+      // Create a factorization web application, and other apps if you want
+      FactWebApp factWebApp;
+      GoldWebApp goldWebApp;
 
-  // Register the web application(s) with the web server
-  httpServer->chainProductionLineApp(&factWebApp);
-  httpServer->chainWebApp(&homeWebApp);
-  httpServer->chainProductionLineApp(&goldWebApp);
-  // Run the web server
-  return httpServer->run(argc, argv);
+      // Register the web application(s) with the web server
+      slaveServer->chainWebApp(&factWebApp);
+      slaveServer->chainWebApp(&goldWebApp);
+      // Run the web server
+      return slaveServer->run(argc, argv);
+  } else {
+      signal(SIGINT, HttpServer::handleSignal);
+      // Create the web server
+      HttpServer* httpServer = HttpServer::getInstance();
+      // Create home web application
+      HomeWebApp homeWebApp;
+      // Create a factorization web application, and other apps if you want
+      FactWebApp factWebApp;
+      GoldWebApp goldWebApp;
+
+      // Register the web application(s) with the web server
+      httpServer->chainProductionLineApp(&factWebApp);
+      httpServer->chainWebApp(&homeWebApp);
+      httpServer->chainProductionLineApp(&goldWebApp);
+      // Run the web server
+      return httpServer->run(argc, argv);  
+  }
 }
-
 #endif  // WEBSERVER

@@ -86,7 +86,7 @@ int HttpServer::run(int argc, char* argv[]) {
       // TODO(you): Log the main thread id
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
-      Log::append(Log::INFO, "webserver", "Listening on " + address.getIP()
+      Log::append(Log::INFO, "webserver", "Master server listening on " + address.getIP()
         + " port " + std::to_string(address.getPort()));
 
 

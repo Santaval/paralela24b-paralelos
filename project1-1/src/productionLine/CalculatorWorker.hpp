@@ -1,5 +1,6 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
 
+#pragma once
 #include "Assembler.hpp"
 #include "Calculator.hpp"
 
