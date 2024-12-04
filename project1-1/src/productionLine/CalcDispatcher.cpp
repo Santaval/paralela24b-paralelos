@@ -16,18 +16,18 @@ int CalcDispatcher::run() {
 }
 
 void CalcDispatcher::consume(HttpPendingRequest* request) {
-    Socket socket =  this->connect("192.168.0.113", "8081");
 
     // Create a new calculator
     for (int i = 0; i < request->getNumbersCount(); i++) {
+    Socket socket =  this->connect("192.168.0.113", "8081");
         socket
         << request->getType() << ","
         << request << ","
         << i << ","
         << request->getNumber(i) << "\n";
         socket.send();
+        this->close();
     }
 
-    this->close();
 }
 
