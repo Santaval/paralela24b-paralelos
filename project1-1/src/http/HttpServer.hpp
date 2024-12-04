@@ -18,8 +18,10 @@
 #include "../productionLine/Packer.hpp"
 #include "../productionLine/CalcAssembler.hpp"
 #include "../productionLine/ResultDispatcher.hpp"
+#include "../productionLine/ResultAssembler.hpp"
 #include "HttpResponseDispatcher.hpp"
 #include "../webapp/ProductionLineWebApp.hpp"
+
 
 
 #define DEFAULT_PORT "8080"
@@ -150,6 +152,10 @@ class HttpServer : public TcpServer {
   /// Result dispatcher
   // It is a pointer to a result dispatcher
   ResultDispatcher* resultDispatcher = nullptr;
+
+  // Result assembler
+  // It is a pointer to a result assembler
+  ResultAssembler* resultAssembler = nullptr;
 
   /// indicate if apps were started
   bool appsStarted = false;

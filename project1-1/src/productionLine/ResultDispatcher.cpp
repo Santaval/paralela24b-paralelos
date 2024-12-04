@@ -17,17 +17,21 @@ int ResultDispatcher::run() {
 }
 
 void ResultDispatcher::consume(Calculator* calculator) {
-    Socket socket =  this->connect("192.168.0.113", "8081");
+    Socket socket =  this->connect("192.168.0.113", "8082");
     std::vector<int64_t> result = calculator->getResult();
     socket
     << calculator->getPendingRequest() << ","
     << calculator->getCalcIndex() << ","
-    << result.size();
+    << result.size() << ",";
 
     for (int i = 0; i < result.size(); i++) {
         Log::append(Log::INFO, "ResultDispatcher", std::to_string(result[i]));
         socket << result[i];
+        if (i < result.size() - 1) {
+            socket << ",";
+        }
     }
+    socket << "\n";
     socket.send();
     this->close();
 }

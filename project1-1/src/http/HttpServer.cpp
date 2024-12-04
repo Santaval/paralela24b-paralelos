@@ -238,7 +238,7 @@ void HttpServer::startMasterProductionLine() {
     // create production line elements
     this->responseDispatcher = new HttpResponseDispatcher();
     this->packer = new Packer();
-    // this->resultAssembler = new ResultAssembler();
+    this->resultAssembler = new ResultAssembler();
     this->calcDispatcher = new CalcDispatcher(this->productionLineApps.size());
     this->createConnectionHandlers();
 
@@ -255,6 +255,7 @@ void HttpServer::startMasterProductionLine() {
     this->calcDispatcher->startThread();
     this->packer->startThread();
     this->responseDispatcher->startThread();
+    this->resultAssembler->startThread();
 
     // Start all web applications
     this->startApps();
