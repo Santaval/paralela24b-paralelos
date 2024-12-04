@@ -13,7 +13,9 @@ class CalcRequest {
     HttpPendingRequest* pendingRequest;
     int numberIndex;
     int number = -1;
+
  public:
+    CalcRequest() : type(""), pendingRequest(nullptr), numberIndex(-1) {}
     CalcRequest(std::string type, HttpPendingRequest* pendingRequest, int numberIndex, int number);
 
     std::string getType();
@@ -21,11 +23,7 @@ class CalcRequest {
     int getNumberIndex();
     int getNumber();
 
-  friend Socket& operator<< (Socket& socket, const CalcRequest& calcRequest) {
-    socket << calcRequest.type << ","
-           << calcRequest.pendingRequest << ","
-           << calcRequest.numberIndex << ","
-           << calcRequest.number;
-    return socket;
-  }
+  friend Socket& operator<< (Socket& socket, const CalcRequest& calcRequest);
+  bool operator==(const CalcRequest& calcRequest);
 };
+

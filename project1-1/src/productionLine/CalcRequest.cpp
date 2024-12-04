@@ -23,11 +23,17 @@ int CalcRequest::getNumber() {
     return this->number;
 }
 
-std::ostream& operator<<(std::ostream& os, const CalcRequest& calcRequest) {
-    os << calcRequest.type << ","
-       << calcRequest.pendingRequest << ","
-       << calcRequest.numberIndex << ","
-       << calcRequest.number;
-    return os;
+Socket& operator<< (Socket& socket, const CalcRequest& calcRequest) {
+    socket << calcRequest.type << ","
+           << calcRequest.pendingRequest << ","
+           << calcRequest.numberIndex << ","
+           << calcRequest.number;
+    return socket;
 }
 
+bool CalcRequest::operator==(const CalcRequest& calcRequest) {
+    return this->type == calcRequest.type &&
+           this->pendingRequest == calcRequest.pendingRequest &&
+           this->numberIndex == calcRequest.numberIndex &&
+           this->number == calcRequest.number;
+}
