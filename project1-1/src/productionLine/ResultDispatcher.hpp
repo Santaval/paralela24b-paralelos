@@ -3,6 +3,7 @@
 #include "../prodcons/Consumer.hpp"
 #include "../productionLine/Calculator.hpp"
 #include "../network/TcpClient.hpp"
+#include "CalcResult.hpp"
 
 class ResultDispatcher : public Consumer<Calculator*>, TcpClient{
  private:
@@ -12,4 +13,5 @@ class ResultDispatcher : public Consumer<Calculator*>, TcpClient{
     ~ResultDispatcher();
     int run() override;
     void consume(Calculator* calculator) override;
+    void sendNetworkMessage (CalcResult message, char* ip, char* port);
 };

@@ -8,8 +8,15 @@
 
 
 struct CalcResult {
-  HttpPendingRequest* pendingRequest;
-  int numberIndex;
-  int resultSize;
-  std::vector<int64_t> result;
+ public:
+    HttpPendingRequest* pendingRequest;
+    int numberIndex;
+    int resultSize;
+    std::vector<int64_t> result;
+
+ public:
+    CalcResult() : pendingRequest(nullptr), numberIndex(-1), resultSize(0) {}
+    CalcResult(HttpPendingRequest* pendingRequest, int numberIndex, int resultSize, std::vector<int64_t> result);
+    friend Socket& operator<< (Socket& socket, const CalcResult& calcResult);
+    bool operator==(const CalcResult& calcResult);
 };
