@@ -40,8 +40,6 @@ SlaveServer::~SlaveServer() {
   for (int index = 0; index < this->calcWorkersCount; ++index) {
     delete this->calcWorkers.at(index);
   }
-  // Delete the sockets queue
-  delete this->socketsQueue;
   // Delete the pending calcs queue
   delete this->pendingCalcsQueue;
 }
@@ -53,6 +51,10 @@ void SlaveServer::listenForever(const char* port) {
 void SlaveServer::chainWebApp(ProductionLineWebApp* application) {
   assert(application);
   this->applications.push_back(application);
+}
+
+int SlaveServer::run() {
+  return 0;
 }
 
 int SlaveServer::run(int argc, char* argv[]) {
@@ -149,18 +151,14 @@ void SlaveServer::setCalcWorkersQueues() {
 void SlaveServer::startProductionLine() {
   this->resultDispatcher = new ResultDispatcher();
   this->createCalcWorkers();
-  this->calcAssembler = new CalcAssembler(this->applications);
 
   // create queues
-  this->socketsQueue = new Queue<Socket>(this->queueCapacity);
   this->pendingCalcsQueue = new Queue<Calculator*>(this->queueCapacity);
+  this->setProducingQueue(this->pendingCalcsQueue);
   this->setCalcWorkersQueues();
-  this->calcAssembler->setConsumingQueue(this->socketsQueue);
-  this->calcAssembler->setProducingQueue(this->pendingCalcsQueue);
 
   // start threads
   this->initCalcWorkers();
-  this->calcAssembler->startThread();
   this->resultDispatcher->startThread();
 
   // Start all web applications
@@ -169,7 +167,6 @@ void SlaveServer::startProductionLine() {
 
 
 void SlaveServer::stop() {
-    this->calcAssembler->waitToFinish();
     this->resultDispatcher->waitToFinish();
     for (int index = 0; index < this->calcWorkersCount; ++index) {
       this->calcWorkers.at(index)->waitToFinish();
@@ -183,7 +180,20 @@ void SlaveServer::initCalcWorkers() {
 }
 
 void SlaveServer::handleClientConnection(Socket& client) {
-  this->socketsQueue->enqueue(client);
+  CalcRequest request = this->parseRequestLine(client);
+
+  if (request == CalcRequest()) {
+    int threadsNumber = std::thread::hardware_concurrency();
+    for (int i = 0; i < threadsNumber; i++) {
+      this->produce(nullptr);
+    }
+    this->stopListening();
+  }
+
+  if (request.number != -1) {
+    Calculator* calculator = this->assembleCalculator(request);
+    this->produce(calculator);
+  }
 }
 
 void SlaveServer::handleSignal(int signal) {
@@ -193,3 +203,43 @@ void SlaveServer::handleSignal(int signal) {
     throw std::runtime_error("Stop server in progress...");
 }
 
+CalcRequest SlaveServer::parseRequestLine(Socket& client) {
+  while (true) {
+    std::string requestLine;
+    if (!client.readLine(requestLine, '\n')) {
+      Log::append(Log::ERROR, "CalcAssembler", "Failed to read from client");
+      break;
+    }
+
+    // line format: "type:string,pendingRequest:HttpPendingRequest*,numberIndex:int,number:int"
+
+    std::istringstream lineStream(requestLine);
+    std::string type, pendingRequest, numberIndexStr, numberStr;
+
+    std::getline(lineStream, type, ',');
+    std::getline(lineStream, pendingRequest, ',');
+    std::getline(lineStream, numberIndexStr, ',');
+    std::getline(lineStream, numberStr, ',');
+
+    const int numberIndex = std::stoi(numberIndexStr);
+    const int number = std::stoi(numberStr);
+
+    // convert the string to a pointer
+    std::uintptr_t address = std::stoull(pendingRequest, nullptr, 16);
+    HttpPendingRequest* pointer = reinterpret_cast<HttpPendingRequest*>
+      (address);
+    CalcRequest calcRequest = CalcRequest(type, pointer, numberIndex, number);
+    return calcRequest;
+  }
+  return CalcRequest("", nullptr, -1, -1);
+}
+
+Calculator* SlaveServer::assembleCalculator(CalcRequest request) {
+  for (size_t i = 0; i < this->applications.size(); i++) {
+    Calculator* calculator = this->applications[i]->buildCalculator(request);
+    if (calculator != nullptr) {
+      return calculator;
+    }
+  }
+  return nullptr;
+}

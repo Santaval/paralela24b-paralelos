@@ -14,12 +14,14 @@
 #include "../productionLine/Calculator.hpp"
 #include "Queue.hpp"
 #include "../productionLine/CalculatorWorker.hpp"
-#include "../productionLine/Packer.hpp"
 #include "../productionLine/CalcAssembler.hpp"
 #include "../productionLine/ResultDispatcher.hpp"
 #include "../productionLine/ResultAssembler.hpp"
 #include "HttpResponseDispatcher.hpp"
 #include "../webapp/ProductionLineWebApp.hpp"
+#include "../productionLine/CalcResult.hpp"
+#include "Socket.hpp"
+
 
 
 
@@ -68,7 +70,7 @@ repeats the process with the following application in the chain: the pets
 application. If no application manages the request, a 404 Not-found response
 is sent to the client.
 */
-class SlaveServer : public TcpServer {
+class SlaveServer : public TcpServer, Producer<Calculator*> {
   DISABLE_COPY(SlaveServer);
 
  private:
@@ -90,11 +92,6 @@ class SlaveServer : public TcpServer {
   /// the request, the not found page will be served.
   std::vector<ProductionLineWebApp*> applications;
 
-  // Sockets queue
-  // It is a pointer to a vector of sockets
-  // Queue is bounded
-  Queue<Socket>* socketsQueue = nullptr;
-
   /// Pending calcs queue
   Queue<Calculator*>* pendingCalcsQueue = nullptr;
 
@@ -111,10 +108,6 @@ class SlaveServer : public TcpServer {
   std::vector<CalculatorWorker*> calcWorkers;
 
 
-  /// Slave mode calc assembler
-  // It is a pointer to a calculator dispatcher
-  CalcAssembler* calcAssembler = nullptr;
-
   /// Result dispatcher
   // It is a pointer to a result dispatcher
   ResultDispatcher* resultDispatcher = nullptr;
@@ -124,7 +117,7 @@ class SlaveServer : public TcpServer {
   bool appsStarted = false;
 
   /// Number of connection calcWorkers threads
-  // Initially, the server will use the number of cores in the system
+  // Initially, the server will use the number of cores this->consumingQueue->enqueue(Socket()); in the system
   int calcWorkersCount = std::thread::hardware_concurrency();
 
  public:
@@ -137,6 +130,7 @@ class SlaveServer : public TcpServer {
   /// Stop the web server. The server may stop not immediately. It will stop
   /// for listening further connection requests at once, but pending HTTP
   /// requests that are enqueued will be allowed to finish
+  int run() override;
   void stop();
   // handle the signal
   static void handleSignal(int signal);
@@ -170,6 +164,14 @@ class SlaveServer : public TcpServer {
   void handleClientConnection(Socket& client) override;
   // Init calc workers
   void initCalcWorkers();
+  /// @brief parse the request line.
+  /// Parse the request line from the socket
+  /// @return true on success, false on error or connection closed by peer
+  CalcRequest parseRequestLine(Socket& client);
+  /// Ask to webapps to build a calculator
+  /// @param request Request to calculate
+  /// @return Calculator
+  Calculator* assembleCalculator(CalcRequest request);
 };
 
 
