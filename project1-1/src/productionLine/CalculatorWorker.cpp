@@ -11,10 +11,8 @@ int CalculatorWorker::run() {
   return 0;
 }
 
-void CalculatorWorker::consume(Calculator* Calc) {
+void CalculatorWorker::consume(Calculator* calculator) {
   Log::append(Log::INFO, "CalculatorWorker", "consume");
-  int index = Calc->getCalcIndex();
-  int number = Calc->getPendingRequest()->getNumber(index);
-  Calc->getPendingRequest()->pushResult(index, Calc->calculate(number));
-  this->produce(Calc);
+  calculator->calculate();
+  this->produce(calculator);
 }
