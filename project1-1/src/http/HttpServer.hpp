@@ -17,6 +17,7 @@
 #include "../productionLine/CalculatorWorker.hpp"
 #include "../productionLine/Packer.hpp"
 #include "../productionLine/CalcAssembler.hpp"
+#include "../productionLine/ResultDispatcher.hpp"
 #include "HttpResponseDispatcher.hpp"
 #include "../webapp/ProductionLineWebApp.hpp"
 
@@ -145,6 +146,10 @@ class HttpServer : public TcpServer {
   /// Slave mode calc assembler
   // It is a pointer to a calculator dispatcher
   CalcAssembler* calcAssembler = nullptr;
+
+  /// Result dispatcher
+  // It is a pointer to a result dispatcher
+  ResultDispatcher* resultDispatcher = nullptr;
 
   /// indicate if apps were started
   bool appsStarted = false;

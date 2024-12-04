@@ -38,6 +38,12 @@ class Calculator {
         int64_t  getCalcIndex() const {
             return calcIndex;
         }
+
+        /// Get result
+        std::vector<int64_t> getResult() const {
+            return result;
+        }
+
         /// Get pendingRequest
         HttpPendingRequest* getPendingRequest() const {
             return pendingRequest;
