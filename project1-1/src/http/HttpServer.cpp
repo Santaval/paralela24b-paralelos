@@ -104,6 +104,11 @@ int HttpServer::run(int argc, char* argv[]) {
     std::cerr << error.what() << std::endl;
   }
 
+  if (this->appsStarted) {
+    this->stopApps();
+  }
+
+    Log::append(Log::INFO, "webserver", "Stopping slave");
   if (!this->slaveMode) {
     this->stopMaster();
   } else {
@@ -137,37 +142,6 @@ void HttpServer::stopConnectionHandlers() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {
     this->socketsQueue->enqueue(Socket());
   }
-}
-
-void HttpServer::stopMaster() {
-  // Stop listening for incoming client connection requests. When stopListing()
-  // method is called -maybe by a secondary thread-, the web server -running
-  // by the main thread- will stop executing the acceptAllConnections() method.
-  this->stopConnectionHandlers();
-
-  // If applications were started
-  if (this->appsStarted) {
-    // Stop all web applications
-    this->stopApps();
-  }
-
-  //  join threads
-  for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    this->connectionHandlers.at(index)->waitToFinish();
-  }
-
-  // calcDispatcher->waitToFinish();
-  this->packer->waitToFinish();
-  this->responseDispatcher->waitToFinish();
-
-  // Stop the log service
-  Log::getInstance().stop();
-
-  this->~HttpServer();
-}
-
-void HttpServer::stopSlave() {
-
 }
 
 bool HttpServer::analyzeArguments(int argc, char* argv[]) {
@@ -278,7 +252,28 @@ void HttpServer::startSlaveProductionLine() {
   this->initCalcWorkers();
   this->calcAssembler->startThread();
   this->resultDispatcher->startThread();
+
+  // Start all web applications
+  this->startApps();
 }
+
+void HttpServer::stopMaster() {
+    // join threads
+    this->stopConnectionHandlers();
+    this->calcDispatcher->waitToFinish();
+    this->packer->waitToFinish();
+    this->responseDispatcher->waitToFinish();
+    this->resultAssembler->waitToFinish();
+}
+
+void HttpServer::stopSlave() {
+    this->calcAssembler->waitToFinish();
+    this->resultDispatcher->waitToFinish();
+    for (int index = 0; index < this->calcWorkersCount; ++index) {
+      this->calcWorkers.at(index)->waitToFinish();
+    }
+}
+
 
 void HttpServer::initConnectionHandler() {
   for (int index = 0; index < this->connectionHandlersCount; ++index) {

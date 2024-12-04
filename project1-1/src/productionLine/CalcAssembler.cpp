@@ -12,9 +12,10 @@
 #include "../webapp/ProductionLineWebApp.hpp"
 
 CalcAssembler::CalcAssembler
-  (std::vector<ProductionLineWebApp*> applications) {
+  (std::vector<ProductionLineWebApp*> applications)
+  : Assembler<Socket, Calculator*>(nullptr, nullptr, Socket()) {
     this->applications = applications;
-}
+  }
 
 void CalcAssembler::consume(Socket socket) {
     this->handleClientConnection(socket);
@@ -23,20 +24,19 @@ void CalcAssembler::consume(Socket socket) {
 
 int CalcAssembler::run() {
     this->consumeForever();
+    int threadsNumber = std::thread::hardware_concurrency();
+    for (int i = 0; i < threadsNumber; i++) {
+      this->produce(nullptr);
+    }
+    Log::append(Log::INFO, "CalcAssembler", "stop");
     return 0;
 }
 
 void CalcAssembler::handleClientConnection(Socket& client) {
   CalcRequest request = this->parseRequestLine(client);
 
-
-
   if (request == CalcRequest()) {
-    int threadsNumber = std::thread::hardware_concurrency();
-    for (int i = 0; i < threadsNumber; i++) {
-      this->produce(nullptr);
-    }
-    return;
+    this->consumingQueue->enqueue(Socket());
   }
 
   if (request.number != -1) {
