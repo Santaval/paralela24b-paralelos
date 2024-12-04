@@ -13,5 +13,5 @@ class GoldCalculator : public Calculator {
       Calculator(request) {}
   ~GoldCalculator() {}
 
-  std::vector<int64_t> calculate(int number) override;
+  void calculate() override;
 };

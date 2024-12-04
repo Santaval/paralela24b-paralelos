@@ -4,7 +4,7 @@
 #include "GoldCalculator.hpp"
 
 
-std::vector<int64_t> GoldCalculator::calculate(int number) {
+void GoldCalculator::calculate() {
   GoldCal Calculator;
-  return (Calculator.Calc(number));
+  this->result = Calculator.Calc(this->number);
 }

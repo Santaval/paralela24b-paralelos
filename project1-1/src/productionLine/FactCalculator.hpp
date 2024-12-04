@@ -15,6 +15,6 @@ class FactCalculator : public Calculator {
             Calculator(request) {}
     ~FactCalculator() {}
 
-    std::vector<int64_t> calculate(int number) override;
+    void calculate() override;
 };
 

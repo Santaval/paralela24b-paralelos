@@ -5,8 +5,7 @@
 #include "FactCalculator.hpp"
 #include "Log.hpp"
 
-std::vector<int64_t> FactCalculator::calculate(int number) {
+void FactCalculator::calculate() {
     FactCal Calculator;
-    std::vector<int64_t> result = Calculator.Calculator_Factorial(number);
-    return result;
+    this->result = Calculator.Calculator_Factorial(this->number);
 }
