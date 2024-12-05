@@ -39,23 +39,7 @@ HttpServer* HttpServer::getInstance() {
 HttpServer::HttpServer() {
 }
 
-HttpServer::~HttpServer() {
-  // Delete all connection handlers
-  for (int index = 0; index < this->connectionHandlersCount; ++index) {
-    delete this->connectionHandlers.at(index);
-  }
-  for (int index = 0; index < this->calcWorkersCount; ++index) {
-    delete this->calcWorkers.at(index);
-  }
-  // Delete the sockets queue
-  delete this->socketsQueue;
-  // Delete the pending calcs queue
-  delete this->pendingCalcsQueue;
-  // Delete the packer
-  delete this->packer;
-  // Delete the response dispatcher
-  delete this->responseDispatcher;
-}
+HttpServer::~HttpServer() {}
 
 void HttpServer::listenForever(const char* port) {
   return TcpServer::listenForever(port);
@@ -241,6 +225,23 @@ void HttpServer::stop() {
     this->packer->waitToFinish();
     this->responseDispatcher->waitToFinish();
     this->resultAssembler->waitToFinish();
+
+    // free memory
+    // Delete all connection handlers
+    for (int index = 0; index < this->connectionHandlersCount; ++index) {
+        delete this->connectionHandlers.at(index);
+    }
+    for (int index = 0; index < this->calcWorkersCount; ++index) {
+        delete this->calcWorkers.at(index);
+    }
+    // Delete the sockets queue
+    delete this->socketsQueue;
+    // Delete the pending calcs queue
+    delete this->pendingCalcsQueue;
+    // Delete the packer
+    delete this->packer;
+    // Delete the response dispatcher
+    delete this->responseDispatcher;
 }
 
 void HttpServer::initConnectionHandler() {

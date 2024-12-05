@@ -37,13 +37,7 @@ SlaveServer* SlaveServer::getInstance() {
 SlaveServer::SlaveServer() {
 }
 
-SlaveServer::~SlaveServer() {
-  for (int index = 0; index < this->calcWorkersCount; ++index) {
-    delete this->calcWorkers.at(index);
-  }
-  // Delete the pending calcs queue
-  delete this->pendingCalcsQueue;
-}
+SlaveServer::~SlaveServer() {}
 
 void SlaveServer::listenForever(const char* port) {
   return TcpServer::listenForever(port);
@@ -172,10 +166,16 @@ void SlaveServer::startProductionLine() {
 
 
 void SlaveServer::stop() {
-    this->resultDispatcher->waitToFinish();
-    for (int index = 0; index < this->calcWorkersCount; ++index) {
-      this->calcWorkers.at(index)->waitToFinish();
-    }
+  this->resultDispatcher->waitToFinish();
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    this->calcWorkers.at(index)->waitToFinish();
+  }
+
+  // free memory
+  for (int index = 0; index < this->calcWorkersCount; ++index) {
+    delete this->calcWorkers.at(index);
+  }
+  delete this->pendingCalcsQueue;
 }
 
 void SlaveServer::initCalcWorkers() {
