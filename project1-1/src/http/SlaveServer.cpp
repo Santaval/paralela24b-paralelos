@@ -17,7 +17,7 @@
 
 
 const char* const usage =
-  "Usage: webserv [port] [handlers] --slave\n"
+  "Usage: webserver [port] [queue capacity] [master server port]\n"
   "\n"
   "  port        Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
@@ -121,12 +121,16 @@ bool SlaveServer::analyzeArguments(int argc, char* argv[]) {
     }
   }
 
-  if (argc >= 2) {
+  if (argc >= 1) {
     this->port = argv[1];
   }
 
-  if (argc >= 3) {
+  if (argc >= 2) {
     this->queueCapacity = std::stoi(argv[3]);
+  }
+
+  if (argc >= 3) {
+    this->masterServerPort = argv[4];
   }
 
 

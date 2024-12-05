@@ -6,6 +6,8 @@
 #include "../prodcons/Producer.hpp"
 #include "../http/HttpPendingRequest.hpp"
 
+#define DEFAULT_RESULTS_PORT "4321"
+
 
 class ResultAssembler : public Producer<HttpPendingRequest*>, TcpServer {
  private:

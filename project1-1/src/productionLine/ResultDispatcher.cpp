@@ -15,7 +15,8 @@ ResultDispatcher::~ResultDispatcher() {
 
 int ResultDispatcher::run() {
     this->consumeForever();
-    this->sendNetworkMessage(CalcResult(), "192.168.0.113", "8082");
+    this->sendNetworkMessage(CalcResult(), this->masterServerIp,
+        this->masterServerPort);
     Log::append(Log::INFO, "ResultDispatcher", "stop");
     return 0;
 }
@@ -24,7 +25,7 @@ void ResultDispatcher::consume(Calculator* calculator) {
     std::vector<int64_t> result = calculator->getResult();
     this->sendNetworkMessage(CalcResult(calculator->
         getPendingRequest(), calculator->getCalcIndex(),
-     result.size(), result), "192.168.0.113", "8082");
+     result.size(), result), this->masterServerIp, this->masterServerPort);
     delete calculator;
 }
 

@@ -26,6 +26,7 @@
 
 
 #define DEFAULT_PORT "8080"
+#define DEFAULT_RESULTS_PORT "4321"
 
 class HttpApp;
 
@@ -80,6 +81,9 @@ class SlaveServer : public TcpServer, Producer<Calculator*> {
  protected:
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  /// TCP port where the master server is listening
+  const char* masterServerPort = DEFAULT_RESULTS_PORT;
+
   /// Queue capacity for queues capacity
   int queueCapacity = SEM_VALUE_MAX;
   // master node address

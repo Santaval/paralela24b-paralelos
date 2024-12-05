@@ -12,8 +12,6 @@ CalcDispatcherClient::~CalcDispatcherClient() {
 }
 
 
-
-
 void CalcDispatcherClient::sendNetworkMessage(CalcRequest message) {
     this->connect(ip.c_str(), port.c_str());
     Socket socket = this->getSocket();

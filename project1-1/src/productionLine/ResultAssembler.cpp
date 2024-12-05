@@ -12,7 +12,7 @@ ResultAssembler::~ResultAssembler() {
 }
 
 int ResultAssembler::run() {
-    this->listenForConnections("8082");
+    this->listenForConnections(DEFAULT_RESULTS_PORT);
     this->acceptAllConnections();
     return 0;
 }
