@@ -1,5 +1,7 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
 
+#include <string>
+
 #include "HttpConnectionHandler.hpp"
 #include "Socket.hpp"
 #include "Log.hpp"
@@ -74,14 +76,12 @@ bool HttpConnectionHandler::route(HttpRequest& httpRequest,
     for (size_t index = 0; index < this->applications.size(); ++index) {
       // If this application handles the request
       HttpApp* app = this->applications[index];
-      AppResponse appResponse = app->handleHttpRequest(httpRequest, httpResponse);
+      AppResponse appResponse = app->handleHttpRequest(httpRequest,
+        httpResponse);
       if (appResponse.handled) {
-        Log::append(Log::INFO, "app", "Application " + std::to_string(index)
-          + " handled the request");
         // If the application is a production line, then the request is
         // forwarded to the production line
         if (appResponse.type == PRODUCTION_LINE_APP) {
-          Log::append(Log::INFO, "app", "Forwarding request to production line");
           this->produce(appResponse.pendingRequest);
         }
         return true;

@@ -2,6 +2,8 @@
 #pragma once
 
 #include <vector>
+#include <string>
+
 #include "HttpResponse.hpp"
 #include "Log.hpp"
 
@@ -43,7 +45,8 @@
 class HttpPendingRequest {
  protected:
         /// results (vector of vector of int)
-        std::vector<std::vector<int64_t>> results = std::vector<std::vector<int64_t>>();
+        std::vector<std::vector<int64_t>> results =
+            std::vector<std::vector<int64_t>>();
         /// request numbers
         std::vector<int> numbers = std::vector<int>();
         /// processed numbers count
@@ -70,7 +73,6 @@ class HttpPendingRequest {
             numbers(0),
             processedCount(0),
             response(response) {
-
                 this->numbers.resize(count);
                 this->results.resize(count);
         }

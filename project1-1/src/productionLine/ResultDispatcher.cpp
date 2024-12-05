@@ -1,3 +1,5 @@
+// Copyright Aaron Santana Valdelomar - Universidad de Costa Rica
+
 #include <vector>
 
 #include "ResultDispatcher.hpp"
@@ -20,12 +22,14 @@ int ResultDispatcher::run() {
 
 void ResultDispatcher::consume(Calculator* calculator) {
     std::vector<int64_t> result = calculator->getResult();
-    this->sendNetworkMessage(CalcResult(calculator->getPendingRequest(), calculator->getCalcIndex(),
+    this->sendNetworkMessage(CalcResult(calculator->
+        getPendingRequest(), calculator->getCalcIndex(),
      result.size(), result), "192.168.0.113", "8082");
     delete calculator;
 }
 
-void ResultDispatcher::sendNetworkMessage(CalcResult message, char* ip, char* port) {
+void ResultDispatcher::sendNetworkMessage(CalcResult message,
+    char* ip, char* port) {
     Socket socket =  this->connect(ip, port);
     socket << message;
     socket.send();

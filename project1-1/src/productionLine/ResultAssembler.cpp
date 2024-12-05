@@ -38,7 +38,8 @@ CalcResult ResultAssembler::parseRequestLine(Socket& client) {
       break;
     }
 
-    // line format: "pendingRequest:HttpPendingRequest*,numberIndex:int,resultSize:int,result:int[]"
+    // line format: "pendingRequest:HttpPendingRequest*,
+    // numberIndex:int,resultSize:int,result:int[]"
     CalcResult calcResult;
     std::istringstream lineStream(requestLine);
     std::string pendingRequest, numberIndex, resultSize;

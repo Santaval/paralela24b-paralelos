@@ -25,7 +25,8 @@ int CalcDispatcher::run() {
 void CalcDispatcher::consume(HttpPendingRequest* request) {
     // Create a new calculator
     for (int i = 0; i < request->getNumbersCount(); i++) {
-        CalcRequest calcRequest(request->getType(), request, i, request->getNumber(i));
+        CalcRequest calcRequest(request->getType(), request, i,
+            request->getNumber(i));
         // gen uniform random number
         int random = this->generateRandomNumber();
         CalcDispatcherClient* client = this->clients[random];
@@ -36,7 +37,7 @@ void CalcDispatcher::consume(HttpPendingRequest* request) {
 void CalcDispatcher::chargeSlavesConfig() {
     std::ifstream file(this->slavesConfigFile);
     if (!file.is_open()) {
-        throw std::runtime_error("No se pudo abrir el archivo de configuración");
+        throw std::runtime_error("Error al abrir el archivo");
     }
 
     std::string line;
@@ -44,7 +45,7 @@ void CalcDispatcher::chargeSlavesConfig() {
     if (std::getline(file, line)) {
         n = std::stoi(line);
     } else {
-        throw std::runtime_error("Archivo de configuración vacío o con formato inválido");
+        throw std::runtime_error("Configuración de esclavos inválida");
     }
 
     this->clients.resize(n);
@@ -58,7 +59,8 @@ void CalcDispatcher::chargeSlavesConfig() {
             if (iss >> ip >> port) {
                 this->clients[i] = new CalcDispatcherClient(ip, port);
             } else {
-                throw std::runtime_error("Error al leer la configuración del esclavo " + std::to_string(i));
+                throw std::runtime_error("Bad slave config" +
+                    std::to_string(i));
             }
         } else {
             throw std::runtime_error("Archivo de configuración incompleto");

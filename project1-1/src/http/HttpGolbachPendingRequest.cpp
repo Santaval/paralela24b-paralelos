@@ -1,6 +1,8 @@
 // Copyright 2024 Aaron Santana, Isaias Alfaro
 
 #include <vector>
+#include <string>
+
 #include "HttpGolbachPendingRequest.hpp"
 #include "Log.hpp"
 

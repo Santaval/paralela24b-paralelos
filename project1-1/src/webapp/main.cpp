@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
       httpServer->chainWebApp(&homeWebApp);
       httpServer->chainProductionLineApp(&goldWebApp);
       // Run the web server
-      return httpServer->run(argc, argv);  
+      return httpServer->run(argc, argv);
   }
 }
 #endif  // WEBSERVER

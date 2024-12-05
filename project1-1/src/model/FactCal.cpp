@@ -1,7 +1,8 @@
 // Copyright 2024 Isaias Alfaro Ugalde
 
+#include <vector>
+
 #include "FactCal.hpp"
-#include "Log.hpp"
 
 FactCal::FactCal() {
 }

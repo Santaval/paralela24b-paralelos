@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cerrno>
 #include <stdexcept>
+#include <string>
 
 #include "NetworkAddress.hpp"
 

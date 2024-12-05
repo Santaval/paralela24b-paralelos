@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <csignal>
+#include <iostream>
 
 #include "HttpApp.hpp"
 #include "HttpConnectionHandler.hpp"
@@ -82,8 +83,8 @@ int HttpServer::run(int argc, char* argv[]) {
       // TODO(you): Log the main thread id
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
-      Log::append(Log::INFO, "webserver", "Master server listening on " + address.getIP()
-        + " port " + std::to_string(address.getPort()));
+      Log::append(Log::INFO, "webserver", "Master server listening on "
+        + address.getIP() + " port " + std::to_string(address.getPort()));
 
 
       // Accept all client connections. The main process will get blocked
@@ -208,7 +209,8 @@ void HttpServer::startProductionLine() {
     this->responseDispatcher = new HttpResponseDispatcher();
     this->packer = new Packer();
     this->resultAssembler = new ResultAssembler(this->countSlaveNodes());
-    this->calcDispatcher = new CalcDispatcher(this->connectionHandlersCount, this->slaveNodesFilePath);
+    this->calcDispatcher = new CalcDispatcher(this->connectionHandlersCount,
+      this->slaveNodesFilePath);
     this->createConnectionHandlers();
 
     // create queues
@@ -266,7 +268,7 @@ void HttpServer::handleSignal(int signal) {
 int HttpServer::countSlaveNodes() {
       std::ifstream file(this->slaveNodesFilePath);
     if (!file.is_open()) {
-        throw std::runtime_error("No se pudo abrir el archivo de configuración");
+        throw std::runtime_error("Bad slaves config file");
     }
 
     std::string line;
@@ -275,7 +277,7 @@ int HttpServer::countSlaveNodes() {
         n = std::stoi(line);
         return n;
     } else {
-        throw std::runtime_error("Archivo de configuración vacío o con formato inválido");
+        throw std::runtime_error("Bad slaves config file");
     }
 }
 

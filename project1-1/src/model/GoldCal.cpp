@@ -1,5 +1,7 @@
 // Copyright 2024 Isaias Alfaro Ugalde
 
+#include <vector>
+
 #include "GoldCal.hpp"
 
 GoldCal::GoldCal() {

@@ -117,7 +117,6 @@ class SlaveServer : public TcpServer, Producer<Calculator*> {
   bool appsStarted = false;
 
   /// Number of connection calcWorkers threads
-  // Initially, the server will use the number of cores this->consumingQueue->enqueue(Socket()); in the system
   int calcWorkersCount = std::thread::hardware_concurrency();
 
  public:

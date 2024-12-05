@@ -9,6 +9,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <vector>
+#include <string>
 
 #include "Log.hpp"
 #include "NetworkAddress.hpp"
@@ -198,7 +199,7 @@ Socket::operator bool() const {
 #define IMPL_EXTRACT_OP(type) \
   Socket& Socket::operator>>(type value) { \
     while ( !(this->sharedSocket->input >> value) ) { \
-      if ( !this->receive() ) { return *this; } \
+      if ( !this->receive() ) {return *this; } \
     } \
     return *this; \
   }

@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <csignal>
+#include <iostream>
 
 #include "HttpApp.hpp"
 #include "HttpConnectionHandler.hpp"
@@ -211,7 +212,8 @@ CalcRequest SlaveServer::parseRequestLine(Socket& client) {
       break;
     }
 
-    // line format: "type:string,pendingRequest:HttpPendingRequest*,numberIndex:int,number:int"
+    // line format: "type:string,pendingRequest:HttpPendingRequest*,
+    // numberIndex:int,number:int"
 
     std::istringstream lineStream(requestLine);
     std::string type, pendingRequest, numberIndexStr, numberStr;

@@ -1,6 +1,12 @@
+// Copyright Aaron Santana Valdelomar 2024 Universidad de Costa Rica
+
+#include <vector>
+
 #include "CalcResult.hpp"
 
-CalcResult::CalcResult(HttpPendingRequest* pendingRequest, int numberIndex, int resultSize, std::vector<int64_t> result) {
+
+CalcResult::CalcResult(HttpPendingRequest* pendingRequest, int numberIndex,
+    int resultSize, std::vector<int64_t> result) {
     this->pendingRequest = pendingRequest;
     this->numberIndex = numberIndex;
     this->resultSize = resultSize;

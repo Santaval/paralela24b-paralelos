@@ -3,8 +3,10 @@
 #include <string>
 #include "CalcRequest.hpp"
 
-CalcRequest::CalcRequest(std::string type, HttpPendingRequest* pendingRequest, int numberIndex, int number)
-    : type(type), pendingRequest(pendingRequest), numberIndex(numberIndex), number(number) {
+CalcRequest::CalcRequest(std::string type, HttpPendingRequest* pendingRequest,
+    int numberIndex, int number)
+    : type(type), pendingRequest(pendingRequest), numberIndex(numberIndex),
+        number(number) {
 }
 
 std::string CalcRequest::getType() {

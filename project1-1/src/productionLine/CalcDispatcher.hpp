@@ -13,9 +13,11 @@ class CalcDispatcher : public Consumer<HttpPendingRequest*>, TcpClient {
  private:
     int connectionsHandlersCount = 0;
     std::string slavesConfigFile = "slaves.txt";
-    std::vector<CalcDispatcherClient*> clients = std::vector<CalcDispatcherClient*>();
+    std::vector<CalcDispatcherClient*> clients =
+        std::vector<CalcDispatcherClient*>();
  public:
-    explicit CalcDispatcher(int connectionsHandlersCount, std::string slavesConfigFile)
+    explicit CalcDispatcher(int connectionsHandlersCount,
+        std::string slavesConfigFile)
         : Consumer<HttpPendingRequest*>(nullptr, nullptr),
         connectionsHandlersCount(connectionsHandlersCount),
         slavesConfigFile(slavesConfigFile) {
