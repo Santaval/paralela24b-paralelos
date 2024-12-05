@@ -38,9 +38,6 @@ CalcResult ResultAssembler::parseRequestLine(Socket& client) {
       break;
     }
 
-    // Log the request
-    Log::append(Log::INFO, "ResultAssembler", "Request: " + requestLine);
-
     // line format: "pendingRequest:HttpPendingRequest*,numberIndex:int,resultSize:int,result:int[]"
     CalcResult calcResult;
     std::istringstream lineStream(requestLine);

@@ -11,7 +11,6 @@ int CalculatorWorker::run() {
 }
 
 void CalculatorWorker::consume(Calculator* calculator) {
-  Log::append(Log::INFO, "CalculatorWorker", "consume");
   calculator->calculate();
   this->produce(calculator);
 }
