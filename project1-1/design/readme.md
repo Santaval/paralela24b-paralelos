@@ -27,7 +27,7 @@ The server is built with a modular architecture, where different components hand
 
 The following diagram illustrates the server's architecture:
 
-![Architecture Diagram](img/diagram2.svg)
+![Architecture Diagram](img/diagram.svg)
 
 ## Server Workflow
 1. **Listening for Connections**: The server listens on a specified port for incoming HTTP requests.
