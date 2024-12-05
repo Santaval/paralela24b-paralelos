@@ -19,14 +19,15 @@ int ResultAssembler::run() {
 
 void ResultAssembler::handleClientConnection(Socket& client) {
     CalcResult result = this->parseRequestLine(client);
-    if (result == CalcResult() && ++this->stopConditionsCount == this->slavesNodesCount) {
+    if (result == CalcResult()) {
+      if (++this->stopConditionsCount == this->slavesNodesCount) {
       this->produce(nullptr);
       this->stopListening();
+      }
       return;
     }
     result.pendingRequest->pushResult(result.numberIndex, result.result);
     this->produce(result.pendingRequest);
-    client.close();
 }
 
 CalcResult ResultAssembler::parseRequestLine(Socket& client) {
