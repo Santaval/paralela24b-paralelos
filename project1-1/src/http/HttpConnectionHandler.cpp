@@ -19,6 +19,8 @@ void HttpConnectionHandler::consume(Socket socket) {
 
 int HttpConnectionHandler::run() {
     this->consumeForever();
+    Socket tempSocket;
+    this->handleClientConnection(tempSocket);
     this->produce(nullptr);
     return 0;
 }
@@ -49,7 +51,6 @@ void HttpConnectionHandler::handleClientConnection(Socket& client) {
       client.close();
       break;
     }
-    break;
   }
 }
 
