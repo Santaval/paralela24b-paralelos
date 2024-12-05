@@ -18,7 +18,7 @@ Socket& operator<< (Socket& socket, const CalcResult& calcResult) {
     << calcResult.numberIndex << ","
     << calcResult.resultSize << ",";
 
-    for (int i = 0; i < calcResult.result.size(); i++) {
+    for (size_t  i = 0; i < calcResult.result.size(); i++) {
         socket << calcResult.result[i];
         if (i < calcResult.result.size() - 1) {
             socket << ",";
