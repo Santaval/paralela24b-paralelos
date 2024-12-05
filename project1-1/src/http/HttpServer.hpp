@@ -114,6 +114,9 @@ class HttpServer : public TcpServer {
   // set calc workers queues
   void setCalcWorkersQueues();
 
+  // Count slave nodes
+  int countSlaveNodes();
+
 
 
 

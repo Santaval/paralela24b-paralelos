@@ -4,7 +4,8 @@
 #include "Log.hpp"
 
 
-ResultAssembler::ResultAssembler() {
+ResultAssembler::ResultAssembler(int slavesNodesCount)
+: slavesNodesCount(slavesNodesCount) {
 }
 
 ResultAssembler::~ResultAssembler() {
@@ -18,7 +19,7 @@ int ResultAssembler::run() {
 
 void ResultAssembler::handleClientConnection(Socket& client) {
     CalcResult result = this->parseRequestLine(client);
-    if (result == CalcResult()) {
+    if (result == CalcResult() && ++this->stopConditionsCount == this->slavesNodesCount) {
       this->produce(nullptr);
       this->stopListening();
       return;

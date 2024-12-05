@@ -8,11 +8,15 @@
 
 
 class ResultAssembler : public Producer<HttpPendingRequest*>, TcpServer {
-public:
-    ResultAssembler(/* args */);
-    ~ResultAssembler();
-    void handleClientConnection(Socket& client) override;
-    CalcResult parseRequestLine(Socket& client);
-    int run() override;
+ private:
+        /* data */
+        int slavesNodesCount;
+        int stopConditionsCount = 0;
+ public:
+        explicit ResultAssembler(int slavesNodesCount);
+        ~ResultAssembler();
+        void handleClientConnection(Socket& client) override;
+        CalcResult parseRequestLine(Socket& client);
+        int run() override;
 };
 

@@ -207,7 +207,7 @@ void HttpServer::startProductionLine() {
     // create production line elements
     this->responseDispatcher = new HttpResponseDispatcher();
     this->packer = new Packer();
-    this->resultAssembler = new ResultAssembler();
+    this->resultAssembler = new ResultAssembler(this->countSlaveNodes());
     this->calcDispatcher = new CalcDispatcher(this->connectionHandlersCount, this->slaveNodesFilePath);
     this->createConnectionHandlers();
 
@@ -261,5 +261,21 @@ void HttpServer::handleSignal(int signal) {
       std::to_string(signal) + " received");
     HttpServer::getInstance()->stopListening();
     throw std::runtime_error("Stop server in progress...");
+}
+
+int HttpServer::countSlaveNodes() {
+      std::ifstream file(this->slaveNodesFilePath);
+    if (!file.is_open()) {
+        throw std::runtime_error("No se pudo abrir el archivo de configuración");
+    }
+
+    std::string line;
+    int n = 0;
+    if (std::getline(file, line)) {
+        n = std::stoi(line);
+        return n;
+    } else {
+        throw std::runtime_error("Archivo de configuración vacío o con formato inválido");
+    }
 }
 
