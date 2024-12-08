@@ -129,11 +129,9 @@ int main(int argc, char* argv[]) {
     while (true) {
       bool shouldProcessAJob = false;
       mpi.receive(shouldProcessAJob, MAIN_PROCESS);
-      std::cout << "Process " << mpi.rank() << " received job: " << shouldProcessAJob << std::endl;
       if (shouldProcessAJob) {
         JobData jobData;
         receiveJobData(jobData, MAIN_PROCESS, mpi);
-        std::cout << "Process " << mpi.rank() << " received job: " << jobData.path << std::endl;
         processJob(jobData);
         mpi.send(1, MAIN_PROCESS);
       } else {
