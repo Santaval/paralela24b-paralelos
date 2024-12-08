@@ -12,7 +12,6 @@ Particle::~Particle() {}
 
 Vector Particle::calcAttractionForce(const Particle* atractor) {
     Vector distance = this->position - atractor->position;
-    magnitude_t m = sqrt(pow(distance.x, 2) + pow(distance.y, 2) + pow(distance.z, 2));
     magnitude_t scalar = -G_CONST * this->mass * atractor->mass /
     pow(distance.magnitude(), 3);
     return distance * scalar;

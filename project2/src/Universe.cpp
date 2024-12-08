@@ -1,6 +1,4 @@
 // Copyright Aaron Santana Valdelomar - Univerdidad de Costa Rica 2024
-#pragma once
-
 #include <unistd.h>
 #include <string>
 #include <cstdio>
