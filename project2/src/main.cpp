@@ -10,25 +10,37 @@
 #include "defines.hpp"
 #include "Universe.hpp"
 
-#define DISPLAY_SCALE 2
-void renderParticles(sf::RenderWindow& window, const std::vector<Particle*>& particles) {
+#define DISPLAY_SCALE 1
+void renderParticles(sf::RenderWindow& window, Universe& universe) {
+  
+  const std::vector<Particle*>& particles = universe.getParticles();
   // Clear the window
+
   window.clear();
 
   // Get the center of the window
   sf::Vector2u windowSize = window.getSize();
   sf::Vector2f center(windowSize.x / 2.0f, windowSize.y / 2.0f);
+  sf::Font font;
+  font.loadFromFile("/home/savaldev/Documents/ucr/paralela24b-paralelos/project2/Montserrat-Regular.ttf");
 
+
+      // print time
+    sf::Text text5;
+    text5.setFont(font);
+    text5.setString("T: " + std::to_string(universe.getCurrentTime()));
+    text5.setCharacterSize(8);
+    text5.setFillColor(sf::Color::White);
+    text5.setPosition(0, 0);
+    window.draw(text5);
   // Draw particles
   for (const auto& particle : particles) {
     if (particle->isAbsorbed()) {
       continue;
     }
-    sf::CircleShape shape(particle->getRadio()); // Use radius for simplicity
+    sf::CircleShape shape(particle->getRadio() / DISPLAY_SCALE); // Use radius for simplicity
     shape.setPosition(center.x + particle->getPosition().x / DISPLAY_SCALE, center.y - particle->getPosition().y / DISPLAY_SCALE);
     // add label with velocity
-    sf::Font font;
-    font.loadFromFile("/home/savaldev/Documents/ucr/paralela24b-paralelos/project2/Montserrat-Regular.ttf");
     sf::Text text;
     text.setFont(font);
     text.setString("V: " + std::to_string(particle->getVelocity().magnitude()));
@@ -44,10 +56,10 @@ void renderParticles(sf::RenderWindow& window, const std::vector<Particle*>& par
     text2.setFillColor(sf::Color::White);
     text2.setPosition(center.x + particle->getPosition().x / DISPLAY_SCALE, center.y - particle->getPosition().y / DISPLAY_SCALE + 30);
 
-    // print acceleration
+    // print mass
     sf::Text text3;
     text3.setFont(font);
-    text3.setString("A: " + std::to_string(particle->getAcceleration().magnitude()));
+    text3.setString("M: " + std::to_string(particle->getMass()));
     text3.setCharacterSize(8);
     text3.setFillColor(sf::Color::White);
     text3.setPosition(center.x + particle->getPosition().x / DISPLAY_SCALE, center.y - particle->getPosition().y / DISPLAY_SCALE + 40);
@@ -58,7 +70,6 @@ void renderParticles(sf::RenderWindow& window, const std::vector<Particle*>& par
     text4.setCharacterSize(8);
     text4.setFillColor(sf::Color::White);
     text4.setPosition(center.x + particle->getPosition().x / DISPLAY_SCALE, center.y - particle->getPosition().y / DISPLAY_SCALE + 50);
-
     window.draw(text4);
     window.draw(text3);
     window.draw(text2);
@@ -111,10 +122,12 @@ int main(int argc, char const *argv[]) {
   std::vector<JobData> jobs = loadJobsFromFile(argv[1]);
   #ifdef INTERFACE
   for (size_t i = 0; i < jobs.size(); i++) {
+
     JobData job = jobs[i];
-    Universe universe(job.delta_time, job.final_time, job.path);
+    std::cout << "Running job: " << job.directory << "/" << job.path << std::endl;
+    Universe universe(job.delta_time, job.final_time, job.directory + "/" + job.path);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Universe");
-    while (window.isOpen() && universe.particlesAlive() > 1) {
+    while (window.isOpen() && (universe.particlesAlive() > 1 && (universe.getCurrentTime() < universe.getFinalTime()))) {
       sf::Event event;
       while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -122,7 +135,7 @@ int main(int argc, char const *argv[]) {
         }
       }
       universe.next();
-      renderParticles(window, universe.getParticles());
+      renderParticles(window, universe);
       sleep(0.1);
     }
   }
@@ -131,8 +144,8 @@ int main(int argc, char const *argv[]) {
   #ifndef INTERFACE
   for (size_t i = 0; i < jobs.size(); i++) {
     JobData job = jobs[i];
-    Universe universe(job.delta_time, job.final_time, job.path);
-    while (universe.particlesAlive() > 1 && universe.getCurrentTime() < universe.getFinalTime()) {
+    Universe universe(job.delta_time, job.final_time, job.directory + "/" + job.path);
+    while (universe.particlesAlive() > 1 && (universe.getCurrentTime() < universe.getFinalTime())) {
       std::cout << "Time: " << universe.getCurrentTime() << std::endl;
       universe.next();
     }
