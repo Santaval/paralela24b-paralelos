@@ -82,6 +82,8 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  std::cout << "Process " << mpi.rank() << " of " << mpi.size() << " is running" << std::endl;
+
   if (mpi.rank() == MAIN_PROCESS) {
     if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <path_to_jobs_file" << std::endl;
@@ -112,11 +114,11 @@ int main(int argc, char* argv[]) {
     mpi.receive(FINISHED_JOB_SIGNAL, MPI_ANY_SOURCE, 0, source);
     if (processedCount < jobs.size()) {
       bool shouldProcessAJob = true;
-      mpi.send(&shouldProcessAJob, *source);
+      mpi.send(shouldProcessAJob, *source);
       sendJobData(jobs[processedCount], *source, mpi);
     } else {
       bool shouldProcessAJob = false;
-      mpi.send(&shouldProcessAJob, *source);
+      mpi.send(shouldProcessAJob, *source);
       mpi.receive(DISCONNECT_SIGNAL, *source);
       disconnectedCount++;
   }
@@ -127,9 +129,11 @@ int main(int argc, char* argv[]) {
     while (true) {
       bool shouldProcessAJob = false;
       mpi.receive(shouldProcessAJob, MAIN_PROCESS);
+      std::cout << "Process " << mpi.rank() << " received job: " << shouldProcessAJob << std::endl;
       if (shouldProcessAJob) {
         JobData jobData;
         receiveJobData(jobData, MAIN_PROCESS, mpi);
+        std::cout << "Process " << mpi.rank() << " received job: " << jobData.path << std::endl;
         processJob(jobData);
         mpi.send(1, MAIN_PROCESS);
       } else {
