@@ -1,1 +1,3 @@
-./jobs/job001/sistema_solar.tsv 3600 31536000
+./jobs/job001/sistema_solar.tsv 60 31536000
+./jobs/job001/desampalandia.tsv 1 3600
+./jobs/job001/liberialandia.tsv 30 40000
