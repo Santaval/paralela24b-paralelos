@@ -2,11 +2,19 @@
 #pragma once
 
 #include <unistd.h>
+#include <string>
+#include <cstdio>
 
 #include "defines.hpp"
 #include "Particle.hpp"
 #include "Universe.hpp"
 #include <iostream>
+
+
+Universe::Universe(magnitude_t delta_time, magnitude_t final_time, std::string path)
+  : delta_time(delta_time), final_time(final_time) {
+  this->chargeFromFile(path);
+}
 
 Universe::Universe(magnitude_t delta_time, magnitude_t final_time)
   : delta_time(delta_time), final_time(final_time) {}
@@ -83,4 +91,20 @@ void Universe::clean() {
     }
   }
   particles.clear();
+}
+
+void Universe::chargeFromFile(std::string path) {
+  std::cout << "Charging from file: " << path << std::endl;
+  // format: mass radio x y z vx vy vz
+  FILE* file = fopen(path.c_str(), "r");
+  if (file == NULL) {
+    std::cerr << "Error opening file" << std::endl;
+    return;
+  }
+  magnitude_t mass, radio, x, y, z, vx, vy, vz;
+  while (fscanf(file, "%lf %lf %lf %lf %lf %lf %lf %lf\n", &mass,
+    &radio, &x , &y, &z, &vx, &vy, &vz) != EOF) {
+    Particle* particle = new Particle(mass, radio, Vector(x, y, z), Vector(vx, vy, vz));
+    this->addParticle(particle);
+  }
 }

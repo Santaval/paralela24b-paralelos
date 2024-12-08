@@ -1,6 +1,7 @@
 // Copyrught Aaron Santana Valdelomar - Universidad de Costa Rica 2024
 #pragma once
 #include <vector>
+#include <string>
 
 #include "Particle.hpp"
 #include "defines.hpp"
@@ -16,7 +17,9 @@ class Universe {
  private:
     void handleCollision(Particle* particle1, Particle* particle2);
     bool areColliding(Particle* particle1, Particle* particle2);
+
  public:
+    Universe(magnitude_t delta_time, magnitude_t final_time, std::string path);
     Universe(magnitude_t delta_time, magnitude_t final_time);
     ~Universe();
     void addParticle(Particle* particle);
@@ -30,4 +33,5 @@ class Universe {
     inline magnitude_t getFinalTime() const { return final_time; }
     inline const std::vector<Particle*>& getParticles() const { return particles; }
     inline size_t particlesAlive() const { return particles.size() - absorbedCount; }
+    void chargeFromFile(std::string path);
 };
