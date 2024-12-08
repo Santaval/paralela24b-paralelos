@@ -11,7 +11,3 @@ struct JobData {
     std::string path;
     std::string directory;
 };
-
-struct JobResult : public JobData {
-    magnitude_t time;
-};
