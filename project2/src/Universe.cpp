@@ -33,10 +33,10 @@ void Universe::next() {
 }
 
 void Universe::updateWithCollisions() {
+  std::vector<std::pair<Particle*, Particle*>> pendingCollisions;
   const size_t thread_num = std::thread::hardware_concurrency();
   const size_t chunk_size = this->particles.size() / thread_num;
-
-  #pragma omp parallel for schedule(static, chunk_size)
+  #pragma omp parallel for schedule(dynamic, chunk_size)
   for (size_t i = 0; i < particles.size(); ++i) {
     if (particles[i]->isAbsorbed()) continue;
 
@@ -47,7 +47,7 @@ void Universe::updateWithCollisions() {
         if (areColliding(particles[i], particles[j])) {
           #pragma omp critical
           {
-            handleCollision(particles[i], particles[j]);
+            pendingCollisions.push_back({particles[i], particles[j]});
           }
         }
         force = force + particles[i]->calcAttractionForce(particles[j]);
@@ -57,6 +57,11 @@ void Universe::updateWithCollisions() {
     Vector acceleration = force * (1 / particles[i]->getMass());
     particles[i]->setAcceleration(acceleration);
     particles[i]->setVelocity(delta_time);
+  }
+
+  // Process pending collisions
+  for (size_t i = 0; i < pendingCollisions.size(); i++) {
+    handleCollision(pendingCollisions[i].first, pendingCollisions[i].second);
   }
 }
 
