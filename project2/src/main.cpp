@@ -8,6 +8,9 @@
 #include "Particle.hpp"
 #include "defines.hpp"
 #include "Universe.hpp"
+#include "Mpi.hpp"
+
+#define MAIN_PROCESS 0
 
 std::vector<JobData> loadJobsFromFile(const std::string& path) {
     FILE* file = fopen(path.c_str(), "r");
@@ -47,21 +50,93 @@ void writeToFile(JobData job, Universe& universe) {
     fclose(file);
 }
 
+void sendJobData(JobData& jobData, int dest, Mpi& mpi) {
+    // int plateFileLength = strlen(jobData->plateFile) + 1;
+    // int directoryLength = strlen(jobData->directory) + 1;
+    mpi.send(jobData.delta_time, dest);
+    mpi.send(jobData.final_time, dest);
+    mpi.send(jobData.path, dest);
+    mpi.send(jobData.directory, dest);
+}
+
+void receiveJobData(JobData& jobData, int source, Mpi& mpi) {
+    mpi.receive(jobData.delta_time, source);
+    mpi.receive(jobData.final_time, source);
+    mpi.receive(jobData.path, source);
+    mpi.receive(jobData.directory, source);
+}
+
+void processJob(JobData& jobData) {
+    Universe universe(jobData.delta_time, jobData.final_time, jobData.directory + "/" + jobData.path);
+    while (universe.particlesAlive() > 1 && (universe.getCurrentTime() < universe.getFinalTime())) {
+        universe.next();
+    }
+    writeToFile(jobData, universe);
+}
+
 #ifndef INTERFACE
-int main(int argc, char const *argv[]) {
-  if (argc != 2) {
+int main(int argc, char* argv[]) {
+  Mpi mpi(argc, argv);
+  if (mpi.size() < 2) {
+    std::cerr << "This program must be run with at least 2 processes" << std::endl;
+    return 1;
+  }
+
+  if (mpi.rank() == MAIN_PROCESS) {
+    if (argc != 2) {
     std::cerr << "Usage: " << argv[0] << " <path_to_jobs_file" << std::endl;
     return 1;
   }
   std::vector<JobData> jobs = loadJobsFromFile(argv[1]);
-  for (size_t i = 0; i < jobs.size(); i++) {
-    JobData job = jobs[i];
-    Universe universe(job.delta_time, job.final_time, job.directory + "/" + job.path);
-    while (universe.particlesAlive() > 1 && (universe.getCurrentTime() < universe.getFinalTime())) {
-      std::cout << "Time: " << universe.getCurrentTime() << std::endl;
-      universe.next();
+  size_t processedCount = 0, disconnectedCount = 0;
+  int DISCONNECT_SIGNAL = 1;
+  int FINISHED_JOB_SIGNAL = 1;
+
+  for (int i = 1; i < mpi.size(); i++) {
+    if (processedCount < jobs.size()) {
+      bool shouldProcessAJob = true;
+      mpi.send(&shouldProcessAJob, i);
+      sendJobData(jobs[processedCount], i, mpi);
+      processedCount++;
+    } else {
+      bool shouldProcessAJob = false;
+      mpi.send(&shouldProcessAJob, i);
+      mpi.receive(DISCONNECT_SIGNAL, i);
+      disconnectedCount++;
     }
-    writeToFile(job, universe);
+  }
+
+    // receive jobs results
+  while (disconnectedCount < (mpi.size() - 1)) {
+    int* source = new int;
+    mpi.receive(FINISHED_JOB_SIGNAL, MPI_ANY_SOURCE, 0, source);
+    if (processedCount < jobs.size()) {
+      bool shouldProcessAJob = true;
+      mpi.send(&shouldProcessAJob, *source);
+      sendJobData(jobs[processedCount], *source, mpi);
+    } else {
+      bool shouldProcessAJob = false;
+      mpi.send(&shouldProcessAJob, *source);
+      mpi.receive(DISCONNECT_SIGNAL, *source);
+      disconnectedCount++;
+  }
+
+      processedCount++;
+    }
+  } else {
+    while (true) {
+      bool shouldProcessAJob = false;
+      mpi.receive(shouldProcessAJob, MAIN_PROCESS);
+      if (shouldProcessAJob) {
+        JobData jobData;
+        receiveJobData(jobData, MAIN_PROCESS, mpi);
+        processJob(jobData);
+        mpi.send(1, MAIN_PROCESS);
+      } else {
+        mpi.send(1, MAIN_PROCESS);
+        break;
+      }
+    }
   }
 }
 #endif
