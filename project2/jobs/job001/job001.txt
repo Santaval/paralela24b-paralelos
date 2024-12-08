@@ -1,3 +1,5 @@
-./jobs/job001/sistema_solar.tsv 60 31536000
-./jobs/job001/desampalandia.tsv 1 3600
-./jobs/job001/liberialandia.tsv 30 40000
+sistema_solar.tsv 60 31536000
+desampalandia.tsv 1 3600
+liberialandia.tsv 30 40000
+guanacastelandia.tsv 10 50000
+carrillolandia.tsv 10 50000
