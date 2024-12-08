@@ -25,8 +25,7 @@ class Universe {
     void addParticle(Particle* particle);
     void clean();
     void next();
-    void detectCollisions();
-    void updateVelocities();
+    void updateWithCollisions();
     void updatePositions();
     inline magnitude_t getCurrentTime() const { return current_time; }
     inline magnitude_t getDeltaTime() const { return delta_time; }
